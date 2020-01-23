@@ -1,2 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/ar qc libIrrXML.a  CMakeFiles/IrrXML.dir/irrXML.cpp.o
-/Library/Developer/CommandLineTools/usr/bin/ranlib libIrrXML.a
