@@ -9,6 +9,7 @@
 #include <vec2.hpp>
 #include <vec3.hpp>
 #include <utils.hpp>
+#include <texture.hpp>
 
 
 int main(int argc, char **argv)
@@ -32,24 +33,29 @@ int main(int argc, char **argv)
         std::cout << shader.Status().message << "\n";
     }
 
-    nitro::graphics::Vertex v1{clutch::Vec3<float>{0.0f,  0.5f, 0.0},
+    nitro::graphics::Vertex v1{clutch::Vec3<float>{0.5f, 0.5f, 0.0},
                                clutch::Vec3<float>{},
-                               clutch::Vec2<float>{}};
+                               clutch::Vec2<float>{1.0f, 1.0f}};
     
     nitro::graphics::Vertex v2{clutch::Vec3<float>{0.5f, -0.5f, 0.0},
                                clutch::Vec3<float>{},
-                               clutch::Vec2<float>{}};
+                               clutch::Vec2<float>{1.0f, 0.0f}};
 
     nitro::graphics::Vertex v3{clutch::Vec3<float>{-0.5f, -0.5f, 0.0},
                                clutch::Vec3<float>{},
-                               clutch::Vec2<float>{}};
+                               clutch::Vec2<float>{0.0f, 0.0f}};
     
-    nitro::graphics::TextureInfo t{1, "something"};
+    nitro::graphics::Vertex v4{clutch::Vec3<float>{-0.5f,  0.5f, 0.0},
+                               clutch::Vec3<float>{},
+                               clutch::Vec2<float>{0.0f, 1.0f}};
+    
+    nitro::graphics::Texture t1{"container.jpg", "../resources/models",   GL_TEXTURE0};
+    nitro::graphics::Texture t2{"awesomeface.png", "../resources/models", GL_TEXTURE1, "normal", 1};
 
-    std::vector<nitro::graphics::Vertex> pos{v1, v2, v3};
-    std::vector<unsigned int> indices{1, 2, 3};
-    std::vector<nitro::graphics::TextureInfo> textures{t};
-    
+    std::vector<nitro::graphics::Vertex> pos{v1, v2, v3, v4};
+    std::vector<unsigned short> indices{ 0, 1, 3, 1, 2, 3};
+    std::vector<nitro::graphics::Texture> textures{t1,t2};
+
     nitro::graphics::Mesh mesh{pos,indices,textures};
 
     while(!glfwWindowShouldClose(window))

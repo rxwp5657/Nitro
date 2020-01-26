@@ -9,6 +9,7 @@
 #include <vec2.hpp>
 #include <shader.hpp>
 #include <drawable.hpp>
+#include <texture.hpp>
 
 namespace nitro
 {
@@ -21,18 +22,12 @@ namespace nitro
             clutch::Vec2<float> tex_coord;
         };
 
-        struct TextureInfo
-        {
-            unsigned int id;
-            std::string  type;
-        };
-        
         class Mesh : public Drawable
         {
         public:
             Mesh(const std::vector<Vertex>& vertices, 
-                 const std::vector<unsigned int>& indices,
-                 const std::vector<TextureInfo>&  textures_info);
+                 const std::vector<unsigned short>& indices,
+                 const std::vector<Texture>& textures);
 
             void Erase() override;
             void Setup(const Shader& shader) override;
@@ -40,8 +35,8 @@ namespace nitro
 
         private:
             std::vector<Vertex>       vertices_;
-            std::vector<unsigned int> indices_;
-            std::vector<TextureInfo>  textures_info_;
+            std::vector<unsigned short> indices_;
+            std::vector<Texture>  textures_;
             GLuint vbo_;
             GLuint vao_;
             GLuint elementbuffer_;

@@ -105,8 +105,8 @@ namespace nitro
                                 const unsigned int offset) const
         {
             GLint posAttrib = glGetAttribLocation(program_, name);
-            glEnableVertexAttribArray(posAttrib);
             glVertexAttribPointer(posAttrib, length, type, GL_FALSE, size, (void*) offset);
+            glEnableVertexAttribArray(posAttrib);
             return posAttrib;
         }
 
@@ -120,7 +120,7 @@ namespace nitro
             glUniform1f(GetUniformLocation(name), val);
         }
 
-        void Shader::SetUniform2f(const std::string& name,   const clutch::Vec2<float>& val) const
+        void Shader::SetUniform2f(const std::string& name, const clutch::Vec2<float>& val) const
         {
             glUniform2fv(GetUniformLocation(name), 1, &val.x);
         }

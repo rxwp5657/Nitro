@@ -5,11 +5,11 @@ namespace nitro
     namespace graphics
     {
         Mesh::Mesh(const std::vector<Vertex>& vertices, 
-                       const std::vector<unsigned int>& indices,
-                       const std::vector<TextureInfo>&  textures_info)
+                   const std::vector<unsigned short>& indices,
+                   const std::vector<Texture>&  textures)
         : vertices_{vertices},
           indices_{indices},
-          textures_info_{textures_info},
+          textures_{textures},
           loaded_{false}
         {
         
@@ -36,11 +36,11 @@ namespace nitro
             //Link Data to Shader Variables
 
             // vertex positions
-            shader.PosAttrib("position", 3,GL_FLOAT, sizeof(Vertex),offsetof(Vertex, position));
+            shader.PosAttrib("aPosition", 3, GL_FLOAT, sizeof(Vertex),  0);
             // vertex normals
-            shader.PosAttrib("normal", 3,GL_FLOAT, sizeof(Vertex),  offsetof(Vertex, normal));
+            shader.PosAttrib("aNormal",   3, GL_FLOAT, sizeof(Vertex),  offsetof(Vertex, normal));
             // vertex texture coords
-            shader.PosAttrib("texture",2,GL_FLOAT, sizeof(Vertex),  offsetof(Vertex, tex_coord));
+            shader.PosAttrib("aTexCoord", 2, GL_FLOAT, sizeof(Vertex),  offsetof(Vertex, tex_coord));
 
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
@@ -51,6 +51,11 @@ namespace nitro
         {
             if(!loaded_)
                 Setup(shader);
+
+            for(auto& texture : textures_)
+            {
+                texture.Draw(shader);
+            }
 
             glBindVertexArray(vao_);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer_);
