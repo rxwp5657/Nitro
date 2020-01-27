@@ -2,12 +2,12 @@
 
 in vec2 fTexCoord;
 
-uniform sampler2D albedo;
+uniform sampler2D texture_diffuse1;
 uniform sampler2D normal;
 
 out vec4 outColor;
 
 void main()
 {
-    outColor = mix(texture(albedo, fTexCoord), texture(normal, fTexCoord), 0.2);
+    outColor = texture(texture_diffuse1, fTexCoord);
 }

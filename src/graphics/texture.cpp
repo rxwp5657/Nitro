@@ -6,11 +6,12 @@ namespace nitro
     {
         Texture::Texture(const std::string& file_name, 
                          const std::string& dir, 
-                         const GLenum texture_unit,
+                         const GLint texture_unit,
                          const std::string& name,
                          const int uniform_location)
         : texture_unit_{texture_unit},
           name_{name},
+          path_{file_name},
           uniform_location_{uniform_location}
         {
             std::string path = dir + '/' + file_name;
@@ -48,6 +49,11 @@ namespace nitro
             }
         }
 
+        std::string Texture::get_path() const
+        {
+            return path_;
+        }
+
         Texture::~Texture()
         {
             Erase();
@@ -65,6 +71,8 @@ namespace nitro
 
         void Texture::Draw(const Shader& shader)
         {
+            std::cout << name_ << "\n";
+            
             shader.SetUniformInt(name_.c_str(),uniform_location_);
             glActiveTexture(texture_unit_);
             glBindTexture(GL_TEXTURE_2D, texture_);

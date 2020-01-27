@@ -4,6 +4,8 @@ in vec3 aPosition;
 in vec3 aNormal;
 in vec2 aTexCoord;
 
+uniform mat4 model;
+
 out vec2 fTexCoord;
 
 void main()

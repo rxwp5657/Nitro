@@ -20,13 +20,15 @@ namespace nitro
             clutch::Vec3<float> position;
             clutch::Vec3<float> normal;
             clutch::Vec2<float> tex_coord;
+            clutch::Vec3<float> tangent;
+            clutch::Vec3<float> bitangent;
         };
 
         class Mesh : public Drawable
         {
         public:
             Mesh(const std::vector<Vertex>& vertices, 
-                 const std::vector<unsigned short>& indices,
+                 const std::vector<unsigned int>& indices,
                  const std::vector<Texture>& textures);
 
             void Erase() override;
@@ -35,7 +37,7 @@ namespace nitro
 
         private:
             std::vector<Vertex>       vertices_;
-            std::vector<unsigned short> indices_;
+            std::vector<unsigned int> indices_;
             std::vector<Texture>  textures_;
             GLuint vbo_;
             GLuint vao_;

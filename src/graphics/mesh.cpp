@@ -5,7 +5,7 @@ namespace nitro
     namespace graphics
     {
         Mesh::Mesh(const std::vector<Vertex>& vertices, 
-                   const std::vector<unsigned short>& indices,
+                   const std::vector<unsigned int>& indices,
                    const std::vector<Texture>&  textures)
         : vertices_{vertices},
           indices_{indices},
@@ -41,6 +41,10 @@ namespace nitro
             shader.PosAttrib("aNormal",   3, GL_FLOAT, sizeof(Vertex),  offsetof(Vertex, normal));
             // vertex texture coords
             shader.PosAttrib("aTexCoord", 2, GL_FLOAT, sizeof(Vertex),  offsetof(Vertex, tex_coord));
+            // vertex Tangent from tangent space
+            shader.PosAttrib("aTangent",  3, GL_FLOAT, sizeof(Vertex),  offsetof(Vertex, tangent));
+            // vertex Bitangent from tangent space
+            shader.PosAttrib("aBitangent",3, GL_FLOAT, sizeof(Vertex),  offsetof(Vertex, bitangent));
 
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
@@ -60,7 +64,7 @@ namespace nitro
             glBindVertexArray(vao_);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer_);
 
-            glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_SHORT, (void*)0);
+            glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, (void*)0);
 
             glBindVertexArray(0);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);

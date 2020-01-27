@@ -17,18 +17,21 @@ namespace nitro
         public:
             Texture(const std::string& file_name, 
                     const std::string& dir, 
-                    const GLenum texture_unit = GL_TEXTURE0,
+                    const GLint texture_unit = GL_TEXTURE0,
                     const std::string& name = "albedo",
                     const int uniform_location = 0);
             
             ~Texture();
 
+            std::string get_path() const;
+
             void Erase() override;
             void Draw(const Shader& shader) override;
         private:
             GLuint texture_;
-            GLenum texture_unit_;
+            GLint texture_unit_;
             std::string name_;
+            std::string path_;
             int uniform_location_;
             void Setup(const Shader& shader) override;
         };
