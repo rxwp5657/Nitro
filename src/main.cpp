@@ -26,6 +26,8 @@ int main(int argc, char **argv)
     glewExperimental = GL_TRUE;
     glewInit();
 
+    glEnable(GL_DEPTH_TEST);
+
     nitro::graphics::Shader shader{"nitro.vert", "nitro.frag"};
 
     if(shader.Status().status_code != nitro::utils::StatusCode::OK)
@@ -60,10 +62,12 @@ int main(int argc, char **argv)
     nitro::graphics::Mesh mesh{pos,indices,textures};
     */
 
-    nitro::graphics::Model model{"cube/cube.obj"};
+    nitro::graphics::Model model{"monkey/monkey.obj"};
 
     while(!glfwWindowShouldClose(window))
     {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         shader.Use();
 
         model.Draw(shader);

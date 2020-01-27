@@ -71,8 +71,6 @@ namespace nitro
 
         void Texture::Draw(const Shader& shader)
         {
-            std::cout << name_ << "\n";
-            
             shader.SetUniformInt(name_.c_str(),uniform_location_);
             glActiveTexture(texture_unit_);
             glBindTexture(GL_TEXTURE_2D, texture_);
