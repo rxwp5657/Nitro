@@ -11,23 +11,15 @@
 #include <utils.hpp>
 #include <texture.hpp>
 #include <model.hpp>
+#include <context.hpp>
+#include <window.hpp>
+#include <g_manager.hpp>
+#include <drawable.hpp>
 
 int main(int argc, char **argv)
-{  
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_RESIZABLE,  GL_TRUE);
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Nitro", nullptr, nullptr); // Windowed
-    glfwMakeContextCurrent(window);
-    
-    glewExperimental = GL_TRUE;
-    glewInit();
-
-    glEnable(GL_DEPTH_TEST);
-
+{
+    auto context = nitro::graphics::Context::get_instance();
+    nitro::graphics::Window window{800, 600, "Nitro", nitro::graphics::WindowType::WINDOWED, true};
     nitro::graphics::Shader shader{"nitro.vert", "nitro.frag"};
 
     if(shader.Status().status_code != nitro::utils::StatusCode::OK)
@@ -35,47 +27,18 @@ int main(int argc, char **argv)
         std::cout << shader.Status().message << "\n";
     }
 
-    /*
-    nitro::graphics::Vertex v1{clutch::Vec3<float>{0.5f, 0.5f, 0.0},
-                               clutch::Vec3<float>{},
-                               clutch::Vec2<float>{1.0f, 1.0f}};
-    
-    nitro::graphics::Vertex v2{clutch::Vec3<float>{0.5f, -0.5f, 0.0},
-                               clutch::Vec3<float>{},
-                               clutch::Vec2<float>{1.0f, 0.0f}};
-
-    nitro::graphics::Vertex v3{clutch::Vec3<float>{-0.5f, -0.5f, 0.0},
-                               clutch::Vec3<float>{},
-                               clutch::Vec2<float>{0.0f, 0.0f}};
-    
-    nitro::graphics::Vertex v4{clutch::Vec3<float>{-0.5f,  0.5f, 0.0},
-                               clutch::Vec3<float>{},
-                               clutch::Vec2<float>{0.0f, 1.0f}};
-    
-    nitro::graphics::Texture t1{"container.jpg", "../resources/models",   GL_TEXTURE0};
-    nitro::graphics::Texture t2{"awesomeface.png", "../resources/models", GL_TEXTURE1, "normal", 1};
-
-    std::vector<nitro::graphics::Vertex> pos{v1, v2, v3, v4};
-    std::vector<unsigned int> indices{ 0, 1, 3, 1, 2, 3};
-    std::vector<nitro::graphics::Texture> textures{t1,t2};
-
-    nitro::graphics::Mesh mesh{pos,indices,textures};
-    */
+    nitro::graphics::Manager manager{window, shader};
 
     nitro::graphics::Model model{"monkey/monkey.obj"};
+    std::vector<nitro::graphics::Model> actors{model};
 
-    while(!glfwWindowShouldClose(window))
-    {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    while(!glfwWindowShouldClose(manager.get_window()))
+    { 
+        manager.UpdateScene(actors);
 
-        shader.Use();
-
-        model.Draw(shader);
-
-        glfwSwapBuffers(window);
         glfwPollEvents();
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-            glfwSetWindowShouldClose(window, GL_TRUE);
+        if (glfwGetKey(manager.get_window(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(manager.get_window(), GL_TRUE);
     }
 
     glfwTerminate();
