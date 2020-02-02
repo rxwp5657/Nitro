@@ -8,9 +8,11 @@ if(APPLE)
     set(CMAKE_CXX_STANDARD 14)
 endif()
 
+add_compile_definitions(STORAGE_SSE)
+
 #Project headers
 include_directories(include/graphics/)
-include_directories(include/graphics/)
+include_directories(include/core/)
 #Project libraries
 
 file(GLOB SOURCES src/*/*.cpp src/*)

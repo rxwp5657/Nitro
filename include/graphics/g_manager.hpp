@@ -7,6 +7,7 @@
 #include <window.hpp>
 #include <shader.hpp>
 #include <drawable.hpp>
+#include <scene.hpp>
 
 namespace nitro
 {
@@ -18,25 +19,7 @@ namespace nitro
             Manager(const Window& window, const Shader& shader);
             GLFWwindow* get_window() const;
             
-            template <typename Actor>
-            void UpdateScene(std::vector<Actor>& actors)
-            {
-                assert((std::is_base_of<Drawable,Actor>::value));
-
-                active_program_.Use();
-
-                glEnable(GL_DEPTH_TEST);  
-
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-                for(auto& actor : actors)
-                {
-                    //active_program_.SetUniformMat4("model",actor.Transform());
-                    actor.Draw(active_program_);
-                }
-
-                glfwSwapBuffers(window_.get_window_ptr());
-            }
+            void UpdateScene(core::Scene scene);
             
         private:
             std::unique_ptr<Context> context_;
