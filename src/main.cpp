@@ -14,6 +14,7 @@
 #include <window.hpp>
 #include <g_manager.hpp>
 #include <scene.hpp>
+#include <transforms.hpp>
 
 int main(int argc, char **argv)
 {
@@ -38,9 +39,10 @@ int main(int argc, char **argv)
     auto perspective =  clutch::Perspective((45.0f * clutch::PI) / 180, 800.0f / 600.0f, 1.0f, 100.0f);
 
     nitro::core::PointLight light{"monkey/monkey.obj",l_posititon, l_power,20.0f};
-    nitro::core::Actor      model{"monkey/monkey.obj"};
+    nitro::core::Actor      model{"cyborg/cyborg.obj"};
     nitro::core::Camera     camera{posititon, target, up, perspective};
-
+    model.Transform(clutch::Translation(0.0f, -2.5f, 0.0f));
+    light.Transform(clutch::Translation(0.0f, -13.5f, 0.0f));
     std::vector<nitro::core::Actor>      actors{model};
     std::vector<nitro::core::PointLight> lights{light};
 

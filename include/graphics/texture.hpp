@@ -21,9 +21,19 @@ namespace nitro
                     const std::string& name = "albedo",
                     const int uniform_location = 0);
             
+            Texture(const std::string& file_name, 
+                    const std::string& dir,
+                    const std::string& name = "albedo");
+            
             ~Texture();
 
             std::string get_path() const;
+            
+            void TextureUnit(GLint texture_unit, 
+                             int uniform_location,
+                             int texture_number);
+
+            std::string Name();
 
             void Erase() override;
             void Draw(const Shader& shader) override;

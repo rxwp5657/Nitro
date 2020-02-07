@@ -56,9 +56,22 @@ namespace nitro
             if(!loaded_)
                 Setup(shader);
 
-            for(auto& texture : textures_)
+            int diffuse = 1, specular = 1, normal = 1, height = 1;
+
+            for(int i = 0; i <textures_.size(); i++)
             {
-                texture.Draw(shader);
+                int num = 0;
+                if(textures_[i].Name() == "texture_diffuse")
+                    num = diffuse++;
+                else if (textures_[i].Name() == "texture_specular")
+                    num = specular++;
+                else if (textures_[i].Name() == "texture_normal")
+                    num = normal++;
+                else if (textures_[i].Name() == "texture_height")
+                    num = height++;
+
+                textures_[i].TextureUnit(GL_TEXTURE0 + i, i, num);
+                textures_[i].Draw(shader);
             }
 
             glBindVertexArray(vao_);
@@ -68,6 +81,7 @@ namespace nitro
 
             glBindVertexArray(0);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+            glActiveTexture(GL_TEXTURE0);
         }
     }
 }

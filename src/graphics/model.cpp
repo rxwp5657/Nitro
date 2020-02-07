@@ -124,14 +124,10 @@ namespace nitro
                     }
                 }
                 if(!skip)
-                {   
-                    const GLuint index = static_cast<GLuint>(GL_TEXTURE0 + static_cast<unsigned int>(textures_loaded.size()));
-
+                {
                     Texture texture{std::string{str.C_Str()}, 
-                                    "../resources/models/" + directory_, 
-                                    static_cast<GLint>(index),
-                                    type_name + std::to_string(i + 1) ,
-                                    static_cast<int>(textures_loaded.size())};
+                                    "../resources/models/" + directory_,
+                                    type_name,};
                     textures.push_back(texture);
                     textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
                 }

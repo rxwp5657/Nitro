@@ -19,12 +19,11 @@ namespace nitro
         }
 
         void Manager::UpdateScene(core::Scene scene)
-        {
+        {   
             active_program_.Use();
 
-            glEnable(GL_DEPTH_TEST);  
-
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glEnable(GL_DEPTH_TEST);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
 
             scene.SceneCamera().Draw(active_program_);
             
