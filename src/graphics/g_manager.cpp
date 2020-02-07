@@ -21,8 +21,8 @@ namespace nitro
         void Manager::UpdateScene(core::Scene scene)
         {   
             active_program_.Use();
-
-            glEnable(GL_DEPTH_TEST);
+            
+            glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
 
             scene.SceneCamera().Draw(active_program_);
@@ -34,7 +34,6 @@ namespace nitro
 
             for(auto& actor : scene.Actors())
             {
-                //active_program_.SetUniformMat4("model",actor.Transform());
                 actor.Draw(active_program_);
             }
 

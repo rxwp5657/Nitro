@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     nitro::core::Actor      model{"cyborg/cyborg.obj"};
     nitro::core::Camera     camera{posititon, target, up, perspective};
     model.Transform(clutch::Translation(0.0f, -2.5f, 0.0f));
-    light.Transform(clutch::Translation(0.0f, -13.5f, 0.0f));
+    light.Transform(clutch::Translation(0.0f, -10.0f, 0.0f));
     std::vector<nitro::core::Actor>      actors{model};
     std::vector<nitro::core::PointLight> lights{light};
 

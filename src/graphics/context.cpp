@@ -38,6 +38,7 @@ namespace nitro
             {
                 glewExperimental = GL_TRUE;
                 glewInit();
+                glEnable(GL_DEPTH_TEST);
             }
         }
     }

@@ -44,8 +44,8 @@ namespace nitro
             else
             {
                 throw std::runtime_error("Unable to load texture at path: " + path);
-                stbi_image_free(data);
             }
+            stbi_image_free(data);
         }
 
         Texture::Texture(const std::string& file_name, 
@@ -59,7 +59,7 @@ namespace nitro
             glGenTextures(1, &texture_);
 
             int width, height, nr_channels;
-            stbi_set_flip_vertically_on_load(true);
+            stbi_set_flip_vertically_on_load(false);
 
             unsigned char *data = stbi_load(path.c_str(), &width, &height, &nr_channels, 0);
             if (data)
@@ -84,8 +84,8 @@ namespace nitro
             else
             {
                 throw std::runtime_error("Unable to load texture at path: " + path);
-                stbi_image_free(data);
             }
+            stbi_image_free(data);
         }
 
         Texture::~Texture()
