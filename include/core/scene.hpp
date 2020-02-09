@@ -16,10 +16,17 @@ namespace nitro
             Scene(const std::vector<Actor>& actors,
                   const std::vector<PointLight>& lights,
                   const Camera& camera);
+            
+            Scene();
 
             std::vector<Actor> Actors() const;
             std::vector<PointLight> Lights() const;
-            Camera SceneCamera() const;
+            
+            void AddActor(const Actor& actor);
+            void AddLight(const PointLight& light);
+            
+            Camera  SceneCamera() const;
+            Camera* CameraPtr();
 
         private:
             std::vector<Actor> actors_;

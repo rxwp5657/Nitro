@@ -16,13 +16,17 @@ namespace nitro
         class Manager
         {
         public:
-            Manager(const Window& window, const Shader& shader);
-            GLFWwindow* get_window() const;
+            Manager(const Context* context = Context::get_instance(),
+                    const Window& window   = Window{800, 600, "Nitro", nitro::graphics::WindowType::WINDOWED, true}, 
+                    const Shader& shader   = Shader{"nitro.vert", "nitro.frag"});
             
+            ~Manager();
+
+            const Window* get_window() const;
             void UpdateScene(core::Scene scene);
             
         private:
-            std::unique_ptr<Context> context_;
+            std::unique_ptr<const Context> context_;
             Window window_;
             Shader active_program_;
             std::vector<Shader> shaders_;

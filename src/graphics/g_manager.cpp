@@ -4,18 +4,30 @@ namespace nitro
 {
     namespace graphics
     {
-        Manager::Manager(const Window& window, const Shader& shader)
-        : context_{Context::get_instance()},
+        Manager::Manager(const Context* context,
+                         const Window& window, 
+                         const Shader& shader)
+        : context_{context},
           window_{window},
           active_program_{shader},
           shaders_{std::vector<Shader>{shader}}
         {
-            
+            if(active_program_.Status().status_code != nitro::utils::StatusCode::OK)
+            {
+                throw std::runtime_error(active_program_.Status().message);
+            }
         }
 
-        GLFWwindow* Manager::get_window() const
+        Manager::~Manager()
         {
-            return window_.get_window_ptr();
+            window_.Destroy();
+            for(auto& shader : shaders_)
+                shader.Delete();
+        }
+
+        const Window* Manager::get_window() const
+        {
+            return &window_;
         }
 
         void Manager::UpdateScene(core::Scene scene)

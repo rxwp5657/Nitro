@@ -20,6 +20,8 @@ namespace nitro
                        const float max_distance,
                        clutch::Mat4<float> transform = clutch::Mat4<float>{});
             
+            PointLight();
+            
             clutch::Mat4<float> Transform() const;
             void Transform(const clutch::Mat4<float> t);
 

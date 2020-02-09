@@ -5,33 +5,23 @@ namespace nitro
     namespace graphics
     {
         Shader::Shader(const std::string& vertex, 
-                       const std::string& fragment)
+                       const std::string& fragment,
+                       const std::string& geometry)
         {
             int success;
             status_ = utils::StatusInfo{utils::StatusCode::OK, "Shaders Compiled and Linked"};
 
             program_ = glCreateProgram();
 
-            GLuint vertex_sh = CompileShader(vertex, GL_VERTEX_SHADER);
-            glGetShaderiv(vertex_sh, GL_COMPILE_STATUS, &success);
+            GLuint vertex_sh   = AddShader(vertex,   GL_VERTEX_SHADER);
+            GLuint fragment_sh = AddShader(fragment, GL_FRAGMENT_SHADER);
+            GLuint geometry_sh = 0;
 
-            if(!success)
+            if(geometry != "")
             {
-                status_.status_code = utils::StatusCode::BAD_VERTEX_SHADER;
-                glGetShaderInfoLog(vertex_sh, 512, NULL, status_.message);
-            }   
-
-            GLuint fragment_sh = CompileShader(fragment, GL_FRAGMENT_SHADER);
-            glGetShaderiv(fragment_sh, GL_COMPILE_STATUS, &success);
-
-            if(!success)
-            {
-                status_.status_code = utils::StatusCode::BAD_FRAGMENT_SHADER;
-                glGetShaderInfoLog(fragment_sh, 512, NULL, status_.message);
+                geometry_sh = AddShader(geometry, GL_GEOMETRY_SHADER);
             }
 
-            glAttachShader(program_, vertex_sh);
-            glAttachShader(program_, fragment_sh);
             glLinkProgram(program_);
             glGetProgramiv(program_, GL_LINK_STATUS, &success);
 
@@ -43,59 +33,21 @@ namespace nitro
 
             glDeleteShader(vertex_sh);
             glDeleteShader(fragment_sh);
+            
+            if(geometry != "")
+            {
+               glDeleteShader(geometry_sh);
+            }
         }
 
-        Shader::Shader(const std::string& vertex, 
-                           const std::string& fragment,
-                           const std::string& geometry)
+        Shader::~Shader()
         {
-            int success;
-            status_ = utils::StatusInfo{utils::StatusCode::OK, "Shaders Compiled and Linked"};
+            
+        }
 
-            program_ = glCreateProgram();
-
-            GLuint vertex_sh = CompileShader(vertex, GL_VERTEX_SHADER);
-            glGetShaderiv(vertex_sh, GL_COMPILE_STATUS, &success);
-
-            if(!success)
-            {
-                status_.status_code = utils::StatusCode::BAD_VERTEX_SHADER;
-                glGetShaderInfoLog(vertex_sh, 512, NULL, status_.message);
-            }   
-
-            GLuint fragment_sh = CompileShader(fragment, GL_FRAGMENT_SHADER);
-            glGetShaderiv(fragment_sh, GL_COMPILE_STATUS, &success);
-
-            if(!success)
-            {
-                status_.status_code = utils::StatusCode::BAD_FRAGMENT_SHADER;
-                glGetShaderInfoLog(fragment_sh, 512, NULL, status_.message);
-            }
-
-            GLuint geometry_sh = CompileShader(geometry, GL_GEOMETRY_SHADER);
-            glGetShaderiv(geometry_sh, GL_COMPILE_STATUS, &success);
-
-            if(!success)
-            {
-                status_.status_code = utils::StatusCode::BAD_GEOMETRY_SHADER;
-                glGetShaderInfoLog(geometry_sh, 512, NULL, status_.message);
-            } 
-
-            glAttachShader(program_, vertex_sh);
-            glAttachShader(program_, fragment_sh);
-            glAttachShader(program_, geometry_sh);
-            glLinkProgram(program_);
-            glGetProgramiv(program_, GL_LINK_STATUS, &success);
-
-            if(!success) 
-            {
-                status_.status_code = utils::StatusCode::BAD_LINKAGE;
-                glGetShaderInfoLog(program_, 512, NULL, status_.message);
-            }
-
-            glDeleteShader(vertex_sh);
-            glDeleteShader(fragment_sh);
-            glDeleteShader(geometry_sh);
+        void Shader::Delete()
+        {
+            glDeleteProgram(program_);
         }
 
         GLint Shader::PosAttrib(const char *name, 
@@ -211,9 +163,20 @@ namespace nitro
             return shader;
         }
 
-        void Shader::SetTextureUniforms()
+        GLuint Shader::AddShader(const std::string file, const GLint type)
         {
+            int success;
+            GLuint shader = CompileShader(file, type);
+            glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+            
+            if(!success)
+            {
+                status_.status_code = utils::StatusCode::BAD_SHADER;
+                glGetShaderInfoLog(shader, 512, NULL, status_.message);
+            }
 
+            glAttachShader(program_, shader);
+            return shader;
         }
     }
 }

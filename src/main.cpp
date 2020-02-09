@@ -2,59 +2,49 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <mesh.hpp>
-#include <shader.hpp>
-#include <vector>
-#include <vec4.hpp>
-#include <mat4.hpp>
-#include <projections.hpp>
 #include <string>
-#include <model.hpp>
-#include <context.hpp>
-#include <window.hpp>
 #include <g_manager.hpp>
-#include <scene.hpp>
 #include <transforms.hpp>
+#include <controller.hpp>
 
 int main(int argc, char **argv)
 {
-    auto context = nitro::graphics::Context::get_instance();
-    nitro::graphics::Window window{800, 600, "Nitro", nitro::graphics::WindowType::WINDOWED, true};
-    nitro::graphics::Shader shader{"nitro.vert", "nitro.frag"};
-
-    if(shader.Status().status_code != nitro::utils::StatusCode::OK)
-    {
-        std::cout << shader.Status().message << "\n";
-    }
-
-    nitro::graphics::Manager manager{window, shader};
-
-    clutch::Vec4<float> posititon{0.0f, 0.0f, 5.0f, 1.0};
-    clutch::Vec4<float> target{0.0f, 0.0f, -1.0f, 1.0};
-    clutch::Vec4<float> up{0.0f, 1.0f, 0.0f, 0.0};
-
-    clutch::Vec3<float> l_posititon{0.0f,1.5f,0.0};
-    clutch::Vec3<float> l_power{3.0f,3.0f,3.0f};
-
-    auto perspective =  clutch::Perspective((45.0f * clutch::PI) / 180, 800.0f / 600.0f, 1.0f, 100.0f);
-
-    nitro::core::PointLight light{"monkey/monkey.obj",l_posititon, l_power,20.0f};
-    nitro::core::Actor      model{"cyborg/cyborg.obj"};
-    nitro::core::Camera     camera{posititon, target, up, perspective};
-    model.Transform(clutch::Translation(0.0f, -2.5f, 0.0f));
+    nitro::graphics::Manager manager{};
+    
+    nitro::core::PointLight light{};
+    nitro::core::Actor      cyborg{"cyborg/cyborg.obj"};
+    
+    cyborg.Transform(clutch::Translation(0.0f, -2.5f, 0.0f));
     light.Transform(clutch::Translation(0.0f, -10.0f, 0.0f));
-    std::vector<nitro::core::Actor>      actors{model};
-    std::vector<nitro::core::PointLight> lights{light};
+    
+    nitro::core::Scene scene{};
+    nitro::input::Controller controller1{};
 
-    nitro::core::Scene scene{actors,lights,camera};
+    scene.AddActor(cyborg);
+    scene.AddLight(light);
 
-    while(!glfwWindowShouldClose(manager.get_window()))
+    controller1.AddButton(GLFW_KEY_W, scene.CameraPtr(), &nitro::core::Camera::Forward);
+    controller1.AddButton(GLFW_KEY_A, scene.CameraPtr(), &nitro::core::Camera::Left);
+    controller1.AddButton(GLFW_KEY_S, scene.CameraPtr(), &nitro::core::Camera::Backward);
+    controller1.AddButton(GLFW_KEY_D, scene.CameraPtr(), &nitro::core::Camera::Right);
+
+    float current_time = 0.0f;
+    float delta_time   = 0.0f;
+    float last_frame   = 0.0f;
+
+    while(!glfwWindowShouldClose(manager.get_window()->get_window_ptr()))
     { 
+        current_time = glfwGetTime();
+        delta_time =  current_time - last_frame;
+        last_frame = current_time;
+
+        controller1.HandleInput(*manager.get_window(),delta_time);
+
         manager.UpdateScene(scene);
 
-        glfwPollEvents();
-        if (glfwGetKey(manager.get_window(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
-            glfwSetWindowShouldClose(manager.get_window(), GL_TRUE);
+        //glfwPollEvents();
+        if (glfwGetKey(manager.get_window()->get_window_ptr(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(manager.get_window()->get_window_ptr(), GL_TRUE);
     }
 
     glfwTerminate();

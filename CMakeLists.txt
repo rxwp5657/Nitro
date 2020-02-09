@@ -13,6 +13,8 @@ add_compile_definitions(STORAGE_SSE)
 #Project headers
 include_directories(include/graphics/)
 include_directories(include/core/)
+include_directories(include/events/)
+include_directories(include/input/)
 #Project libraries
 
 file(GLOB SOURCES src/*/*.cpp src/*)

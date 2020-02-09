@@ -21,12 +21,13 @@ namespace nitro
         public:
 
             Shader(const std::string& vertex, 
-                   const std::string& fragment);
-            
-            Shader(const std::string& vertex, 
                    const std::string& fragment,
-                   const std::string& geometry);
+                   const std::string& geometry = std::string{""});
+
+            ~Shader();
             
+            void Delete();
+
             GLint PosAttrib(const char *name, 
                             const GLint length,
                             const GLenum type,
@@ -53,7 +54,7 @@ namespace nitro
             GLint GetUniformLocation(const std::string& name) const;
             std::string ShaderSource(const std::string path);
             GLuint CompileShader(const std::string file, const GLint type);
-            void   SetTextureUniforms();
+            GLuint AddShader(const std::string file, const GLint type);
         };
     }
 }

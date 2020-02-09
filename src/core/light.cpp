@@ -18,6 +18,16 @@ namespace nitro
 
       }
 
+      PointLight::PointLight()
+      : model_{"monkey/monkey.obj"},
+        position_{0.0f,1.5f,0.0},
+        color_{3.0f,3.0f,3.0f},
+        max_distance_{20.f},
+        transform_{clutch::Mat4<float>{}}
+      {
+
+      }
+
       void PointLight::Erase()
       {
 

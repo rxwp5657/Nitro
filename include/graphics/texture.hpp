@@ -1,8 +1,6 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <stb_image.h>
 #include <string>
 #include <drawable.hpp>
@@ -15,12 +13,6 @@ namespace nitro
         class Texture : public Drawable
         {
         public:
-            Texture(const std::string& file_name, 
-                    const std::string& dir, 
-                    const GLint texture_unit = GL_TEXTURE0,
-                    const std::string& name = "albedo",
-                    const int uniform_location = 0);
-            
             Texture(const std::string& file_name, 
                     const std::string& dir,
                     const std::string& name = "albedo");

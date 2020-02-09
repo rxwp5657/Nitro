@@ -29,7 +29,58 @@ namespace nitro
             Context::init_glew();
         }
 
+        Window::Window(const Window& other)
+        : width_{other.width_},
+          height_{other.height_},
+          title_{other.title_},
+          type_{other.type_},
+          window_ptr_{other.window_ptr_}
+        {
+
+        }
+
+        Window& Window::operator=(const Window& other)
+        {
+            width_  = other.width_;
+            height_ = other.height_;
+            title_  = other.title_;
+            type_   = other.type_;
+            window_ptr_ = other.window_ptr_;
+            return *this;
+        }
+
+        Window::Window(Window&& other) noexcept
+        : width_{other.width_},
+          height_{other.height_},
+          title_{other.title_},
+          type_{other.type_},
+          window_ptr_{other.window_ptr_}
+        {
+            other.width_  = 0;
+            other.height_ = 0;
+            other.title_  = "";
+            other.window_ptr_ = nullptr; 
+        }
+
+        Window& Window::operator=(Window&& other) noexcept
+        {
+            if(this == &other) return *this;
+            width_  = other.width_;
+            height_ = other.height_;
+            title_  = other.title_;
+            type_   = other.type_;
+            window_ptr_ = other.window_ptr_;
+            other.width_  = 0;
+            other.height_ = 0;
+            other.title_  = "";
+            other.window_ptr_ = nullptr; 
+        }
+
         Window::~Window() noexcept
+        {
+        }
+
+        void Window::Destroy() noexcept
         {
             glfwDestroyWindow(window_ptr_);
         }

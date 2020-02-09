@@ -24,8 +24,16 @@ namespace nitro
                    const std::string& title, 
                    const WindowType type,
                    bool resizable);
+            
+            Window(const Window& other);
+            Window& operator=(const Window& other);
+
+            Window(Window&& other) noexcept;
+            Window& operator=(Window&& other) noexcept;
 
             ~Window() noexcept;
+
+            void Destroy() noexcept;
 
             GLFWwindow* get_window_ptr() const;
             unsigned short get_width()  const;

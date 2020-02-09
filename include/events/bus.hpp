@@ -27,7 +27,7 @@ namespace nitro
                     auto handlers = subscribers_[typeid(EvnT)];
 
                     for(auto& handler : *handlers)
-                        handler->execute(event);
+                        handler->call(event);
                 }
             }
 
@@ -46,12 +46,12 @@ namespace nitro
                     handlers = subscribers_[typeid(EvnT)];
                 }
 
-                auto subscribers_p = std::make_shared<Command<SubT, EvnT>>(subscriber, memberF); 
+                auto subscribers_p = std::make_shared<CommandHandler<SubT, EvnT>>(subscriber, memberF); 
                 handlers->push_back(subscribers_p);
             }
 
         private:
-            typedef std::vector<std::shared_ptr<CommandWrapper>> Handlers;
+            typedef std::vector<std::shared_ptr<Command>> Handlers;
             std::map<std::type_index,std::shared_ptr<Handlers>> subscribers_;
         };
     }

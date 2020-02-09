@@ -12,9 +12,7 @@ namespace nitro
     {
         enum class StatusCode
         {
-            BAD_VERTEX_SHADER,
-            BAD_FRAGMENT_SHADER,
-            BAD_GEOMETRY_SHADER,
+            BAD_SHADER,
             BAD_LINKAGE,
             OK
         };

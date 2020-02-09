@@ -14,6 +14,14 @@ namespace nitro
 
         }
 
+        Scene::Scene()
+        : actors_{},
+          lights_{},
+          camera_{}
+        {
+
+        }
+
         std::vector<Actor> Scene::Actors() const
         {
             return actors_;
@@ -24,9 +32,24 @@ namespace nitro
             return lights_;
         }
 
+        void Scene::AddActor(const Actor& actor)
+        {
+            actors_.push_back(actor);
+        }
+
+        void Scene::AddLight(const PointLight& light)
+        {
+            lights_.push_back(light);
+        }
+
         Camera Scene::SceneCamera() const
         {
             return camera_;
+        }
+
+        Camera* Scene::CameraPtr()
+        {
+            return &camera_;
         }
     }
 }

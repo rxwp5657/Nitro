@@ -1,5 +1,5 @@
-#ifndef SUBSCRIBER_H
-#define SUBSCRIBER_H
+#ifndef COMMAND_H
+#define COMMAND_H
 
 #include <event.hpp>
 #include <memory>
@@ -8,24 +8,19 @@ namespace nitro
 {
     namespace events
     {
-        struct CommandWrapper
+        struct Command
         {
         public:
-            virtual ~CommandWrapper() = default;
-            void execute(Event& event)
-            {
-                call(event);
-            }
-        private:
+            virtual ~Command() = default;
             virtual void call(Event& event) = 0;
         };
 
         template<typename SubT, typename EvnT>
-        class Command : public CommandWrapper
+        class CommandHandler : public Command
         {
         public:
             typedef void (SubT::*memberF)(const EvnT&);
-            Handler(SubT* subscriber, memberF event_function)
+            CommandHandler(SubT* subscriber, memberF event_function)
             : subscriber_{subscriber},
               function_{event_function}
             {}
