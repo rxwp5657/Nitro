@@ -31,6 +31,8 @@ namespace nitro
             void Left(const input::KeyBoardEvent& event);
             void Right(const input::KeyBoardEvent& event);
 
+            void Look(const clutch::Vec4<float> front);
+
             void Erase() override;
             void Setup(const graphics::Shader& shader) override;
             void Draw(const  graphics::Shader& shader) override;

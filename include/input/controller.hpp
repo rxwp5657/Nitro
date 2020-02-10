@@ -5,6 +5,7 @@
 #include <memory>
 #include <initializer_list>
 #include <window.hpp>
+#include <camera.hpp>
 #include <command.hpp>
 #include <keyboard_evnt.hpp>
 
@@ -15,8 +16,9 @@ namespace nitro
         class Controller
         {
         public:
-            Controller();
+            Controller(core::Camera *camera);
             void HandleInput(const graphics::Window& window, float time);
+            void MouseHandler(double xpos, double ypos);
 
             template<typename T, typename F>
             void AddButton(GLenum trigger,T *obj, void (T::*memberF)(const F& function))
@@ -28,7 +30,12 @@ namespace nitro
             }
 
         private:
-            std::map<GLenum, std::shared_ptr<events::Command>> buttons_; 
+            std::map<GLenum, std::shared_ptr<events::Command>> buttons_;
+            core::Camera *camera_;
+            float last_x_pos_;
+            float last_y_pos_;
+            float yaw_;
+            float pitch_; 
         };
     }
 }

@@ -61,15 +61,13 @@ namespace nitro
             position_ -= (left * speed_ * event.time);
         }
 
-        void Camera::Erase()
+        void Camera::Look(const clutch::Vec4<float> front)
         {
-
+            target_ = position_ + front;
         }
 
-        void Camera::Setup(const graphics::Shader& shader)
-        {
-
-        }
+        void Camera::Erase(){}
+        void Camera::Setup(const graphics::Shader& shader){}
 
         void Camera::Draw(const  graphics::Shader& shader)
         {

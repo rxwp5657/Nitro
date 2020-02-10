@@ -34,3 +34,5 @@
 .vscode
 build
 resources/models/
+
+.DS_Store

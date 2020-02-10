@@ -18,7 +18,7 @@ int main(int argc, char **argv)
     light.Transform(clutch::Translation(0.0f, -10.0f, 0.0f));
     
     nitro::core::Scene scene{};
-    nitro::input::Controller controller1{};
+    nitro::input::Controller controller1{scene.CameraPtr()};
 
     scene.AddActor(cyborg);
     scene.AddLight(light);

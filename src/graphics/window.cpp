@@ -25,6 +25,7 @@ namespace nitro
                 window_ptr_ = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
             
             glfwMakeContextCurrent(window_ptr_);
+            glfwSetInputMode(window_ptr_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
             Context::init_glew();
         }

@@ -19,7 +19,7 @@ namespace nitro
       }
 
       PointLight::PointLight()
-      : model_{"monkey/monkey.obj"},
+      : model_{"planet/planet.obj"},
         position_{0.0f,1.5f,0.0},
         color_{3.0f,3.0f,3.0f},
         max_distance_{20.f},

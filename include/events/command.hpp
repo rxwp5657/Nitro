@@ -31,7 +31,7 @@ namespace nitro
             }
 
         private:
-            SubT   *subscriber_;
+            SubT *subscriber_;
             memberF function_;
         };
     }
