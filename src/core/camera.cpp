@@ -49,16 +49,16 @@ namespace nitro
         {
             const auto front = target_ - position_;
             const auto left  = clutch::Normalize(clutch::Cross(front, up_));
-            target_   += (left * speed_ * event.time);
-            position_ += (left * speed_ * event.time);
+            target_   -= (left * speed_ * event.time);
+            position_ -= (left * speed_ * event.time);
         }
 
         void Camera::Right(const input::KeyBoardEvent& event)
         {
             const auto front = target_ - position_;
             const auto left  = clutch::Normalize(clutch::Cross(front, up_));
-            target_   -= (left * speed_ * event.time);
-            position_ -= (left * speed_ * event.time);
+            target_   += (left * speed_ * event.time);
+            position_ += (left * speed_ * event.time);
         }
 
         void Camera::Look(const clutch::Vec4<float> front)
