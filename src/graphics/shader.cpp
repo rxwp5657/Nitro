@@ -113,7 +113,7 @@ namespace nitro
             return location;
         }
 
-        utils::StatusInfo Shader::Status()
+        utils::StatusInfo Shader::Status() const
         {
             return status_;
         }

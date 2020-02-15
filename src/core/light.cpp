@@ -14,7 +14,8 @@ namespace nitro
       max_distance_{max_distance},
       translation_{clutch::Mat4<float>{}},
       rotation_{clutch::Mat4<float>{}},
-      scaling_{clutch::Mat4<float>{}}
+      scaling_{clutch::Mat4<float>{}},
+      shaders_{"light"}
     {
 
     }
@@ -22,11 +23,12 @@ namespace nitro
     PointLight::PointLight()
     : model_{"planet/planet.obj"},
       position_{0.0f,1.5f,0.0},
-      color_{3.0f,3.0f,3.0f},
+      color_{1.0f,1.0f,1.0f},
       max_distance_{20.f},
       translation_{clutch::Mat4<float>{}},
       rotation_{clutch::Mat4<float>{}},
-      scaling_{clutch::Mat4<float>{}}
+      scaling_{clutch::Mat4<float>{}},
+      shaders_{"light"}
     {
 
     }
@@ -68,6 +70,16 @@ namespace nitro
     clutch::Mat4<float> PointLight::Model() const
     {
         return translation_ * (scaling_ * rotation_);
+    }
+
+    void PointLight::AddShader(const std::string& shader_name)
+    {
+      shaders_.push_back(shader_name);
+    }
+
+    std::vector<std::string> PointLight::Shaders() const
+    {
+      return shaders_;
     }
   }
 }

@@ -3,6 +3,8 @@
 
 #include <memory>
 #include <vector>
+#include <map>
+#include <memory>
 #include <context.hpp>
 #include <window.hpp>
 #include <shader.hpp>
@@ -28,8 +30,7 @@ namespace nitro
         private:
             std::unique_ptr<const Context> context_;
             Window window_;
-            Shader active_program_;
-            std::vector<Shader> shaders_;
+            std::map<std::string, Shader> shaders_;
         };
     }
 }

@@ -43,7 +43,7 @@ namespace nitro
             void SetUniformMat3(const std::string& name, const clutch::Mat3<float>& val) const;
             void SetUniformMat4(const std::string& name, const clutch::Mat4<float>& val) const;
             
-            utils::StatusInfo Status();
+            utils::StatusInfo Status() const;
             void Use();
 
         private:

@@ -2,10 +2,11 @@
 #define ACTOR_H
 
 #include <string>
-#include <drawable.hpp>
+#include <vector>
 #include <model.hpp>
 #include <mat4.hpp>
 #include <shader.hpp>
+#include <drawable.hpp>
 #include <transforms.hpp>
 
 namespace nitro
@@ -25,11 +26,15 @@ namespace nitro
             void Setup(const graphics::Shader& shader) override;
             void Draw(const graphics::Shader& shader)  override;
 
-        private:
-            graphics::Model model_;
-            clutch::Mat4<float> translation_;
-            clutch::Mat4<float> rotation_;
-            clutch::Mat4<float> scaling_;
+            void AddShader(const std::string& shader_name);
+            std::vector<std::string> Shaders() const;
+
+        protected:
+            graphics::Model          model_;
+            clutch::Mat4<float>      translation_;
+            clutch::Mat4<float>      rotation_;
+            clutch::Mat4<float>      scaling_;
+            std::vector<std::string> shaders_;
 
             clutch::Mat4<float> Model()     const;
             clutch::Mat4<float> NormalMat() const;

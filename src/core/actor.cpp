@@ -8,7 +8,8 @@ namespace nitro
         : model_{model},
           translation_{clutch::Mat4<float>{}},
           rotation_{clutch::Mat4<float>{}},
-          scaling_{clutch::Mat4<float>{}}
+          scaling_{clutch::Mat4<float>{}},
+          shaders_{"lighting"}
         {  
         }
 
@@ -55,6 +56,16 @@ namespace nitro
         {
             Setup(shader);
             model_.Draw(shader);
+        }
+
+        void Actor::AddShader(const std::string& shader_name)
+        {
+            shaders_.push_back(shader_name);
+        }
+
+        std::vector<std::string> Actor::Shaders() const
+        {
+            return shaders_;
         }
 
     }
