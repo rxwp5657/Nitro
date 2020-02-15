@@ -6,18 +6,33 @@ namespace nitro
     {
         Actor::Actor(const std::string& model)
         : model_{model},
-          transform_{clutch::Mat4<float>{}}
+          translation_{clutch::Mat4<float>{}},
+          rotation_{clutch::Mat4<float>{}},
+          scaling_{clutch::Mat4<float>{}}
         {  
         }
 
-        clutch::Mat4<float> Actor::Transform() const
+        void Actor::Rotate(const clutch::Mat4<float> r)
         {
-            return transform_;
+            rotation_ = r;
         }
-        
-        void Actor::Transform(const clutch::Mat4<float> t)
+
+        void Actor::Scale(const clutch::Mat4<float> s)
         {
-            transform_ = t;
+            scaling_ = s;
+        }
+
+        clutch::Mat4<float> Actor::Model() const
+        {
+            return translation_ * (scaling_ * rotation_);
+        }
+
+        clutch::Mat4<float> Actor::NormalMat() const
+        {
+            if(clutch::IsUniformScale(scaling_))
+                return translation_ * scaling_ * rotation_;
+            
+            return clutch::Transpose(clutch::Inverse(scaling_ * rotation_));
         }
 
         void Actor::Erase()
@@ -25,9 +40,15 @@ namespace nitro
             
         }
 
+        void Actor::Translate(const clutch::Mat4<float> t)
+        {
+            translation_ = t;
+        }
+
         void Actor::Setup(const graphics::Shader& shader)
         {
-            shader.SetUniformMat4("uModel",transform_);
+            shader.SetUniformMat4("uModel",Model());
+            shader.SetUniformMat4("uNormalMat", NormalMat());
         }
 
         void Actor::Draw(const graphics::Shader& shader)

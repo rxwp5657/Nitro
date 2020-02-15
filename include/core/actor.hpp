@@ -6,6 +6,7 @@
 #include <model.hpp>
 #include <mat4.hpp>
 #include <shader.hpp>
+#include <transforms.hpp>
 
 namespace nitro
 {
@@ -16,8 +17,9 @@ namespace nitro
         public:
             Actor(const std::string& model);
 
-            clutch::Mat4<float> Transform() const;
-            void Transform(const clutch::Mat4<float> t);
+            void Rotate(const clutch::Mat4<float> r);
+            void Scale (const clutch::Mat4<float> s);
+            void Translate(const clutch::Mat4<float> t);
             
             void Erase() override;
             void Setup(const graphics::Shader& shader) override;
@@ -25,7 +27,12 @@ namespace nitro
 
         private:
             graphics::Model model_;
-            clutch::Mat4<float> transform_;
+            clutch::Mat4<float> translation_;
+            clutch::Mat4<float> rotation_;
+            clutch::Mat4<float> scaling_;
+
+            clutch::Mat4<float> Model()     const;
+            clutch::Mat4<float> NormalMat() const;
         };
     }
 }

@@ -6,6 +6,7 @@
 #include <model.hpp>
 #include <shader.hpp>
 #include <drawable.hpp>
+#include <transforms.hpp>
 
 namespace nitro
 {
@@ -17,13 +18,13 @@ namespace nitro
             PointLight(const std::string& model,
                        const clutch::Vec3<float>& position, 
                        const clutch::Vec3<float>& color,
-                       const float max_distance,
-                       clutch::Mat4<float> transform = clutch::Mat4<float>{});
+                       const float max_distance);
             
             PointLight();
-            
-            clutch::Mat4<float> Transform() const;
-            void Transform(const clutch::Mat4<float> t);
+
+            void Rotate(const clutch::Mat4<float> t);
+            void Scale (const clutch::Mat4<float> t);
+            void Translate(const clutch::Mat4<float> t);
 
             void Erase() override;
             void Setup(const graphics::Shader& shader) override;
@@ -34,7 +35,11 @@ namespace nitro
             clutch::Vec3<float> position_;
             clutch::Vec3<float> color_;
             float max_distance_;
-            clutch::Mat4<float> transform_;
+            clutch::Mat4<float> translation_;
+            clutch::Mat4<float> rotation_;
+            clutch::Mat4<float> scaling_;
+
+            clutch::Mat4<float> Model() const;
         };
     }
 }

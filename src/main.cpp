@@ -14,8 +14,8 @@ int main(int argc, char **argv)
     nitro::core::PointLight light{};
     nitro::core::Actor      cyborg{"cyborg/cyborg.obj"};
     
-    cyborg.Transform(clutch::Translation(0.0f, -2.5f, 0.0f));
-    light.Transform(clutch::Translation(0.0f, -10.0f, 0.0f));
+    cyborg.Translate(clutch::Translation(0.0f, -2.5f, 0.0f));
+    light.Translate(clutch::Translation(0.0f, -10.0f, 0.0f));
     
     nitro::core::Scene scene{};
     nitro::input::Controller controller1{scene.CameraPtr()};
