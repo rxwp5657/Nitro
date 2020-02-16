@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <initializer_list>
 #include <model.hpp>
 #include <mat4.hpp>
 #include <shader.hpp>
@@ -16,7 +17,8 @@ namespace nitro
         class Actor : public graphics::Drawable
         {
         public:
-            Actor(const std::string& model);
+            Actor(const std::string& model,
+                  std::initializer_list<std::string> shaders = {"lighting"});
 
             void Rotate(const clutch::Mat4<float> r);
             void Scale (const clutch::Mat4<float> s);

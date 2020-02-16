@@ -2,6 +2,7 @@
 #define SCENE_H
 
 #include <vector>
+#include <memory>
 #include <actor.hpp>
 #include <camera.hpp>
 #include <light.hpp>
@@ -13,24 +14,19 @@ namespace nitro
         class Scene
         {
         public:
-            Scene(const std::vector<Actor>& actors,
-                  const std::vector<PointLight>& lights,
+            Scene(const std::vector<std::shared_ptr<Actor>> actors,
                   const Camera& camera);
             
             Scene();
 
-            std::vector<Actor> Actors() const;
-            std::vector<PointLight> Lights() const;
-            
-            void AddActor(const Actor& actor);
-            void AddLight(const PointLight& light);
+            std::vector<std::shared_ptr<Actor>> Actors() const;            
+            void AddActor(const std::shared_ptr<Actor> actor);
             
             Camera  SceneCamera() const;
             Camera* CameraPtr();
 
         private:
-            std::vector<Actor> actors_;
-            std::vector<PointLight> lights_;
+            std::vector<std::shared_ptr<Actor>> actors_;
             Camera camera_;
         };
     }

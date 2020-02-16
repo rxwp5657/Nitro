@@ -11,17 +11,20 @@ int main(int argc, char **argv)
 {
     nitro::graphics::Manager manager{};
     
-    nitro::core::PointLight light{};
-    nitro::core::Actor      cyborg{"cyborg/cyborg.obj"};
+    //nitro::core::PointLight light{};
+    //nitro::core::Actor      cyborg{"cyborg/cyborg.obj"};
     
-    cyborg.Translate(clutch::Translation(0.0f, -2.5f, 0.0f));
-    light.Translate(clutch::Translation(0.0f, -10.0f, 0.0f));
+    std::shared_ptr<nitro::core::Actor> cyborg{new nitro::core::Actor{"cyborg/cyborg.obj"}};
+    std::shared_ptr<nitro::core::Actor> light{new nitro::core::PointLight{}};
+
+    cyborg->Translate(clutch::Translation(0.0f, -2.5f, 0.0f));
+    light->Translate(clutch::Translation(0.0f, -10.0f, 0.0f));
     
     nitro::core::Scene scene{};
     nitro::input::Controller controller1{scene.CameraPtr()};
 
     scene.AddActor(cyborg);
-    scene.AddLight(light);
+    scene.AddActor(light);
 
     controller1.AddButton(GLFW_KEY_W, scene.CameraPtr(), &nitro::core::Camera::Forward);
     controller1.AddButton(GLFW_KEY_A, scene.CameraPtr(), &nitro::core::Camera::Left);

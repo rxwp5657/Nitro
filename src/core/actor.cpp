@@ -4,12 +4,13 @@ namespace nitro
 {
     namespace core
     {
-        Actor::Actor(const std::string& model)
+        Actor::Actor(const std::string& model,
+                     std::initializer_list<std::string> shaders)
         : model_{model},
           translation_{clutch::Mat4<float>{}},
           rotation_{clutch::Mat4<float>{}},
           scaling_{clutch::Mat4<float>{}},
-          shaders_{"lighting"}
+          shaders_{shaders}
         {  
         }
 

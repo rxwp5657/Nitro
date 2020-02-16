@@ -37,24 +37,9 @@ namespace nitro
             glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
             
-            for(auto& ligh : scene.Lights())
-            {
-                for(const auto& shader_name : ligh.Shaders())
-                {
-                    if(shaders_.find(shader_name) != shaders_.end())
-                    {
-                        auto shader = shaders_.at(shader_name);
-
-                        shader.Use();
-                        scene.SceneCamera().Draw(shader);
-                        ligh.Draw(shader);
-                    }
-                }
-            }
-
             for(auto& actor : scene.Actors())
             {
-                for(const auto& shader_name : actor.Shaders())
+                for(const auto& shader_name : actor->Shaders())
                 {
                     if(shaders_.find(shader_name) != shaders_.end())
                     {
@@ -62,7 +47,7 @@ namespace nitro
 
                         shader.Use();
                         scene.SceneCamera().Draw(shader);
-                        actor.Draw(shader);
+                        actor->Draw(shader);
                     }
                 }
             }
