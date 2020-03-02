@@ -6,6 +6,7 @@
 #include <g_manager.hpp>
 #include <transforms.hpp>
 #include <controller.hpp>
+#include <math.h>
 
 int main(int argc, char **argv)
 {
@@ -14,8 +15,7 @@ int main(int argc, char **argv)
     std::shared_ptr<nitro::core::PointLight> light{new nitro::core::PointLight{}};
 
     cyborg->Translate(clutch::Translation(0.0f, -2.5f, 0.0f));
-    
-    std::cout << sizeof(nitro::core::PointLight) << "\n";
+    light->Move(clutch::Translation(0.0f, 4.0f, 0.0f));
 
     nitro::core::Scene scene{};
     nitro::input::Controller controller1{scene.CameraPtr()};
@@ -39,7 +39,7 @@ int main(int argc, char **argv)
         last_frame = current_time;
 
         controller1.HandleInput(*manager.get_window(),delta_time);
-
+        
         manager.UpdateScene(scene);
 
         //glfwPollEvents();

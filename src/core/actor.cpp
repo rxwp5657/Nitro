@@ -30,11 +30,8 @@ namespace nitro
         }
 
         clutch::Mat4<float> Actor::NormalMat() const
-        {
-            if(clutch::IsUniformScale(scaling_))
-                return translation_ * scaling_ * rotation_;
-            
-            return clutch::Transpose(clutch::Inverse(scaling_ * rotation_));
+        {   
+            return clutch::Transpose(clutch::Inverse(translation_ * scaling_ * rotation_));
         }
 
         void Actor::Erase()

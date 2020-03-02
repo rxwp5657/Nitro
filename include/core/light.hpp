@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <vec3.hpp>
+#include <mat4.hpp>
 #include <model.hpp>
 #include <drawable.hpp>
 #include <shader.hpp>
@@ -21,6 +22,8 @@ namespace nitro
                        const float max_distance);
             
             PointLight();
+
+            void Move(const clutch::Mat4<float>& transform);
 
         private:
             clutch::Vec4<float> position_;
