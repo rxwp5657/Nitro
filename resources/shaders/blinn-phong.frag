@@ -1,13 +1,8 @@
 #version 410 core
 
-in VS_OUT
-{
-    vec2 TextCoord;
-    vec3 FragPos;
-    vec3 TangentFragPos;
-    vec3 ViewPos;
-    vec3 LightPos;
-} fs_in;
+in vec2 fTexCoord;
+in vec3 Normal;
+in vec3 FragPos;
 
 out vec4 outColor;
 
@@ -20,7 +15,7 @@ struct PointLight
 
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
-uniform sampler2D texture_normal1;
+uniform vec4 view_pos; 
 
 layout(std140) uniform Lights {
    PointLight lights[1];
@@ -35,16 +30,16 @@ void main()
 {
     PointLight light = lights[0];
     
-    vec3  d = vec3(light.position) - fs_in.FragPos;
+    vec3  d = vec3(light.position) - FragPos;
     float r = sqrt(dot(d,d));
 
     vec3 light_color    = vec3(light.color) * attenuation(r, light.range);
-    vec3 diffuse_color  = texture(texture_diffuse1,  fs_in.TextCoord).rgb;
-    vec3 specular_color = texture(texture_specular1, fs_in.TextCoord).rgb;
+    vec3 diffuse_color  = texture(texture_diffuse1,  fTexCoord).rgb;
+    vec3 specular_color = texture(texture_specular1, fTexCoord).rgb;
     
-    vec3 N = normalize(texture(texture_normal1, fs_in.TextCoord).rgb * 2.0 - 1.0);;
-    vec3 V = normalize(fs_in.ViewPos  - fs_in.TangentFragPos);
-    vec3 L = normalize(fs_in.LightPos - fs_in.TangentFragPos);
+    vec3 N = normalize(Normal);
+    vec3 V = normalize(vec3(view_pos)  - FragPos);
+    vec3 L = d / r;
     vec3 H = normalize(L + V);
 
     vec3 diffuse  = light_color * diffuse_color  * max(dot(L,N), 0.0);
