@@ -46,6 +46,7 @@ namespace nitro
                         auto shader = shaders_.at(shader_name);
 
                         shader.Use();
+                        scene.LoadLights();
                         scene.SceneCamera().Draw(shader);
                         actor->Draw(shader);
                     }

@@ -73,6 +73,7 @@ namespace nitro
         {
             shader.SetUniformMat4("uView", ViewTransform());
             shader.SetUniformMat4("uProj", projection_);
+            shader.SetUniform4f("view_pos", position_);
         }
     }
 }

@@ -42,7 +42,8 @@ namespace nitro
             void SetUniformMat2(const std::string& name, const clutch::Mat2<float>& val) const;
             void SetUniformMat3(const std::string& name, const clutch::Mat3<float>& val) const;
             void SetUniformMat4(const std::string& name, const clutch::Mat4<float>& val) const;
-            
+            void SetUniformBlock(const std::string& name, int index) const;
+
             utils::StatusInfo Status() const;
             void Use();
 

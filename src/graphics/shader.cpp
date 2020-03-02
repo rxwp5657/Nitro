@@ -38,6 +38,8 @@ namespace nitro
             {
                glDeleteShader(geometry_sh);
             }
+
+            SetUniformBlock("Lights", 1);
         }
 
         Shader::~Shader()
@@ -100,6 +102,12 @@ namespace nitro
         void Shader::SetUniformMat4(const std::string& name, const clutch::Mat4<float>& val) const
         {
             glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, clutch::ValuePtr(val));
+        }
+
+        void Shader::SetUniformBlock(const std::string& name, int index) const
+        {
+            unsigned int block_index = glGetUniformBlockIndex(program_, name.c_str());
+            glUniformBlockBinding(program_, block_index, index);
         }
 
         GLint Shader::GetUniformLocation(const std::string& name) const
