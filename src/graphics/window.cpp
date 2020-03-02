@@ -75,6 +75,8 @@ namespace nitro
             other.height_ = 0;
             other.title_  = "";
             other.window_ptr_ = nullptr; 
+
+            return *this;
         }
 
         Window::~Window() noexcept

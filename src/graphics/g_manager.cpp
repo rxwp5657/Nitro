@@ -9,7 +9,7 @@ namespace nitro
                          const Shader& shader)
         : context_{context},
           window_{window},
-          shaders_{{"lighting", shader}, {"light", Shader{"light.vert","light.frag"}}}
+          shaders_{{"lighting", shader}}
         {
             for(const auto& shader: shaders_)
             {   

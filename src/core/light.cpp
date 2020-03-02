@@ -15,7 +15,7 @@ namespace nitro
 
     PointLight::PointLight()
     : position_{0.0f, 0.0f, 0.0f, 1.0f},
-      color_{0.0f, 0.0f, 1.0f, 1.0f},
+      color_{1.0f, 1.0f, 1.0f, 1.0f},
       max_distance_{20.f}
     {
 
