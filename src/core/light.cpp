@@ -24,7 +24,7 @@ namespace nitro
 
         void PointLight::Move(const clutch::Mat4<float>& transform)
         {
-            position_ = transform * position_;
+          position_ = transform * position_;
         }
     }
 }
