@@ -11,7 +11,7 @@
 int main(int argc, char **argv)
 {
     nitro::graphics::Manager manager{};
-    std::shared_ptr<nitro::core::Actor>      cylinder{new nitro::core::Actor{"cylinder/cylinder.obj"}};
+    std::shared_ptr<nitro::core::Actor>      cylinder{new nitro::core::Actor{"cylinder2/cylinder.obj"}};
     std::shared_ptr<nitro::core::PointLight> light{new nitro::core::PointLight{}};
 
     cylinder->Translate(clutch::Translation(0.0f, 0.0f, 0.0f));
@@ -41,7 +41,7 @@ int main(int argc, char **argv)
         controller1.HandleInput(*manager.get_window(),delta_time);
         
         manager.UpdateScene(scene);
-
+        
         //glfwPollEvents();
         if (glfwGetKey(manager.get_window()->get_window_ptr(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(manager.get_window()->get_window_ptr(), GL_TRUE);

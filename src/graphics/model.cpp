@@ -23,6 +23,7 @@ namespace nitro
             std::string path = "../resources/models/" + name;
             
             Assimp::Importer importer;
+
             const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
             if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) 
@@ -87,18 +88,18 @@ namespace nitro
             aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex]; 
 
             // 1. diffuse maps
-            std::vector<Texture> diffuseMaps = LoadTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", textures_loaded);
-            textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+            std::vector<Texture> diffuse_maps = LoadTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", textures_loaded);
+            textures.insert(textures.end(), diffuse_maps.begin(), diffuse_maps.end());
             // 2. specular maps
-            std::vector<Texture> specularMaps = LoadTextures(material, aiTextureType_SPECULAR, "texture_specular", textures_loaded);
-            textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+            std::vector<Texture> specular_maps = LoadTextures(material, aiTextureType_SPECULAR, "texture_specular", textures_loaded);
+            textures.insert(textures.end(), specular_maps.begin(), specular_maps.end());
             // 3. normal maps
-            std::vector<Texture> normalMaps = LoadTextures(material, aiTextureType_HEIGHT, "texture_normal", textures_loaded);
-            textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+            std::vector<Texture> normal_maps = LoadTextures(material, aiTextureType_HEIGHT, "texture_normal", textures_loaded);
+            textures.insert(textures.end(), normal_maps.begin(), normal_maps.end());
             // 4. height maps
-            std::vector<Texture> heightMaps = LoadTextures(material, aiTextureType_AMBIENT, "texture_height", textures_loaded);
-            textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
-            
+            std::vector<Texture> height_maps = LoadTextures(material, aiTextureType_DISPLACEMENT, "texture_height", textures_loaded);
+            textures.insert(textures.end(), height_maps.begin(), height_maps.end());
+
             // return a mesh object created from the extracted mesh data
             return Mesh{vertices, indices, textures};
         }
@@ -128,7 +129,7 @@ namespace nitro
                 {
                     Texture texture{std::string{str.C_Str()}, 
                                     "../resources/models/" + directory_,
-                                    type_name,};
+                                    type_name};
                     textures.push_back(texture);
                     textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
                 }

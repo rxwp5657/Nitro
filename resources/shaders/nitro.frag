@@ -21,6 +21,7 @@ struct PointLight
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
 uniform sampler2D texture_normal1;
+uniform sampler2D texture_height1;
 
 layout(std140) uniform Lights {
    PointLight lights[1];
@@ -31,6 +32,13 @@ float attenuation(float r, float range)
     return pow(max(1 - pow(r / range, 4), 0.0), 2);
 }
 
+vec2 ParalaxMapping(vec2 text_coords, vec3 view_dir)
+{
+    float height =  texture(texture_height1, text_coords).r;    
+    vec2 p = view_dir.xy / view_dir.z * (height * 0.1);
+    return text_coords - p;    
+}   
+
 void main()
 {
     PointLight light = lights[0];
@@ -38,12 +46,14 @@ void main()
     vec3  d = vec3(light.position) - fs_in.FragPos;
     float r = sqrt(dot(d,d));
 
-    vec3 light_color    = vec3(light.color) * attenuation(r, light.range);
-    vec3 diffuse_color  = texture(texture_diffuse1,  fs_in.TextCoord).rgb;
-    vec3 specular_color = texture(texture_specular1, fs_in.TextCoord).rgb;
-    
-    vec3 N = normalize(texture(texture_normal1, fs_in.TextCoord).rgb * 2.0 - 1.0);;
     vec3 V = normalize(fs_in.ViewPos  - fs_in.TangentFragPos);
+    vec2 text_coords = ParalaxMapping(fs_in.TextCoord, V);
+
+    vec3 light_color    = vec3(light.color) * attenuation(r, light.range);
+    vec3 diffuse_color  = texture(texture_diffuse1,  text_coords).rgb;
+    vec3 specular_color = texture(texture_specular1, text_coords).rgb;
+    
+    vec3 N = normalize(texture(texture_normal1, text_coords).rgb * 2.0 - 1.0);;
     vec3 L = normalize(fs_in.LightPos - fs_in.TangentFragPos);
     vec3 H = normalize(L + V);
 
