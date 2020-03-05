@@ -31,6 +31,8 @@ namespace nitro
                  const std::vector<unsigned int>& indices,
                  const std::vector<Texture>& textures);
 
+            void FlipUV();
+
             void Erase() override;
             void Setup(const Shader& shader) override;
             void Draw(const Shader& shader) override;

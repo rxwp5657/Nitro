@@ -24,6 +24,9 @@ namespace nitro
 
             Model(const std::string& name);
             Model(const std::vector<Mesh>& meshes);
+
+            void FlipUV();
+
             void Draw(const Shader& shader) override;
             void Erase() override;
 

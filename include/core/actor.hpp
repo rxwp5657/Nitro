@@ -24,6 +24,8 @@ namespace nitro
             void Scale (const clutch::Mat4<float> s);
             void Translate(const clutch::Mat4<float> t);
             
+            void FlipUV();
+
             void Erase() override;
             void Setup(const graphics::Shader& shader) override;
             void Draw(const graphics::Shader& shader)  override;

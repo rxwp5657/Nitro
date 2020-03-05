@@ -51,6 +51,12 @@ namespace nitro
             loaded_ = true;
         }
 
+        void Mesh::FlipUV()
+        {
+            for(int i = 0; i < vertices_.size(); i++)
+                vertices_[i].tex_coord.y = 1.0f - vertices_[i].tex_coord.y;
+        }
+
         void Mesh::Draw(const Shader& shader)
         {
             if(!loaded_)

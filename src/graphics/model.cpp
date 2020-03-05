@@ -137,6 +137,12 @@ namespace nitro
             return textures;
         }
 
+        void Model::FlipUV()
+        {
+            for(auto& mesh : meshes_)
+                mesh.FlipUV();
+        }
+
         void Model::Draw(const Shader& shader)
         {
             for(auto& mesh : meshes_)

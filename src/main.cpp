@@ -17,6 +17,8 @@ int main(int argc, char **argv)
     cylinder->Translate(clutch::Translation(0.0f, 0.0f, 0.0f));
     light->Move(clutch::Translation(0.0f, 1.0f, 1.5f));
 
+    cylinder->FlipUV();
+
     nitro::core::Scene scene{};
     nitro::input::Controller controller1{scene.CameraPtr()};
 

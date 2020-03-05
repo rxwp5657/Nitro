@@ -24,6 +24,16 @@ namespace nitro
             scaling_ = s;
         }
 
+        void Actor::Translate(const clutch::Mat4<float> t)
+        {
+            translation_ = t;
+        }
+
+        void Actor::FlipUV()
+        {
+            model_.FlipUV();
+        }
+
         clutch::Mat4<float> Actor::Model() const
         {
             return translation_ * (scaling_ * rotation_);
@@ -37,11 +47,6 @@ namespace nitro
         void Actor::Erase()
         {
             
-        }
-
-        void Actor::Translate(const clutch::Mat4<float> t)
-        {
-            translation_ = t;
         }
 
         void Actor::Setup(const graphics::Shader& shader)
