@@ -22,6 +22,11 @@ namespace nitro
 
         }
 
+        void PointLight::Range(float range)
+        {
+          max_distance_ = range;
+        }
+
         void PointLight::Move(const clutch::Mat4<float>& transform)
         {
           position_ = transform * position_;

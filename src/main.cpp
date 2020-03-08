@@ -41,7 +41,6 @@ int main(int argc, char **argv)
         last_frame = current_time;
 
         controller1.HandleInput(*manager.get_window(),delta_time);
-        
         manager.UpdateScene(scene);
         
         //glfwPollEvents();

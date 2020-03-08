@@ -20,9 +20,9 @@ namespace nitro
             PointLight(const clutch::Vec4<float>& position, 
                        const clutch::Vec4<float>& color,
                        const float max_distance);
-            
             PointLight();
 
+            void Range(float range);
             void Move(const clutch::Mat4<float>& transform);
 
         private:
