@@ -39,7 +39,8 @@ namespace nitro
                glDeleteShader(geometry_sh);
             }
 
-            SetUniformBlock("Lights", 1);
+            SetUniformBlock("Lights",     1);
+            SetUniformBlock("Num_Lights", 2);
         }
 
         Shader::~Shader()
