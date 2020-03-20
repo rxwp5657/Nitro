@@ -17,7 +17,7 @@ namespace nitro
         PointLight::PointLight()
         : position_{0.0f, 0.0f, 0.0f, 1.0f},
           color_{1.0f, 1.0f, 1.0f, 1.0f},
-          max_distance_{20.f}
+          max_distance_{5.0f}
         {
 
         }
@@ -33,12 +33,13 @@ namespace nitro
         }
 
         SpotLight::SpotLight()
-        : position_{0.0f,0.0f,0.0f,1.0f},
-          direction_{0.0f,0.0f,1.0f,0.0f},
+        : position_{0.0f, 0.0f, 0.0f, 1.0f},
+          direction_{0.0f,0.0f,-1.0f,0.0f},
           color_{1.0f,1.0f,1.0f,1.0f},
-          max_distance_{0.5f},
-          umbra_{cos((clutch::PI * 17.5f) / 180.0f)},
-          penumbra_{cos((clutch::PI * 12.5f) / 180.0f)}
+          cutoff_{cos((clutch::PI * 90.0f) / 180.0f)},
+          max_distance_{5.0f},
+          umbra_{cos((clutch::PI * 40.5f) / 180.0f)},
+          penumbra_{cos((clutch::PI * 10.5f) / 180.0f)}
         {
 
         }
@@ -46,11 +47,14 @@ namespace nitro
         SpotLight::SpotLight(clutch::Vec4<float> position,
                              clutch::Vec4<float> direction,
                              clutch::Vec4<float> color,
+                             float cutoff,
                              float max_distance,
                              float umbra,
                              float penumbra)
         : position_{position},
           direction_{direction},
+          color_{color},
+          cutoff_{cutoff},
           max_distance_{max_distance},
           umbra_{umbra},
           penumbra_{penumbra}
@@ -79,7 +83,10 @@ namespace nitro
         }
 
         DirectionalLight::DirectionalLight()
-        : direction_{0.0f,0.0f,1.0f,0.0f},
+          // Directions (vectors) actually have w = 0. However, if we want to translate
+          // the light using a matrix tranform we need to set the w component
+          // to w = 1 otherwise, the translation won't have any effect; 
+        : direction_{0.0f,0.0f,0.0f,1.0f},
           color_{1.0f,1.0f,1.0f,1.0f}
         {
 

@@ -4,17 +4,6 @@ const int POINT_LIGHTS = 2;
 const int SPOT_LIGHTS  = 2;
 const int DIRECTIONAL_LIGHTS = 2;
 
-in VS_OUT
-{
-    vec2 TextCoord;
-    vec3 FragPos;
-    vec3 TangentFragPos;
-    vec3 ViewPos;
-    vec3 LightPos;
-} fs_in;
-
-out vec4 outColor;
-
 struct PointLight
 {
     vec4  position;
@@ -27,6 +16,7 @@ struct SpotLight
     vec4  position;
     vec4  direction;
     vec4  color;
+    float cutoff;
     float range;
     float umbra;
     float penumbra;
@@ -38,10 +28,18 @@ struct DirectionalLight
     vec4 color;
 };
 
+in VS_OUT
+{
+    vec3 FragPos;
+    vec3 Normal;
+    vec2 TextCoord;
+} fs_in;
+
+out vec4 FragColor;
+
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
-uniform sampler2D texture_normal1;
-uniform sampler2D texture_height1;
+uniform vec4 viewPos;
 
 layout(std140) uniform Num_Lights 
 {
@@ -57,32 +55,69 @@ layout(std140) uniform Lights
    DirectionalLight dir_lights[DIRECTIONAL_LIGHTS];
 };
 
-float attenuation(float r, float range)
+// Distance attenuation/falloff
+float fdist(float r, float range)
 {
     return pow(max(1 - pow(r / range, 4), 0.0), 2);
 }
 
+// Direactional attenuation/falloff
+float fdir(SpotLight spot_light, vec3 L)
+{
+    float s = dot(normalize(spot_light.direction.xyz), -L);
+    float u = spot_light.umbra;
+    float p = spot_light.penumbra;
+    float t = clamp((s - u) / (p - u) , 0.0, 1.0);
+    return pow(t,2);
+}
+
+
+vec4 blinn(vec3 FragPos, vec3 Normal, vec3 View, vec3 L, vec3 light_color)
+{
+    vec3 surface_color = texture(texture_diffuse1,  fs_in.TextCoord).rgb;
+    vec3 surface_spec  = texture(texture_specular1, fs_in.TextCoord).rgb;
+
+    vec3 N = normalize(Normal);
+    vec3 V = normalize(View - FragPos);
+    vec3 R = reflect(-L, N);
+
+    vec3 ambient  = 0.1 * surface_color;
+    vec3 diffuse  = surface_color * light_color * max(0.0, dot(N,L));
+    vec3 specular = surface_spec  * light_color * pow(max(0.0, dot(R, V)), 50) * 0.9;
+
+    return vec4(ambient + diffuse + specular,1.0);
+}
+
 void main()
 {
-    PointLight light = point_lights[0];
-    
-    vec3  d = vec3(light.position) - fs_in.FragPos;
-    float r = sqrt(dot(d,d));
+    vec4 result_color = vec4(0.0);
 
-    vec3 V = normalize(fs_in.ViewPos  - fs_in.TangentFragPos);
-    vec2 text_coords = fs_in.TextCoord;
+    for(int i = 0; i < num_point; i++)
+    {
+        PointLight light = point_lights[i];
+        vec3  d = vec3(light.position) - fs_in.FragPos;
+        float r = sqrt(dot(d,d)); 
 
-    vec3 light_color    = vec3(light.color) * attenuation(r, light.range);
-    vec3 diffuse_color  = texture(texture_diffuse1,  text_coords).rgb;
-    vec3 specular_color = texture(texture_specular1, text_coords).rgb;
-    
-    vec3 N = normalize(texture(texture_normal1, text_coords).rgb * 2.0 - 1.0);;
-    vec3 L = normalize(fs_in.LightPos - fs_in.TangentFragPos);
-    vec3 H = normalize(L + V);
+        vec3 light_color   = vec3(light.color) * fdist(r, light.range);
 
-    vec3 diffuse  = light_color * diffuse_color  * max(dot(L,N), 0.0);
-    vec3 specular = light_color * specular_color * pow(max(dot(V, H), 0.0), 50.0);
-    vec3 ambient  = 0.1 * diffuse_color;
+        result_color += blinn(fs_in.FragPos, fs_in.Normal, viewPos.xyz, d / r, light_color);
+    }
+
+    for(int i = 0; i < num_spot; i++)
+    {
+        SpotLight light = spot_lights[i];
+        vec3  d = vec3(light.position) - fs_in.FragPos;
+        float r = sqrt(dot(d,d)); 
+
+        vec3 light_color   = vec3(light.color) * fdist(r, light.range) * fdir(light, d / r);
+        result_color += blinn(fs_in.FragPos, fs_in.Normal, viewPos.xyz, d / r, light_color);
+    }
     
-    outColor = vec4(light.color);
+    for(int i = 0; i < num_dir; i++)
+    {
+        DirectionalLight light = dir_lights[i];
+        result_color += blinn(fs_in.FragPos, fs_in.Normal, viewPos.xyz, normalize(-light.direction.xyz), vec3(light.color));
+    }
+
+    FragColor = result_color;
 }
