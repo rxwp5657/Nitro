@@ -19,6 +19,9 @@ namespace nitro
         public:
             Actor(const std::string& model,
                   std::initializer_list<std::string> shaders = {"lighting"});
+            
+            Actor(const graphics::Model& model,
+                  std::initializer_list<std::string> shaders = {"lighting"});
 
             void Rotate(const clutch::Mat4<float> r);
             void Scale (const clutch::Mat4<float> s);

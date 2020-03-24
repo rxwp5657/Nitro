@@ -14,6 +14,16 @@ namespace nitro
         {  
         }
 
+        Actor::Actor(const graphics::Model& model,
+                     std::initializer_list<std::string> shaders)
+        : model_{model},
+          translation_{clutch::Mat4<float>{}},
+          rotation_{clutch::Mat4<float>{}},
+          scaling_{clutch::Mat4<float>{}},
+          shaders_{shaders}
+        {  
+        }
+
         void Actor::Rotate(const clutch::Mat4<float> r)
         {
             rotation_ = r;

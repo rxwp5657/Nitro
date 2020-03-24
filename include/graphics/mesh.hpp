@@ -10,6 +10,7 @@
 #include <shader.hpp>
 #include <drawable.hpp>
 #include <texture.hpp>
+#include <material.hpp>
 
 namespace nitro
 {
@@ -29,7 +30,8 @@ namespace nitro
         public:
             Mesh(const std::vector<Vertex>& vertices, 
                  const std::vector<unsigned int>& indices,
-                 const std::vector<Texture>& textures);
+                 const std::vector<Texture>& textures, 
+                 const Material& materials);
 
             void FlipUV();
 
@@ -41,10 +43,14 @@ namespace nitro
             std::vector<Vertex>       vertices_;
             std::vector<unsigned int> indices_;
             std::vector<Texture>  textures_;
+            Material material_;
             GLuint vbo_;
             GLuint vao_;
             GLuint elementbuffer_;
             bool loaded_;
+
+            void LoadTextures(const  Shader& shader);
+            void LoadMaterials(const Shader& shader);
         };
     }
 }

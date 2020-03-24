@@ -6,10 +6,12 @@ namespace nitro
     {
         Mesh::Mesh(const std::vector<Vertex>& vertices, 
                    const std::vector<unsigned int>& indices,
-                   const std::vector<Texture>&  textures)
+                   const std::vector<Texture>&  textures,
+                   const Material& material)
         : vertices_{vertices},
           indices_{indices},
           textures_{textures},
+          material_{material},
           loaded_{false}
         {
         
@@ -57,14 +59,11 @@ namespace nitro
                 vertices_[i].tex_coord.y = 1.0f - vertices_[i].tex_coord.y;
         }
 
-        void Mesh::Draw(const Shader& shader)
+        void Mesh::LoadTextures(const Shader& shader)
         {
-            if(!loaded_)
-                Setup(shader);
-
             int diffuse = 1, specular = 1, normal = 1, height = 1;
 
-            for(int i = 0; i <textures_.size(); i++)
+            for(int i = 0; i < textures_.size(); i++)
             {
                 int num = 0;
                 if(textures_[i].Name() == "texture_diffuse")
@@ -79,6 +78,23 @@ namespace nitro
                 textures_[i].TextureUnit(GL_TEXTURE0 + i, i, num);
                 textures_[i].Draw(shader);
             }
+        }
+        
+        void Mesh::LoadMaterials(const Shader& shader)
+        {
+            shader.SetUniform3f("mat_diffuse",      material_.diffuse);
+            shader.SetUniform3f("mat_specular",     material_.specular);
+            shader.SetUniform3f("mat_ambient",      material_.ambient);
+            shader.SetUniformFloat("mat_shininess", material_.shininess);
+        }
+
+        void Mesh::Draw(const Shader& shader)
+        {
+            if(!loaded_)
+                Setup(shader);
+
+            LoadTextures(shader);
+            LoadMaterials(shader);
 
             glBindVertexArray(vao_);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer_);

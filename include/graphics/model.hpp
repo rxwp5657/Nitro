@@ -36,12 +36,14 @@ namespace nitro
 
             void Setup(const Shader& shader) override;
             void LoadModel(const std::string& name);
-            void ProcessNode(aiNode *node, const aiScene *scene, std::vector<Texture>& textures_loaded);
-            Mesh ProcessMesh(aiMesh *mesh, const aiScene *scene, std::vector<Texture>& textures_loaded);
+            void ProcessNode(aiNode *node, const aiScene *scene, std::vector<Texture>& loaded_textures);
+            Mesh ProcessMesh(aiMesh *mesh, const aiScene *scene, std::vector<Texture>& loaded_textures);
+            Material LoadMaterials(aiMaterial *mat);
             std::vector<Texture> LoadTextures(aiMaterial *mat, 
                                               aiTextureType type, 
                                               std::string typeName,
-                                              std::vector<Texture>& textures_loaded);
+                                              std::vector<Texture>& loaded_textures);
+            
 
             template <typename T, typename U>
             void ProcessEntry(T& vec_a, U& vec_b)
@@ -49,6 +51,14 @@ namespace nitro
                 vec_a.x = vec_b.x;
                 vec_a.y = vec_b.y;
                 vec_a.z = vec_b.z;
+            }
+
+            template <typename T, typename U>
+            void ProcessColor(T& vec_a, U& vec_b)
+            {
+                vec_a.x = vec_b.r;
+                vec_a.y = vec_b.g;
+                vec_a.z = vec_b.b;
             }
         };
     }
