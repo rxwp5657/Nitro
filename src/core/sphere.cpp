@@ -76,10 +76,7 @@ namespace nitro
            return result;
         }
 
-        std::vector<unsigned int> Sphere::Indices(
-            const std::vector<nitro::graphics::Vertex>& vertices,
-            int stacks, 
-            int sectors) const
+        std::vector<unsigned int> Sphere::Indices(int stacks, int sectors) const
         {
             std::vector<unsigned int> result{};
 
@@ -113,7 +110,7 @@ namespace nitro
         nitro::graphics::Model Sphere::GenerateModel(float radius, int stacks, int sectors) const
         {
             std::vector<nitro::graphics::Vertex> vertices{Vertices(radius,stacks,sectors)};
-            std::vector<unsigned int> indices{Indices(vertices, stacks, sectors)};
+            std::vector<unsigned int> indices{Indices(stacks, sectors)};
             std::vector<nitro::graphics::Texture> textures{};
 
             nitro::graphics::Material material{{1.0f, 0.2f, 1.0f},

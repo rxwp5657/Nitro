@@ -27,9 +27,9 @@ namespace nitro
           max_distance_ = range;
         }
 
-        void PointLight::Move(const clutch::Mat4<float>& transform)
+        void PointLight::Move(float x, float y, float z)
         {
-          position_ = transform * position_;
+          position_ = clutch::Translation(x,y,z) * position_;
         }
 
         SpotLight::SpotLight()
@@ -72,14 +72,14 @@ namespace nitro
           penumbra_ = penumbra;
         }
 
-        void SpotLight::MovePos(const clutch::Mat4<float>& transform)
+        void SpotLight::MovePos(float x, float y, float z)
         {
-            position_ = transform * position_;
+            position_ = clutch::Translation(x,y,z) * position_;
         }
 
-        void SpotLight::MoveDir(const clutch::Mat4<float>& transform)
+        void SpotLight::MoveDir(float x, float y, float z)
         {
-          direction_ = transform * direction_;
+          direction_ = clutch::Translation(x,y,z) * direction_;
         }
 
         DirectionalLight::DirectionalLight()
@@ -92,9 +92,9 @@ namespace nitro
 
         }
 
-        void DirectionalLight::Move(const clutch::Mat4<float>& transform)
+        void DirectionalLight::Move(float x, float y, float z)
         {
-            direction_ = transform * direction_;
+            direction_ = clutch::Translation(x,y,z) * direction_;
         }
     }
 }

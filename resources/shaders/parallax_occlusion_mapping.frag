@@ -1,5 +1,9 @@
 #version 410 core
 
+const int POINT_LIGHTS = 2;
+const int SPOT_LIGHTS  = 2;
+const int DIRECTIONAL_LIGHTS = 2;
+
 in VS_OUT
 {
     vec2 TextCoord;
@@ -18,13 +22,39 @@ struct PointLight
     float range;
 };
 
+struct SpotLight
+{
+    vec4  position;
+    vec4  direction;
+    vec4  color;
+    float range;
+    float umbra;
+    float penumbra;
+};
+
+struct DirectionalLight
+{
+    vec4 direction;
+    vec4 color;
+};
+
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
 uniform sampler2D texture_normal1;
 uniform sampler2D texture_height1;
 
-layout(std140) uniform Lights {
-   PointLight lights[1];
+layout(std140) uniform Num_Lights 
+{
+   int num_point; 
+   int num_spot;
+   int num_dir;
+};
+
+layout(std140) uniform Lights 
+{
+   PointLight       point_lights[POINT_LIGHTS];
+   SpotLight        spot_lights[SPOT_LIGHTS];
+   DirectionalLight dir_lights[DIRECTIONAL_LIGHTS];
 };
 
 float attenuation(float r, float range)
@@ -208,7 +238,7 @@ vec2 ParallaxOcclusionMapping(vec2 text_coords, vec3 view_dir)
 
 void main()
 {
-    PointLight light = lights[0];
+    PointLight light = point_lights[0];
     
     vec3  d = vec3(light.position) - fs_in.FragPos;
     float r = sqrt(dot(d,d));

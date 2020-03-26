@@ -23,9 +23,9 @@ namespace nitro
             Actor(const graphics::Model& model,
                   std::initializer_list<std::string> shaders = {"lighting"});
 
-            void Rotate(const clutch::Mat4<float> r);
-            void Scale (const clutch::Mat4<float> s);
-            void Translate(const clutch::Mat4<float> t);
+            void Rotate(float x, float y, float z);
+            void Scale (float x, float y, float z);
+            void Translate(float x, float y, float z);
             
             void FlipUV();
 

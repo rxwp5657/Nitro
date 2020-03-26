@@ -1,5 +1,9 @@
 #version 410 core
 
+const int POINT_LIGHTS = 2;
+const int SPOT_LIGHTS  = 2;
+const int DIRECTIONAL_LIGHTS = 2;
+
 in vec3 aPosition;
 in vec3 aNormal;
 in vec2 aTexCoord;
@@ -27,9 +31,36 @@ struct PointLight
     float range;
 };
 
-layout(std140) uniform Lights {
-   PointLight lights[1];
+struct SpotLight
+{
+    vec4  position;
+    vec4  direction;
+    vec4  color;
+    float range;
+    float umbra;
+    float penumbra;
 };
+
+struct DirectionalLight
+{
+    vec4 direction;
+    vec4 color;
+};
+
+layout(std140) uniform Num_Lights 
+{
+   int num_point; 
+   int num_spot;
+   int num_dir;
+};
+
+layout(std140) uniform Lights 
+{
+   PointLight       point_lights[POINT_LIGHTS];
+   SpotLight        spot_lights[SPOT_LIGHTS];
+   DirectionalLight dir_lights[DIRECTIONAL_LIGHTS];
+};
+
 
 void main()
 {
@@ -44,6 +75,6 @@ void main()
     vs_out.TextCoord = aTexCoord;
     vs_out.FragPos  = vec3(uModel * vec4(aPosition, 1.0));
     vs_out.ViewPos  = TBN * vec3(viewPos);
-    vs_out.LightPos = TBN * vec3(lights[0].position);
+    vs_out.LightPos = TBN * vec3(point_lights[0].position);
     vs_out.TangentFragPos = TBN * vs_out.FragPos; 
 }

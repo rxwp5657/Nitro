@@ -24,19 +24,19 @@ namespace nitro
         {  
         }
 
-        void Actor::Rotate(const clutch::Mat4<float> r)
+        void Actor::Rotate(float x, float y, float z)
         {
-            rotation_ = r;
+            rotation_ = clutch::RotateX(x) * clutch::RotateY(y) * clutch::RotateZ(z);
         }
 
-        void Actor::Scale(const clutch::Mat4<float> s)
+        void Actor::Scale(float x, float y, float z)
         {
-            scaling_ = s;
+            scaling_ = clutch::Scale(x,y,z);
         }
 
-        void Actor::Translate(const clutch::Mat4<float> t)
+        void Actor::Translate(float x, float y, float z)
         {
-            translation_ = t;
+            translation_ = clutch::Translation(x,y,z);
         }
 
         void Actor::FlipUV()

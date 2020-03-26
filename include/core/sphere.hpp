@@ -31,10 +31,7 @@ namespace nitro
             int   sectors_;
 
             std::vector<nitro::graphics::Vertex> Vertices(float radius, int stacks, int sectors) const;
-            std::vector<unsigned int> Indices(
-            const std::vector<nitro::graphics::Vertex>& vertices, 
-            int stacks, 
-            int sectors) const;
+            std::vector<unsigned int> Indices(int stacks, int sectors) const;
             nitro::graphics::Model GenerateModel(float radius, int stacks, int sectors) const;
         };
     }

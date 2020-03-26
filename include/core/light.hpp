@@ -24,7 +24,7 @@ namespace nitro
             PointLight();
 
             void Range(float range);
-            void Move(const clutch::Mat4<float>& transform);
+            void Move(float x, float y, float z);
 
         private:
             clutch::Vec4<float> position_;
@@ -49,8 +49,8 @@ namespace nitro
             void Umbra(float umbra);
             void Penumbra(float penumbra);
 
-            void MovePos(const clutch::Mat4<float>& transform);
-            void MoveDir(const clutch::Mat4<float>& transform);
+            void MovePos(float x, float y, float z);
+            void MoveDir(float x, float y, float z);
 
         private:
             clutch::Vec4<float> position_;
@@ -71,7 +71,7 @@ namespace nitro
             DirectionalLight(clutch::Vec4<float> direction,
                              clutch::Vec4<float> color);
 
-            void Move(const clutch::Mat4<float>& transform);
+            void Move(float x, float y, float z);
 
         private:
             clutch::Vec4<float> direction_;
