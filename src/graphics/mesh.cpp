@@ -93,6 +93,7 @@ namespace nitro
             if(!loaded_)
                 Setup(shader);
 
+            
             LoadTextures(shader);
             LoadMaterials(shader);
 
@@ -104,6 +105,7 @@ namespace nitro
             glBindVertexArray(0);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
             glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, 0);
         }
     }
 }
