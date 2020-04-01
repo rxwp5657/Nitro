@@ -34,5 +34,5 @@
 .vscode
 build
 resources/models/
-
+resources/cubemaps/
 .DS_Store
