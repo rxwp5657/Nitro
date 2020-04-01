@@ -1,3 +1,6 @@
+#ifndef PLANE_H
+#define PLANE_H
+
 #include <math.h>
 #include <iostream>
 #include <vector>
@@ -31,3 +34,5 @@ namespace nitro
         };
     }
 }
+
+#endif

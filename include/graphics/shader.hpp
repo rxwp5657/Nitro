@@ -23,6 +23,8 @@ namespace nitro
             Shader(const std::string& vertex, 
                    const std::string& fragment,
                    const std::string& geometry = std::string{""});
+            Shader();
+            Shader(const Shader& other);
 
             ~Shader();
             
@@ -45,7 +47,7 @@ namespace nitro
             void SetUniformBlock(const std::string& name, int index) const;
 
             utils::StatusInfo Status() const;
-            void Use();
+            void Use() const;
 
         private:
             GLint program_;

@@ -8,12 +8,14 @@ namespace nitro
                      const std::vector<std::shared_ptr<PointLight>> point_lights,
                      const std::vector<std::shared_ptr<SpotLight>>  spot_lights,
                      const std::vector<std::shared_ptr<DirectionalLight>> dir_lights,
-                     const Camera& camera)
+                     const Camera& camera,
+                     const Skybox& skybox)
         : actors_{actors},
           point_lights_{point_lights},
           spot_lights_{spot_lights},
           dir_lights_{dir_lights},
-          camera_{camera}
+          camera_{camera},
+          skybox_{skybox}
         {
             glGenBuffers(1, &light_buffer_);
             glGenBuffers(1, &num_lights_buffer_);
@@ -24,7 +26,8 @@ namespace nitro
           point_lights_{},
           spot_lights_{},
           dir_lights_{},
-          camera_{}
+          camera_{},
+          skybox_{}
         {
             glGenBuffers(1, &light_buffer_);
             glGenBuffers(1, &num_lights_buffer_);
@@ -58,6 +61,18 @@ namespace nitro
         void Scene::AddDirectionalLight(const std::shared_ptr<DirectionalLight> light)
         {
             dir_lights_.push_back(light);
+        }
+
+        void Scene::AddSkyBox(const Skybox& skybox)
+        {
+            skybox_ = skybox;
+        }
+
+        void Scene::DrawSkyBox(const graphics::Shader& shader)
+        {
+            shader.Use();
+            camera_.Draw(shader);
+            skybox_.Draw(shader);
         }
 
         void Scene::LoadLights() const

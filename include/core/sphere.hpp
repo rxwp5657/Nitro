@@ -1,3 +1,6 @@
+#ifndef SPHERE_H
+#define SPHERE_H
+
 #include <math.h>
 #include <vector>
 #include <model.hpp>
@@ -36,3 +39,5 @@ namespace nitro
         };
     }
 }
+
+#endif

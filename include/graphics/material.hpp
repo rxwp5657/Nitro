@@ -1,3 +1,6 @@
+#ifndef MATERIAL_H
+#define MATERIAL_H
+
 #include <vec3.hpp>
 
 namespace nitro
@@ -14,3 +17,5 @@ namespace nitro
         
     }
 }
+
+#endif

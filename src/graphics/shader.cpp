@@ -43,6 +43,19 @@ namespace nitro
             SetUniformBlock("Num_Lights", 2);
         }
 
+        Shader::Shader(const Shader& other)
+        : program_{other.program_},
+          uniform_dict_{other.uniform_dict_},
+          status_{other.status_}
+        {
+
+        }
+
+        Shader::Shader()
+        {
+              
+        }
+
         Shader::~Shader()
         {
             
@@ -127,7 +140,7 @@ namespace nitro
             return status_;
         }
         
-        void Shader::Use()
+        void Shader::Use() const
         {
             glUseProgram(program_);
         }

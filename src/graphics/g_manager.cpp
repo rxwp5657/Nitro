@@ -52,8 +52,16 @@ namespace nitro
                     }
                 }
             }
+            scene.DrawSkyBox(shaders_.at("skybox"));
             glfwSwapBuffers(window_.get_window_ptr());
         }
+
+        void Manager::AddShader(const std::string& name, const Shader& shader)
+        {
+            if(shader.Status().status_code != nitro::utils::StatusCode::OK)
+                throw std::runtime_error(shader.Status().message);
+            
+            shaders_[name] = shader;
+        }
     }
-    
 }

@@ -15,7 +15,11 @@ namespace nitro
         public:
             Texture(const std::string& file_name, 
                     const std::string& dir,
-                    const std::string& name = "albedo");
+                    const std::string& name = "texture_diffuse");
+
+            Texture(const std::string& dir,
+                    const std::vector<std::string>& texture_names,
+                    const std::string& name = "texture_diffuse");
             
             ~Texture();
 
@@ -31,7 +35,8 @@ namespace nitro
             void Draw(const Shader& shader) override;
         private:
             GLuint texture_;
-            GLint texture_unit_;
+            GLint  texture_unit_;
+            GLuint type_;
             std::string name_;
             std::string path_;
             int uniform_location_;

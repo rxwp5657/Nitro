@@ -1,3 +1,6 @@
+#ifndef CUBE_H
+#define CUBE_H
+
 #include <math.h>
 #include <vector>
 #include <model.hpp>
@@ -23,3 +26,5 @@ namespace nitro
         };
     }
 }
+
+#endif

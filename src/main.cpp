@@ -10,16 +10,28 @@
 #include <sphere.hpp>
 #include <cube.hpp>
 #include <plane.hpp>
+#include <skybox.hpp>
+
 int main(int argc, char **argv)
 {
     nitro::graphics::Manager manager{};
-    std::shared_ptr<nitro::core::Actor>  cylinder{new nitro::core::Actor{"cylinder2/cylinder.obj"}};
-    std::shared_ptr<nitro::core::Actor>  sphere{new nitro::core::Sphere{1.0f}};
-    std::shared_ptr<nitro::core::Actor>  cube{new nitro::core::Cube{1.0f}};
-     std::shared_ptr<nitro::core::Actor> plane{new nitro::core::Plane{nitro::core::PlaneType::XY}};
+    manager.AddShader("skybox", nitro::graphics::Shader{"skybox.vert","skybox.frag"});
+    
+    std::shared_ptr<nitro::core::Actor> cylinder{new nitro::core::Actor{"cylinder2/cylinder.obj"}};
+    std::shared_ptr<nitro::core::Actor> sphere{new nitro::core::Sphere{1.0f}};
+    std::shared_ptr<nitro::core::Actor> cube{new nitro::core::Cube{1.0f}};
+    std::shared_ptr<nitro::core::Actor> plane{new nitro::core::Plane{nitro::core::PlaneType::XY}};
     std::shared_ptr<nitro::core::PointLight> light{new nitro::core::PointLight{}};
     std::shared_ptr<nitro::core::SpotLight>  spot{new nitro::core::SpotLight{}};
     std::shared_ptr<nitro::core::DirectionalLight>  dir{new nitro::core::DirectionalLight{}};
+
+    nitro::core::Skybox skybox{"SwedishRoyalCastle", 
+    {"posx.jpg",
+     "negx.jpg",
+     "posy.jpg",
+     "negy.jpg",
+     "posz.jpg",
+     "negz.jpg"}};
 
     sphere->Translate(0.0f, 0.0f, -2.5f);
     cube->Translate(0.0f, 0.0f, 3.5f);
@@ -42,6 +54,7 @@ int main(int argc, char **argv)
     //scene.AddPointLight(light);
     scene.AddSpotLight(spot);
     scene.AddDirectionalLight(dir);
+    scene.AddSkyBox(skybox);
 
     controller1.AddButton(GLFW_KEY_W, scene.CameraPtr(), &nitro::core::Camera::Forward);
     controller1.AddButton(GLFW_KEY_A, scene.CameraPtr(), &nitro::core::Camera::Left);

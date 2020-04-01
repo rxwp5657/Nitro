@@ -26,7 +26,8 @@ namespace nitro
 
             const Window* get_window() const;
             void UpdateScene(core::Scene scene);
-            
+            void AddShader(const std::string& name,const Shader& shader);
+
         private:
             std::unique_ptr<const Context> context_;
             Window window_;
