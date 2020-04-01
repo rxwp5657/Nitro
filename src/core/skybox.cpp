@@ -101,7 +101,7 @@ namespace nitro
             std::vector<nitro::graphics::Texture> textures{};
 
             if(texture_names.size() != 0)
-                textures.push_back(nitro::graphics::Texture{folder,texture_names});
+                textures.push_back(nitro::graphics::Texture{folder,texture_names,"skybox"});
             
             nitro::graphics::Material material{{1.0f, 0.2f, 1.0f},
                                                {0.9f, 0.9f, 0.9f}, 

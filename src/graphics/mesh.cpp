@@ -37,17 +37,13 @@ namespace nitro
 
             //Link Data to Shader Variables
 
-            // vertex positions
             shader.PosAttrib("aPosition", 3, GL_FLOAT, sizeof(Vertex),  0);
-            // vertex normals
             shader.PosAttrib("aNormal",   3, GL_FLOAT, sizeof(Vertex),  offsetof(Vertex, normal));
-            // vertex texture coords
             shader.PosAttrib("aTexCoord", 2, GL_FLOAT, sizeof(Vertex),  offsetof(Vertex, tex_coord));
-            // vertex Tangent from tangent space
             shader.PosAttrib("aTangent",  3, GL_FLOAT, sizeof(Vertex),  offsetof(Vertex, tangent));
-            // vertex Bitangent from tangent space
             shader.PosAttrib("aBitangent",3, GL_FLOAT, sizeof(Vertex),  offsetof(Vertex, bitangent));
 
+            // Interger control value for rendering with or without textures
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
             loaded_ = true;
@@ -61,7 +57,7 @@ namespace nitro
 
         void Mesh::LoadTextures(const Shader& shader)
         {
-            int diffuse = 1, specular = 1, normal = 1, height = 1;
+            int diffuse = 1, specular = 1, normal = 1, height = 1, skybox = 1;
 
             for(int i = 0; i < textures_.size(); i++)
             {
@@ -74,10 +70,14 @@ namespace nitro
                     num = normal++;
                 else if (textures_[i].Name() == "texture_height")
                     num = height++;
+                else if (textures_[i].Name() == "skybox")
+                    num = skybox++;
 
                 textures_[i].TextureUnit(GL_TEXTURE0 + i, i, num);
                 textures_[i].Draw(shader);
             }
+
+            shader.SetUniformInt("has_textures", textures_.size() != 0 ? 1 : 0);
         }
         
         void Mesh::LoadMaterials(const Shader& shader)
@@ -86,6 +86,8 @@ namespace nitro
             shader.SetUniform3f("mat_specular",     material_.specular);
             shader.SetUniform3f("mat_ambient",      material_.ambient);
             shader.SetUniformFloat("mat_shininess", material_.shininess);
+            shader.SetUniformFloat("mat_reflectiveness", material_.reflectivity);
+            shader.SetUniformFloat("mat_refractiveness", material_.refractivity);
         }
 
         void Mesh::Draw(const Shader& shader)

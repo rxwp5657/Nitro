@@ -116,7 +116,9 @@ namespace nitro
             nitro::graphics::Material material{{1.0f, 0.2f, 1.0f},
                                                {0.9f, 0.9f, 0.9f}, 
                                                {0.1f, 0.1f, 0.1f},
-                                               200.0f};
+                                               200.0f,
+                                               0.0f,
+                                               0.0f};
 
             nitro::graphics::Mesh mesh{vertices, indices, textures, material};
 

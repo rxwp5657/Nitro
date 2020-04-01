@@ -154,6 +154,8 @@ namespace nitro
             ProcessColor<clutch::Vec3<float>, aiColor3D>(material.ambient,color);
 
             mat->Get(AI_MATKEY_SHININESS, material.shininess);
+            mat->Get(AI_MATKEY_REFLECTIVITY, material.reflectivity);
+            mat->Get(AI_MATKEY_REFRACTI, material.refractivity);
 
             return material;
         }

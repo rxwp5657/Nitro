@@ -41,9 +41,14 @@ uniform vec3  mat_diffuse;
 uniform vec3  mat_specular;
 uniform vec3  mat_ambient;
 uniform float mat_shininess;
+uniform float mat_reflectiveness;
+uniform float mat_refractiveness;
 
-uniform sampler2D texture_diffuse1;
-uniform sampler2D texture_specular1;
+uniform sampler2D   texture_diffuse1;
+uniform sampler2D   texture_specular1;
+uniform samplerCube skybox1;
+
+uniform int  has_textures;
 uniform vec4 viewPos;
 
 layout(std140) uniform Num_Lights 
@@ -79,8 +84,9 @@ float fdir(SpotLight spot_light, vec3 L)
 
 vec4 blinn(vec3 FragPos, vec3 Normal, vec3 View, vec3 L, vec3 light_color)
 {
-    vec3 surface_color = texture(texture_diffuse1,  fs_in.TextCoord).rgb;
-    vec3 surface_spec  = texture(texture_specular1, fs_in.TextCoord).rgb;
+
+    vec3 surface_color = has_textures != 0 ? texture(texture_diffuse1,  fs_in.TextCoord).rgb : mat_diffuse;
+    vec3 surface_spec  = has_textures != 0 ? texture(texture_specular1, fs_in.TextCoord).rgb : mat_specular;
 
     vec3 N = normalize(Normal);
     vec3 V = normalize(View - FragPos);

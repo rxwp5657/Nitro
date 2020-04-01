@@ -32,23 +32,15 @@ namespace nitro
 
             std::vector<std::shared_ptr<Actor>>      Actors()      const;
             std::vector<std::shared_ptr<PointLight>> PointLights() const;
-                        
+            Camera  SceneCamera() const;
+            Camera* CameraPtr();
+                      
+            void AddSkyBox(const Skybox& skybox);
             void AddActor(const std::shared_ptr<Actor> actor);
-            void DrawActors(const std::map<std::string, graphics::Shader>& shaders);
-
             void AddPointLight(const std::shared_ptr<PointLight> light);
             void AddSpotLight(const std::shared_ptr<SpotLight>   light);
             void AddDirectionalLight(const std::shared_ptr<DirectionalLight> light);
-
-            void AddSkyBox(const Skybox& skybox);
-            void DrawSkyBox(const graphics::Shader& shader);
-
-            void LoadLights() const;
             
-            Camera  SceneCamera() const;
-            Camera* CameraPtr();
-            
-            void Setup() const;
             void Draw(const std::map<std::string, graphics::Shader>& shaders);
 
         private:
@@ -66,6 +58,11 @@ namespace nitro
             int LoadPointLights(int start_offset) const;
             int LoadSpotLights(int start_offset)  const;
             int LoadDirectionalLights(int start_offset) const;
+
+            void DrawActors(const std::map<std::string, graphics::Shader>& shaders);
+            void DrawSkyBox(const graphics::Shader& shader);
+            void LoadLights() const;
+            void Setup() const;
         };
     }
 }

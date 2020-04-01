@@ -80,7 +80,7 @@ namespace nitro
 
         void Shader::SetUniformInt(const std::string& name,  const GLint val)  const
         {
-             glUniform1i(GetUniformLocation(name), val);
+            glUniform1i(GetUniformLocation(name), val);
         }
 
         void Shader::SetUniformFloat(const std::string& name,const GLfloat val) const
