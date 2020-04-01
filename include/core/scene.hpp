@@ -3,10 +3,12 @@
 
 #include <vector>
 #include <memory>
+#include <map>
 #include <actor.hpp>
 #include <camera.hpp>
 #include <light.hpp>
 #include <skybox.hpp>
+#include <shader.hpp>
 
 namespace nitro
 {
@@ -31,8 +33,9 @@ namespace nitro
             std::vector<std::shared_ptr<Actor>>      Actors()      const;
             std::vector<std::shared_ptr<PointLight>> PointLights() const;
                         
-            void AddActor(const std::shared_ptr<Actor>      actor);
-            
+            void AddActor(const std::shared_ptr<Actor> actor);
+            void DrawActors(const std::map<std::string, graphics::Shader>& shaders);
+
             void AddPointLight(const std::shared_ptr<PointLight> light);
             void AddSpotLight(const std::shared_ptr<SpotLight>   light);
             void AddDirectionalLight(const std::shared_ptr<DirectionalLight> light);
@@ -44,6 +47,9 @@ namespace nitro
             
             Camera  SceneCamera() const;
             Camera* CameraPtr();
+            
+            void Setup() const;
+            void Draw(const std::map<std::string, graphics::Shader>& shaders);
 
         private:
             std::vector<std::shared_ptr<Actor>>      actors_;

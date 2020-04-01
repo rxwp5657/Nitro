@@ -167,5 +167,30 @@ namespace nitro
         {
             return &camera_;
         }
+
+        void Scene::DrawActors(const std::map<std::string, graphics::Shader>& shaders)
+        {
+            for(auto& actor : actors_)
+                for(const auto& shader_name : actor->Shaders())
+                    if(shaders.find(shader_name) != shaders.end())
+                    {
+                        auto shader = shaders.at(shader_name);
+                        shader.Use();
+                        camera_.Draw(shader);
+                        actor->Draw(shader);
+                    }
+        }
+            
+        void Scene::Setup() const
+        {
+            LoadLights();
+        }
+
+        void Scene::Draw(const std::map<std::string, graphics::Shader>& shaders)
+        {
+            Setup();
+            DrawActors(shaders);
+            DrawSkyBox(shaders.at("skybox"));
+        }
     }
 }

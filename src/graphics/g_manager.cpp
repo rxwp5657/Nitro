@@ -36,23 +36,9 @@ namespace nitro
         {   
             glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
-            
-            for(auto& actor : scene.Actors())
-            {
-                for(const auto& shader_name : actor->Shaders())
-                {
-                    if(shaders_.find(shader_name) != shaders_.end())
-                    {
-                        auto shader = shaders_.at(shader_name);
 
-                        shader.Use();
-                        scene.LoadLights();
-                        scene.SceneCamera().Draw(shader);
-                        actor->Draw(shader);
-                    }
-                }
-            }
-            scene.DrawSkyBox(shaders_.at("skybox"));
+            scene.Draw(shaders_);
+            
             glfwSwapBuffers(window_.get_window_ptr());
         }
 
