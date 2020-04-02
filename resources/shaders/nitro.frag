@@ -44,9 +44,9 @@ uniform float mat_shininess;
 uniform float mat_reflectiveness;
 uniform float mat_refractiveness;
 
+uniform samplerCube skybox1;
 uniform sampler2D   texture_diffuse1;
 uniform sampler2D   texture_specular1;
-uniform samplerCube skybox1;
 
 uniform int  has_textures;
 uniform vec4 viewPos;
@@ -81,12 +81,30 @@ float fdir(SpotLight spot_light, vec3 L)
     return pow(t,2);
 }
 
+vec3 Reflection(vec3 position, vec3 normal)
+{
+    vec3 view_dir   = normalize(position - viewPos.xyz);
+    vec3 reflection = normalize(reflect(view_dir, normalize(normal)));
+    return texture(skybox1, reflection).rgb;
+}
+
+vec3 Refraction(vec3 position, vec3 normal)
+{
+    vec3 view_dir   = normalize(position - viewPos.xyz);
+    vec3 refraction = refract(view_dir, normalize(normal), 1.0 / mat_refractiveness);
+    return texture(skybox1, refraction).rgb;
+}
 
 vec4 blinn(vec3 FragPos, vec3 Normal, vec3 View, vec3 L, vec3 light_color)
 {
 
     vec3 surface_color = has_textures != 0 ? texture(texture_diffuse1,  fs_in.TextCoord).rgb : mat_diffuse;
     vec3 surface_spec  = has_textures != 0 ? texture(texture_specular1, fs_in.TextCoord).rgb : mat_specular;
+
+    vec3 reflection = Reflection(FragPos, Normal);
+    vec3 refraction = Refraction(FragPos, Normal);
+    surface_color   = mix(surface_color, reflection, mat_reflectiveness);
+    surface_color   = mix(surface_color, refraction, mat_reflectiveness);
 
     vec3 N = normalize(Normal);
     vec3 V = normalize(View - FragPos);

@@ -21,14 +21,16 @@ namespace nitro
             Skybox(const std::string& folder,const std::vector<std::string>& texture_names);
             Skybox();
 
+            void Bind(graphics::Shader& shader) const;
+            void Unbind() const;
+
             void Draw(const graphics::Shader& shader) override;
 
         private:
-
+            GLuint texture_;
             std::vector<nitro::graphics::Vertex> Vertices() const;
             std::vector<unsigned int> Indices() const;
-            nitro::graphics::Model GenerateModel(const std::string& folder,const std::vector<std::string>& texture_names) const;
-            nitro::graphics::Model GenerateModel() const;   
+            nitro::graphics::Model GenerateModel(const std::string& folder,const std::vector<std::string>& texture_names);
         };
     }
 }

@@ -21,7 +21,19 @@ namespace nitro
             model_.Draw(shader);
             glDepthFunc(GL_LESS);
         }
+
+        void Skybox::Bind(graphics::Shader& shader) const
+        {
+            glActiveTexture(GL_TEXTURE10);
+            shader.SetUniformInt("skybox1", 10);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, texture_);
+        }
         
+        void Skybox::Unbind() const
+        {
+            glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+        }
+
         std::vector<nitro::graphics::Vertex> Skybox::Vertices() const
         {
             std::vector<nitro::graphics::Vertex> result{};
@@ -94,19 +106,24 @@ namespace nitro
             return result;
         }
 
-        nitro::graphics::Model Skybox::GenerateModel(const std::string& folder,const std::vector<std::string>& texture_names) const
+        nitro::graphics::Model Skybox::GenerateModel(const std::string& folder,const std::vector<std::string>& texture_names)
         {
             std::vector<nitro::graphics::Vertex> vertices{Vertices()};
             std::vector<unsigned int> indices{Indices()};
             std::vector<nitro::graphics::Texture> textures{};
 
             if(texture_names.size() != 0)
-                textures.push_back(nitro::graphics::Texture{folder,texture_names,"skybox"});
+            {
+                nitro::graphics::Texture texture{folder,texture_names,"skybox"}; 
+                texture_ = texture.TextureReference();
+                textures.push_back(texture);
+                
+            }
             
             nitro::graphics::Material material{{1.0f, 0.2f, 1.0f},
                                                {0.9f, 0.9f, 0.9f}, 
                                                {0.1f, 0.1f, 0.1f},
-                                               200.0f};
+                                               200.0f, 0.0f, 0.0f};
 
             nitro::graphics::Mesh mesh{vertices, indices, textures, material};
 

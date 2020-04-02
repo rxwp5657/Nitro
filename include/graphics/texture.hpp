@@ -23,16 +23,15 @@ namespace nitro
             
             ~Texture();
 
-            std::string get_path() const;
+            std::string get_path()    const;
+            std::string Name()        const;
+            GLuint TextureReference() const;
+
+            void TextureUnit(GLint texture_unit, int uniform_location, int texture_number);
             
-            void TextureUnit(GLint texture_unit, 
-                             int uniform_location,
-                             int texture_number);
-
-            std::string Name();
-
             void Erase() override;
             void Draw(const Shader& shader) override;
+
         private:
             GLuint texture_;
             GLint  texture_unit_;

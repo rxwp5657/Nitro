@@ -116,9 +116,14 @@ namespace nitro
             name_ += std::to_string(texture_number);
         }
 
-        std::string Texture::Name()
+        std::string Texture::Name() const
         {
             return name_;
+        }
+
+        GLuint Texture::TextureReference() const
+        {
+            return texture_;
         }
 
         void Texture::Erase()

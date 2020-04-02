@@ -20,7 +20,6 @@ int main(int argc, char **argv)
     std::shared_ptr<nitro::core::Actor> cylinder{new nitro::core::Actor{"cylinder2/cylinder.obj"}};
     std::shared_ptr<nitro::core::Actor> sphere{new nitro::core::Sphere{1.0f}};
     std::shared_ptr<nitro::core::Actor> cube{new nitro::core::Cube{1.0f}};
-    std::shared_ptr<nitro::core::Actor> plane{new nitro::core::Plane{nitro::core::PlaneType::XY}};
     std::shared_ptr<nitro::core::PointLight> light{new nitro::core::PointLight{}};
     std::shared_ptr<nitro::core::SpotLight>  spot{new nitro::core::SpotLight{}};
     std::shared_ptr<nitro::core::DirectionalLight>  dir{new nitro::core::DirectionalLight{}};
@@ -35,8 +34,6 @@ int main(int argc, char **argv)
 
     sphere->Translate(0.0f, 0.0f, -2.5f);
     cube->Translate(0.0f, 0.0f, 3.5f);
-    plane->Translate(0.0f,0.0f, -2.5f);
-    plane->Scale(5.0f, 5.0f, 5.0f);
 
     spot->MovePos(0.0f, 1.0f, 1.5f);
     dir->Move(0.0f, 1.0f, 1.5f);
@@ -48,7 +45,6 @@ int main(int argc, char **argv)
     nitro::input::Controller controller1{scene.CameraPtr()};
 
     scene.AddActor(cylinder);
-    scene.AddActor(plane);
     scene.AddActor(sphere);
     scene.AddActor(cube);
     //scene.AddPointLight(light);

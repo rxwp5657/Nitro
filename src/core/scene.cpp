@@ -176,6 +176,7 @@ namespace nitro
                     {
                         auto shader = shaders.at(shader_name);
                         shader.Use();
+                        skybox_.Bind(shader);
                         camera_.Draw(shader);
                         actor->Draw(shader);
                     }
@@ -191,6 +192,7 @@ namespace nitro
             Setup();
             DrawActors(shaders);
             DrawSkyBox(shaders.at("skybox"));
+            skybox_.Unbind();
         }
     }
 }
