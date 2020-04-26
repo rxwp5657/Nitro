@@ -43,7 +43,7 @@ int main(int argc, char **argv)
 
     nitro::core::Scene scene{};
     nitro::input::Controller controller1{scene.CameraPtr()};
-
+    
     scene.AddActor(cylinder);
     scene.AddActor(sphere);
     scene.AddActor(cube);

@@ -1,5 +1,4 @@
 #include <camera.hpp>
-#include <projections.hpp>
 
 namespace nitro
 {

@@ -7,6 +7,7 @@
 #include <lookat.hpp>
 #include <drawable.hpp>
 #include <shader.hpp>
+#include <projections.hpp>
 #include <keyboard_evnt.hpp>
 
 namespace nitro

@@ -6,9 +6,11 @@
 #include <map>
 #include <actor.hpp>
 #include <camera.hpp>
-#include <light.hpp>
 #include <skybox.hpp>
 #include <shader.hpp>
+#include <spot_light.hpp>
+#include <point_light.hpp>
+#include <directional_light.hpp>
 
 namespace nitro
 {
