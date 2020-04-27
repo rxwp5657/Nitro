@@ -21,6 +21,13 @@ namespace nitro
                     const std::vector<std::string>& texture_names,
                     const std::string& name = "texture_diffuse");
             
+            Texture(int width, 
+                    int height,
+                    const std::string& name, 
+                    GLenum type,
+                    GLenum format,
+                    bool cubemap = false);
+
             ~Texture();
 
             std::string get_path()    const;
@@ -39,6 +46,7 @@ namespace nitro
             std::string name_;
             std::string path_;
             int uniform_location_;
+            
             void Setup(const Shader& shader) override;
         };
     }

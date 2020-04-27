@@ -8,6 +8,7 @@
 #include <camera.hpp>
 #include <skybox.hpp>
 #include <shader.hpp>
+#include <framebuffer.hpp>
 #include <spot_light.hpp>
 #include <point_light.hpp>
 #include <directional_light.hpp>
@@ -16,21 +17,17 @@ namespace nitro
 {
     namespace core
     {
-        const int POINT_LIGHTS = 2;
-        const int SPOT_LIGHTS  = 2;
-        const int DIRECTIONAL_LIGHTS = 2;
-
         class Scene
         {
         public:
+            Scene();
+
             Scene(const std::vector<std::shared_ptr<Actor>>      actors,
                   const std::vector<std::shared_ptr<PointLight>> point_lights,
                   const std::vector<std::shared_ptr<SpotLight>>  spot_lights,
                   const std::vector<std::shared_ptr<DirectionalLight>> dir_lights,
                   const Camera& camera,
                   const Skybox& skybox);
-            
-            Scene();
 
             std::vector<std::shared_ptr<Actor>>      Actors()      const;
             std::vector<std::shared_ptr<PointLight>> PointLights() const;
@@ -43,28 +40,57 @@ namespace nitro
             void AddSpotLight(const std::shared_ptr<SpotLight>   light);
             void AddDirectionalLight(const std::shared_ptr<DirectionalLight> light);
             
-            void Draw(const std::map<std::string, graphics::Shader>& shaders);
+            void Draw(const std::map<std::string, graphics::Shader>& shaders, int screen_width, int screen_height);
 
         private:
             std::vector<std::shared_ptr<Actor>>      actors_;
             std::vector<std::shared_ptr<PointLight>> point_lights_;
             std::vector<std::shared_ptr<SpotLight>>  spot_lights_;
             std::vector<std::shared_ptr<DirectionalLight>> dir_lights_;
+            std::vector<graphics::Texture> gbuffer_textures_;
             Camera camera_;
             Skybox skybox_;
-            GLuint light_buffer_;
-            GLuint num_lights_buffer_;
+            graphics::Framebuffer gbuffer_; 
+            graphics::Framebuffer shadow_buffer_;
 
-            void LoadNumLights() const;
-
-            int LoadPointLights(int start_offset) const;
-            int LoadSpotLights(int start_offset)  const;
-            int LoadDirectionalLights(int start_offset) const;
-
-            void DrawActors(const std::map<std::string, graphics::Shader>& shaders);
+            void DrawActors(const graphics::Shader& shader);
             void DrawSkyBox(const graphics::Shader& shader);
-            void LoadLights() const;
+            
             void Setup() const;
+
+            void ForwardRender(const  std::map<std::string, graphics::Shader>& shaders);
+            void DeferredRender(const std::map<std::string, graphics::Shader>& shaders);
+            void RenderShadows(const  std::map<std::string, graphics::Shader>& shaders);
+
+            void EnableMultipass();
+            void DisableMultipass();
+
+            void SetDefaultViewPort(int width, int height);
+
+            template <typename T>
+            void ForwardRenderLights(const graphics::Shader& light_shader, const std::vector<T> lights)
+            {
+                light_shader.Use();
+                
+                for(const auto& light : lights)
+                {
+                    camera_.Draw(light_shader);
+                    light->Draw(light_shader);
+                    DrawActors(light_shader);
+                }
+            }
+
+            template <typename T>
+            void ForwardRenderShadows(const graphics::Shader& shadow_shader, const std::vector<T> lights)
+            {   
+                for(const auto& light : lights)
+                    if(light->Shadow())
+                    {
+                        light->DrawShadows(shadow_shader, shadow_buffer_);
+                        DrawActors(shadow_shader);
+                        shadow_buffer_.Unbind();
+                    } 
+            }
         };
     }
 }

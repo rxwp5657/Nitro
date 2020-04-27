@@ -34,15 +34,18 @@ namespace nitro
             ~Window() noexcept;
 
             void Destroy() noexcept;
-
+            
             GLFWwindow* get_window_ptr() const;
-            unsigned short get_width()  const;
-            unsigned short get_height() const;
             WindowType get_type() const;
 
+            int Width();
+            int Height();
+
+            void UpdateSize();
+
         private:
-            unsigned short width_;
-            unsigned short height_;
+            int width_;
+            int height_;
             std::string title_; 
             WindowType type_;
             GLFWwindow* window_ptr_;

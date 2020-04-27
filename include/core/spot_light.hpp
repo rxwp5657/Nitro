@@ -2,13 +2,19 @@
 #define SPOT_LIGHT
 
 #include <vec4.hpp>
+#include <mat4.hpp>
 #include <transforms.hpp>
+#include <texture.hpp>
+#include <shader.hpp>
+#include <drawable.hpp>
+#include <constants.hpp>
+#include <light_shadow.hpp>
 
 namespace nitro 
 {
     namespace core
     {
-        class SpotLight
+        class SpotLight : public graphics::Drawable, public LightShadow
         {
         public:
 
@@ -30,14 +36,23 @@ namespace nitro
             void MovePos(float x, float y, float z);
             void MoveDir(float x, float y, float z);
 
+            void Draw(const graphics::Shader& shader) override;
+            void Erase() override;
+
+            void DrawShadows(const graphics::Shader& shader, const graphics::Framebuffer& buffer) override; 
+
         private:
             clutch::Vec4<float> position_;
             clutch::Vec4<float> direction_;
             clutch::Vec4<float> color_;
+            clutch::Mat4<float> transform_;
+            clutch::Mat4<float> projection_;
             float cutoff_;
             float max_distance_;
             float umbra_;
             float penumbra_;
+
+            void Setup(const graphics::Shader& shader) override;
         };
     }
 }

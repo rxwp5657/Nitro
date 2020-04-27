@@ -97,6 +97,42 @@ namespace nitro
             glBindTexture(GL_TEXTURE_CUBE_MAP,0);
         }
 
+        Texture::Texture(int width, 
+                         int height, 
+                         const std::string& name,
+                         GLenum type,
+                         GLenum format,
+                         bool cubemap)
+        : type_{type},
+          name_{name},
+          path_{""}
+        {
+            glGenTextures(1, &texture_);
+            glBindTexture(type_, texture_);
+
+            if(cubemap)
+            {
+                for(int i = 0; i < 6; i++)
+                    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, width, height, 0, format, GL_FLOAT, NULL);
+                
+                glTexParameteri(type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                glTexParameteri(type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                glTexParameteri(type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                glTexParameteri(type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                glTexParameteri(type, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);  
+            }
+
+            else
+            {
+                glTexImage2D(type, 0, format, width, height, 0, format, GL_FLOAT, NULL);
+                glTexParameteri(type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                glTexParameteri(type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                glTexParameteri(type, GL_TEXTURE_WRAP_S, GL_REPEAT); 
+                glTexParameteri(type, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            }
+        }
+
+
         Texture::~Texture()
         {
             

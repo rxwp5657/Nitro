@@ -19,8 +19,7 @@ namespace nitro
         {
         public:
             Manager(const Context* context = Context::get_instance(),
-                    const Window& window   = Window{800, 600, "Nitro", nitro::graphics::WindowType::WINDOWED, true}, 
-                    const Shader& shader   = Shader{"nitro.vert", "nitro.frag"});
+                    const Window& window   = Window{800, 600, "Nitro", nitro::graphics::WindowType::WINDOWED, true});
             
             ~Manager();
 

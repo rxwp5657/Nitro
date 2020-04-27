@@ -93,14 +93,21 @@ namespace nitro
             return window_ptr_;
         }
 
-        unsigned short Window::get_width()  const
+        int Window::Width()
         {
-            return width_;
+            UpdateSize();
+            return width_ * 2;
         }
 
-        unsigned short Window::get_height() const
+        int Window::Height()
         {
-            return height_;
+            UpdateSize();
+            return height_ * 2;
+        }
+
+        void Window::UpdateSize()
+        {
+            glfwGetWindowSize(window_ptr_, &width_, &height_);
         }
 
         WindowType Window::get_type() const

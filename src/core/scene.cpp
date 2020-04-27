@@ -14,11 +14,13 @@ namespace nitro
           point_lights_{point_lights},
           spot_lights_{spot_lights},
           dir_lights_{dir_lights},
+          gbuffer_textures_{},
           camera_{camera},
-          skybox_{skybox}
+          skybox_{skybox},
+          gbuffer_{},
+          shadow_buffer_{}
         {
-            glGenBuffers(1, &light_buffer_);
-            glGenBuffers(1, &num_lights_buffer_);
+
         }
 
         Scene::Scene()
@@ -29,8 +31,7 @@ namespace nitro
           camera_{},
           skybox_{}
         {
-            glGenBuffers(1, &light_buffer_);
-            glGenBuffers(1, &num_lights_buffer_);
+
         }
 
         std::vector<std::shared_ptr<Actor>> Scene::Actors() const
@@ -75,89 +76,6 @@ namespace nitro
             skybox_.Draw(shader);
         }
 
-        void Scene::LoadLights() const
-        {
-            int size = sizeof(PointLight) * POINT_LIGHTS + 
-                       sizeof(SpotLight)  * SPOT_LIGHTS  + 
-                       sizeof(DirectionalLight) * DIRECTIONAL_LIGHTS;
-
-            int offset = 0;
-            
-            LoadNumLights();
-
-            glBindBuffer(GL_UNIFORM_BUFFER, light_buffer_);
-            glBufferData(GL_UNIFORM_BUFFER, size, NULL, GL_DYNAMIC_DRAW);
-            glBindBufferBase(GL_UNIFORM_BUFFER, 1, light_buffer_);
-            glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-            offset += LoadPointLights(offset);
-            offset += LoadSpotLights(offset);
-            offset += LoadDirectionalLights(offset);
-
-        }
-
-        void Scene::LoadNumLights() const
-        {
-            int num_point = point_lights_.size(); 
-            int num_spot  = spot_lights_.size();
-            int num_dir   = dir_lights_.size();
-
-            glBindBuffer(GL_UNIFORM_BUFFER, num_lights_buffer_);
-            glBufferData(GL_UNIFORM_BUFFER, sizeof(int) * 3, NULL, GL_DYNAMIC_DRAW);
-            
-            glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(int), &num_point);
-            glBufferSubData(GL_UNIFORM_BUFFER, sizeof(int),     sizeof(int), &num_spot);
-            glBufferSubData(GL_UNIFORM_BUFFER, sizeof(int) * 2, sizeof(int), &num_dir);
-
-            glBindBufferBase(GL_UNIFORM_BUFFER, 2, num_lights_buffer_);
-            glBindBuffer(GL_UNIFORM_BUFFER, 0);
-        }
-
-        int Scene::LoadPointLights(int start_offset) const
-        {
-            const unsigned long num_lights = point_lights_.size();
-            PointLight lights[POINT_LIGHTS]{};
-            
-            glBindBuffer(GL_UNIFORM_BUFFER, light_buffer_);
-
-            for(int i = 0; i < num_lights; i++)
-                lights[i] = *point_lights_[i];
-
-            glBufferSubData(GL_UNIFORM_BUFFER, start_offset, sizeof(lights), lights);
-            glBindBuffer(GL_UNIFORM_BUFFER, 0);
-            return sizeof(lights);
-        }
-
-        int Scene::LoadSpotLights(int start_offset)  const
-        {
-            const unsigned long num_lights = spot_lights_.size();
-            SpotLight lights[SPOT_LIGHTS]{};
-            
-            glBindBuffer(GL_UNIFORM_BUFFER, light_buffer_);
-            
-            for(int i = 0; i < num_lights; i++)
-                lights[i] = *spot_lights_[i];
-
-            glBufferSubData(GL_UNIFORM_BUFFER, start_offset, sizeof(lights), lights);
-            glBindBuffer(GL_UNIFORM_BUFFER, 0);
-            return sizeof(lights);
-        }
-
-        int Scene::LoadDirectionalLights(int start_offset) const
-        {
-            const unsigned long num_lights = dir_lights_.size();
-            DirectionalLight lights[DIRECTIONAL_LIGHTS]{};
-            
-            glBindBuffer(GL_UNIFORM_BUFFER, light_buffer_);
-            
-            for(int i = 0; i < num_lights; i++)
-                lights[i] = *dir_lights_[i];
-
-            glBufferSubData(GL_UNIFORM_BUFFER, start_offset, sizeof(lights), lights);
-            glBindBuffer(GL_UNIFORM_BUFFER, 0);
-            return sizeof(lights);
-        }
-
         Camera Scene::SceneCamera() const
         {
             return camera_;
@@ -168,29 +86,96 @@ namespace nitro
             return &camera_;
         }
 
-        void Scene::DrawActors(const std::map<std::string, graphics::Shader>& shaders)
+        void Scene::EnableMultipass()
         {
-            for(auto& actor : actors_)
-                for(const auto& shader_name : actor->Shaders())
-                    if(shaders.find(shader_name) != shaders.end())
-                    {
-                        auto shader = shaders.at(shader_name);
-                        shader.Use();
-                        skybox_.Bind(shader);
-                        camera_.Draw(shader);
-                        actor->Draw(shader);
-                    }
-        }
-            
-        void Scene::Setup() const
-        {
-            LoadLights();
+            glEnable(GL_BLEND);
+            glBlendEquation(GL_FUNC_ADD);
+            glBlendFunc(GL_ONE, GL_ONE);
+            glDepthFunc(GL_EQUAL);
         }
 
-        void Scene::Draw(const std::map<std::string, graphics::Shader>& shaders)
+        void Scene::DisableMultipass()
         {
-            Setup();
-            DrawActors(shaders);
+            glDisable(GL_BLEND);
+            glDepthFunc(GL_LESS);
+        }
+
+        void Scene::SetDefaultViewPort(int width, int height)
+        {
+            glViewport(0,0,width,height);
+            glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
+        }
+
+        void Scene::DrawActors(const graphics::Shader& shader)
+        {
+            for(const auto& actor : actors_)
+                actor->Draw(shader);
+        }
+
+        void Scene::RenderShadows(const  std::map<std::string, graphics::Shader>& shaders)
+        {
+            if(shaders.find("point_shadows") != shaders.end() && point_lights_.size() > 0)
+            {
+                auto shader = shaders.at("point_shadows");
+                ForwardRenderShadows(shader, point_lights_);
+            }
+
+            if(shaders.find("spot_shadows") != shaders.end() && spot_lights_.size() > 0)
+            {
+                auto shader = shaders.at("spot_shadows");
+                ForwardRenderShadows(shader, dir_lights_);
+            }
+
+            if(shaders.find("directional_shadows") != shaders.end() && dir_lights_.size() > 0)
+            {
+                auto shader = shaders.at("directional_shadows");
+                ForwardRenderShadows(shader, spot_lights_);
+            }
+        }
+
+        void Scene::ForwardRender(const  std::map<std::string, graphics::Shader>& shaders)
+        {
+            
+            if(shaders.find("point_lighting") != shaders.end() && point_lights_.size() > 0)
+            {
+                auto shader = shaders.at("point_lighting");
+                ForwardRenderLights(shader, point_lights_);
+                EnableMultipass();
+            }
+
+            if(shaders.find("directional_lighting") != shaders.end() && dir_lights_.size() > 0)
+            {
+                auto shader = shaders.at("directional_lighting");
+                ForwardRenderLights(shader, dir_lights_);
+                EnableMultipass();
+            }
+
+            if(shaders.find("spot_lighting") != shaders.end() && spot_lights_.size() > 0)
+            {
+                auto shader = shaders.at("spot_lighting");
+                ForwardRenderLights(shader, spot_lights_);
+            }
+            
+            DisableMultipass();
+        }
+
+        void Scene::DeferredRender(const std::map<std::string, graphics::Shader>& shaders)
+        {
+
+        }
+
+        void Scene::Setup() const
+        {
+            
+        }
+
+        void Scene::Draw(const std::map<std::string, graphics::Shader>& shaders, int screen_width, int screen_height)
+        {
+            //Setup();
+            RenderShadows(shaders);
+            SetDefaultViewPort(screen_width, screen_height);
+            ForwardRender(shaders);
             DrawSkyBox(shaders.at("skybox"));
             skybox_.Unbind();
         }
