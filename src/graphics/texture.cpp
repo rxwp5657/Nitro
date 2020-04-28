@@ -9,7 +9,8 @@ namespace nitro
                          const std::string& name)
         : type_{GL_TEXTURE_2D},
           name_{name},
-          path_{file_name}
+          path_{file_name},
+          has_num_{false}
         {
             std::string path = dir + '/' + file_name;
 
@@ -50,7 +51,8 @@ namespace nitro
                          const std::string& name)
         : type_{GL_TEXTURE_CUBE_MAP},
           name_{name},
-          path_{dir}
+          path_{dir},
+          has_num_{false}
         {
             if(texture_names.size() < 6)
                 throw std::runtime_error{"(Texture/CubeMapTexture) Not enough textures given for loading skybox"};
@@ -97,42 +99,6 @@ namespace nitro
             glBindTexture(GL_TEXTURE_CUBE_MAP,0);
         }
 
-        Texture::Texture(int width, 
-                         int height, 
-                         const std::string& name,
-                         GLenum type,
-                         GLenum format,
-                         bool cubemap)
-        : type_{type},
-          name_{name},
-          path_{""}
-        {
-            glGenTextures(1, &texture_);
-            glBindTexture(type_, texture_);
-
-            if(cubemap)
-            {
-                for(int i = 0; i < 6; i++)
-                    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, width, height, 0, format, GL_FLOAT, NULL);
-                
-                glTexParameteri(type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                glTexParameteri(type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-                glTexParameteri(type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-                glTexParameteri(type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-                glTexParameteri(type, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);  
-            }
-
-            else
-            {
-                glTexImage2D(type, 0, format, width, height, 0, format, GL_FLOAT, NULL);
-                glTexParameteri(type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-                glTexParameteri(type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                glTexParameteri(type, GL_TEXTURE_WRAP_S, GL_REPEAT); 
-                glTexParameteri(type, GL_TEXTURE_WRAP_T, GL_REPEAT);
-            }
-        }
-
-
         Texture::~Texture()
         {
             
@@ -149,7 +115,11 @@ namespace nitro
         {
             texture_unit_     = texture_unit;
             uniform_location_ = uniform_location;
-            name_ += std::to_string(texture_number);
+            if(!has_num_)
+            {
+                name_ += std::to_string(texture_number);
+                has_num_ = true;
+            }
         }
 
         std::string Texture::Name() const

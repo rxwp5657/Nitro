@@ -5,13 +5,7 @@ namespace nitro
     namespace core
     {
         SpotLight::SpotLight()
-        : LightShadow{false, 
-                      graphics::Texture{
-                      constants::SHADOW_WIDHT, 
-                      constants::SHADOW_HEIGHT, 
-                      "shadow_map",
-                      GL_TEXTURE_2D,
-                      GL_DEPTH_COMPONENT}},
+        : LightShadow{false, false},
           position_{0.0f, 0.0f, 0.0f, 1.0f},
           direction_{0.0f,0.0f,-1.0f,0.0f},
           color_{1.0f,1.0f,1.0f,1.0f},
@@ -32,13 +26,7 @@ namespace nitro
                              float max_distance,
                              float umbra,
                              float penumbra)
-        : LightShadow{false, 
-                      graphics::Texture{
-                      constants::SHADOW_WIDHT, 
-                      constants::SHADOW_HEIGHT, 
-                      "shadow_map",
-                      GL_TEXTURE_2D,
-                      GL_DEPTH_COMPONENT}}, 
+        : LightShadow{false,false}, 
           position_{position},
           direction_{direction},
           color_{color},
@@ -82,15 +70,15 @@ namespace nitro
           direction_ = clutch::Translation(x,y,z) * direction_;
         }
 
-        void SpotLight::DrawShadows(const graphics::Shader& shader, const graphics::Framebuffer& buffer)
+        void SpotLight::SetupShadows()
         {
-            /*
-            buffer.AttachTexture(GL_DEPTH_ATTACHMENT, shadow_map_.TextureReference());
-            glViewport(0, 0, constants::SHADOW_WIDHT, constants::SHADOW_HEIGHT);
-            buffer.Bind();
-            glClear(GL_DEPTH_BUFFER_BIT);
-            shader.Use();
-            */
+          
+        }
+
+        void SpotLight::DrawShadows(const graphics::Shader& shader)
+        {
+            
+
         }
 
         void SpotLight::Draw(const graphics::Shader& shader)

@@ -27,14 +27,14 @@ uniform vec4  light_pos;
 uniform vec4  light_color;
 uniform float max_distance;
 uniform bool  cast_shadow;
-uniform sampler3D shadow_map0;
+uniform samplerCube shadow_map;
 
 float shadows(float squared_dist, vec3 L)
 {
     float bias  = 0.005;
-    float shadow_sample = texture(shadow_map0, -L).r;
+    float shadow_sample = texture(shadow_map, -L).r;
     float depht  = (squared_dist * bias) - shadow_sample;
-    float shadow = (depht - shadow_sample < 0.0f) ? 1.0f : 0.0f;
+    float shadow = (depht - shadow_sample < 0.0) ? 1.0 : 0.0;
 
     return shadow;
 }
@@ -61,7 +61,7 @@ vec4 blinn(vec3 FragPos, vec3 Normal, vec3 View, vec3 L, vec3 light_color)
 
     float shadow = cast_shadow ? shadows(dot(L,L), L) : 0.0; 
 
-    return vec4((ambient + (1.0 - shadow) * (diffuse + specular)) * surface_color, 1.0);
+    return vec4(ambient + diffuse + specular,1.0);
 }
 
 void main()

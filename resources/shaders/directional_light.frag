@@ -27,6 +27,24 @@ uniform vec4 light_dir;
 uniform vec4 light_color;
 uniform mat4 light_transform;
 uniform mat4 light_projection;
+uniform bool cast_shadow;
+uniform sampler2D shadow_map;
+
+float calculate_shadow(vec4 fragPosLight)
+{
+    // perform perspective divide
+    vec3 projCoords = fragPosLight.xyz / fragPosLight.w;
+    // transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+    // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+    float closestDepth = texture(shadow_map, projCoords.xy).r; 
+    // get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+    // check whether current frag pos is in shadow
+    float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
+
+    return shadow;
+}
 
 vec4 blinn(vec3 FragPos, vec3 Normal, vec3 View, vec3 L, vec3 light_color)
 {
@@ -42,7 +60,9 @@ vec4 blinn(vec3 FragPos, vec3 Normal, vec3 View, vec3 L, vec3 light_color)
     vec3 diffuse  = surface_color * light_color * max(0.0, dot(N,L));
     vec3 specular = surface_spec  * light_color * pow(max(0.0, dot(R, V)), 50) * 0.9;
 
-    return vec4(ambient + diffuse + specular,1.0);
+    float shadow  = cast_shadow ? calculate_shadow(light_projection * light_transform * vec4(fs_in.FragPos,1.0)) : 1.0; 
+
+    return vec4(ambient + diffuse + specular, 1.0);
 }
 
 void main()

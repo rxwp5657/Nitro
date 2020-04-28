@@ -7,14 +7,7 @@ namespace nitro
         PointLight::PointLight(const clutch::Vec4<float>& position,
                                const clutch::Vec4<float>& color,
                                const float max_distance)
-        : LightShadow{false, 
-                      graphics::Texture{
-                      constants::SHADOW_WIDHT, 
-                      constants::SHADOW_HEIGHT, 
-                      "shadow_map",
-                      GL_TEXTURE_CUBE_MAP,
-                      GL_DEPTH_COMPONENT,
-                      true}},
+        : LightShadow{false, false},
           position_{position},
           color_{color},
           max_distance_{max_distance}
@@ -23,14 +16,7 @@ namespace nitro
         }
 
         PointLight::PointLight()
-        : LightShadow{false, 
-                      graphics::Texture{
-                      constants::SHADOW_WIDHT, 
-                      constants::SHADOW_HEIGHT, 
-                      "shadow_map",
-                      GL_TEXTURE_CUBE_MAP,
-                      GL_DEPTH_COMPONENT,
-                      true}},
+        : LightShadow{false, false},
           position_{0.0f, 0.0f, 0.0f, 1.0f},
           color_{1.0f, 1.0f, 1.0f, 1.0f},
           max_distance_{15.0f}
@@ -53,26 +39,57 @@ namespace nitro
             return clutch::LookAt(position_, position_ + direction, up);
         }
 
-        void PointLight::DrawShadows(const graphics::Shader& shader, const graphics::Framebuffer& buffer)
+        void PointLight::SetupShadows()
         {
-            
-            buffer.AttachTexture(GL_DEPTH_ATTACHMENT, shadow_map_.TextureReference());
+            glGenFramebuffers(1, &framebuffer_);
+            glGenTextures(1, &shadow_map_);
 
-            glViewport(0, 0, constants::SHADOW_WIDHT, constants::SHADOW_HEIGHT);
-            buffer.Bind();
+            glBindTexture(GL_TEXTURE_CUBE_MAP, shadow_map_);
+
+            for (unsigned int i = 0; i < 6; ++i)
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
             
-            glClear(GL_DEPTH_BUFFER_BIT);
+            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+            
+            glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
+            glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadow_map_, 0);
+            glDrawBuffer(GL_NONE);
+            glReadBuffer(GL_NONE);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+            ShadowSetup(true);
+        }
+
+        void PointLight::DrawShadows(const graphics::Shader& shader)
+        {            
+            
             shader.Use();
+
+            if(!ShadowSetup())
+                SetupShadows();
             
-            auto projection = clutch::Perspective((90.0f * clutch::PI) / 180.0f, 1.0f, 1.0, max_distance_);
+            glViewport(0, 0,  constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT);
+            glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
+            glClear(GL_DEPTH_BUFFER_BIT);
+            
+            auto projection = clutch::Perspective((90.0f * clutch::PI) / 180.0f, 1.0f, 1.0f, max_distance_);
 
             shader.SetUniform4f("light_pos", position_);
-            shader.SetUniformMat4("face_vp[ " + std::to_string(0) + "]", projection * FaceTransform({0.0f, 0.0f, -1.0f, 0.0f}, {0.0f, 1.0f, 0.0f, 0.0f}));
-            shader.SetUniformMat4("face_vp[ " + std::to_string(1) + "]", projection * FaceTransform({0.0f, 0.0f,  1.0f, 0.0f}, {0.0f, 1.0f, 0.0f, 0.0f}));
-            shader.SetUniformMat4("face_vp[ " + std::to_string(2) + "]", projection * FaceTransform({1.0f, 0.0f,  0.0f, 0.0f}, {0.0f, 1.0f, 0.0f, 0.0f}));
-            shader.SetUniformMat4("face_vp[ " + std::to_string(3) + "]", projection * FaceTransform({-1.0f,0.0f,  0.0f, 0.0f}, {0.0f, 1.0f, 0.0f, 0.0f}));
-            shader.SetUniformMat4("face_vp[ " + std::to_string(4) + "]", projection * FaceTransform({0.0f, 1.0f,  0.0f, 0.0f}, {0.0f, 0.0f, 1.0f, 0.0f}));
-            shader.SetUniformMat4("face_vp[ " + std::to_string(5) + "]", projection * FaceTransform({0.0f,-1.0f,  0.0f, 0.0f}, {0.0f, 0.0f, 1.0f, 0.0f}));    
+            std::vector<clutch::Mat4<float>> transforms{};
+            transforms.push_back(projection * FaceTransform({0.0f, 0.0f,-1.0f, 0.0f}, {0.0f, 1.0f, 0.0f, 0.0f}));
+            transforms.push_back(projection * FaceTransform({0.0f, 0.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 0.0f, 0.0f}));
+            transforms.push_back(projection * FaceTransform({1.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f, 0.0f}));
+            transforms.push_back(projection * FaceTransform({-1.0f,0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f, 0.0f}));
+            transforms.push_back(projection * FaceTransform({0.0f, 1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f, 0.0f}));
+            transforms.push_back(projection * FaceTransform({0.0f,-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f, 0.0f}));
+
+            for(int i = 0; i < 6; i++)
+                shader.SetUniformMat4("face_vp[ " + std::to_string(0) + "]", projection * FaceTransform({0.0f, 0.0f,-1.0f, 0.0f}, {0.0f, 1.0f, 0.0f, 0.0f}));    
+            shader.SetUniformFloat("far_plane", max_distance_);
             
         }
 
@@ -82,7 +99,10 @@ namespace nitro
             shader.SetUniform4f("light_color", color_);
             shader.SetUniformFloat("max_distance", max_distance_);
             shader.SetUniformInt("cast_shadow", shadows_);
-            shadow_map_.TextureUnit(GL_TEXTURE11, 11, 0);
+
+            glActiveTexture(GL_TEXTURE12);
+            shader.SetUniformInt("shadow_map", 12);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, shadow_map_);
         }
 
         void PointLight::Erase()

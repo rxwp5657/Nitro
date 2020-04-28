@@ -12,19 +12,24 @@ namespace nitro
         struct LightShadow
         {
         public:
-            LightShadow(bool shadows, const graphics::Texture& shadow_map) 
-            : shadows_{shadows}, shadow_map_{shadow_map} {}
+            LightShadow(bool shadows, bool shadow_setup)
+            : shadows_{shadows},  shadow_setup_{shadow_setup} {}
             
             bool Shadow() { return shadows_; }
             void Shadow(bool casts) { shadows_ = casts; }
+            
+            bool ShadowSetup()  { return shadow_setup_;}
+            void ShadowSetup(bool setup_status) { shadow_setup_ = setup_status;}
 
             virtual ~LightShadow()  = default;
-            virtual void DrawShadows(const graphics::Shader& shader,
-                                     const graphics::Framebuffer& buffer) = 0;
-        
+            virtual void SetupShadows() = 0;
+            virtual void DrawShadows(const graphics::Shader& shader) = 0;
+            
         protected:
-            bool shadows_;
-            graphics::Texture shadow_map_;
+            bool   shadows_;
+            bool   shadow_setup_;
+            GLuint shadow_map_;
+            GLuint framebuffer_;
         };
         
     }

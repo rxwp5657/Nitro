@@ -36,7 +36,7 @@ int main(int argc, char **argv)
     cube->Translate(0.0f, 0.0f, 3.5f);
 
     spot->MovePos(0.0f, 1.0f, 1.5f);
-    dir->Move(0.0f, 1.0f, 1.5f);
+    dir->Move(-2.0f, 4.0f, -1.0f);
     light->Move(0.0f, 1.5f, 1.5f);
 
     cylinder->FlipUV();
@@ -47,10 +47,13 @@ int main(int argc, char **argv)
     scene.AddActor(cylinder);
     scene.AddActor(sphere);
     scene.AddActor(cube);
-    scene.AddSpotLight(spot);
+    //scene.AddSpotLight(spot);
+    //scene.AddPointLight(light);
     scene.AddDirectionalLight(dir);
     scene.AddSkyBox(skybox);
-    //scene.AddPointLight(light);
+
+    //light->Shadow(true);
+    //dir->Shadow(true);
 
     controller1.AddButton(GLFW_KEY_W, scene.CameraPtr(), &nitro::core::Camera::Forward);
     controller1.AddButton(GLFW_KEY_A, scene.CameraPtr(), &nitro::core::Camera::Left);

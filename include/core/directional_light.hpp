@@ -11,6 +11,8 @@
 #include <drawable.hpp>
 #include <shader.hpp>
 #include <light_shadow.hpp>
+#include <lookat.hpp>
+#include <projections.hpp>
 
 namespace nitro 
 {
@@ -27,7 +29,8 @@ namespace nitro
             void Draw(const graphics::Shader& shader) override;
             void Erase() override;
 
-            void DrawShadows(const graphics::Shader& shader, const graphics::Framebuffer& buffer) override; 
+            void DrawShadows(const graphics::Shader& shader) override; 
+            void SetupShadows() override;
 
         private:
             clutch::Vec4<float> direction_;

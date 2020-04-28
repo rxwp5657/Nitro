@@ -39,7 +39,8 @@ namespace nitro
             void Draw(const graphics::Shader& shader) override;
             void Erase() override;
 
-            void DrawShadows(const graphics::Shader& shader, const graphics::Framebuffer& buffer) override; 
+            void DrawShadows(const graphics::Shader& shader) override; 
+            void SetupShadows() override;
 
         private:
             clutch::Vec4<float> position_;

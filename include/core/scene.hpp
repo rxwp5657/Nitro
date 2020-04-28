@@ -66,6 +66,7 @@ namespace nitro
             void DisableMultipass();
 
             void SetDefaultViewPort(int width, int height);
+            void ClearBuffers();
 
             template <typename T>
             void ForwardRenderLights(const graphics::Shader& light_shader, const std::vector<T> lights)
@@ -84,12 +85,14 @@ namespace nitro
             void ForwardRenderShadows(const graphics::Shader& shadow_shader, const std::vector<T> lights)
             {   
                 for(const auto& light : lights)
+                {
                     if(light->Shadow())
                     {
-                        light->DrawShadows(shadow_shader, shadow_buffer_);
+                        light->DrawShadows(shadow_shader);
                         DrawActors(shadow_shader);
-                        shadow_buffer_.Unbind();
-                    } 
+                        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                    }
+                } 
             }
         };
     }

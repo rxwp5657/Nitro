@@ -28,8 +28,11 @@ namespace nitro
           point_lights_{},
           spot_lights_{},
           dir_lights_{},
+          gbuffer_textures_{},
           camera_{},
-          skybox_{}
+          skybox_{},
+          gbuffer_{},
+          shadow_buffer_{}
         {
 
         }
@@ -102,9 +105,13 @@ namespace nitro
 
         void Scene::SetDefaultViewPort(int width, int height)
         {
-            glViewport(0,0,width,height);
+            glViewport(0,0,width,height); 
+        }
+
+        void Scene::ClearBuffers()
+        {
             glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
         void Scene::DrawActors(const graphics::Shader& shader)
@@ -124,13 +131,13 @@ namespace nitro
             if(shaders.find("spot_shadows") != shaders.end() && spot_lights_.size() > 0)
             {
                 auto shader = shaders.at("spot_shadows");
-                ForwardRenderShadows(shader, dir_lights_);
+                ForwardRenderShadows(shader, spot_lights_);
             }
 
             if(shaders.find("directional_shadows") != shaders.end() && dir_lights_.size() > 0)
             {
                 auto shader = shaders.at("directional_shadows");
-                ForwardRenderShadows(shader, spot_lights_);
+                ForwardRenderShadows(shader, dir_lights_);
             }
         }
 
@@ -173,8 +180,10 @@ namespace nitro
         void Scene::Draw(const std::map<std::string, graphics::Shader>& shaders, int screen_width, int screen_height)
         {
             //Setup();
+            ClearBuffers();
             RenderShadows(shaders);
             SetDefaultViewPort(screen_width, screen_height);
+            ClearBuffers();
             ForwardRender(shaders);
             DrawSkyBox(shaders.at("skybox"));
             skybox_.Unbind();
