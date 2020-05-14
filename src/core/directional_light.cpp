@@ -34,9 +34,8 @@ namespace nitro
 
         void DirectionalLight::SetupShadows()
         {
-            
             glGenFramebuffers(1, &framebuffer_);
-            glGenTextures(1, &shadow_map_);
+            glGenTextures(1,     &shadow_map_);
 
             glBindTexture(GL_TEXTURE_2D, shadow_map_);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
@@ -49,6 +48,10 @@ namespace nitro
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadow_map_, 0);
             glDrawBuffer(GL_NONE);
             glReadBuffer(GL_NONE);
+            
+            if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+                throw std::runtime_error("Directional light framebuffer is not complete \n");
+            
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
             ShadowSetup(true);
@@ -56,16 +59,14 @@ namespace nitro
 
         void DirectionalLight::DrawShadows(const graphics::Shader& shader)
         {   
-            shader.Use();
-
             if(!ShadowSetup())
                 SetupShadows();
             
             glViewport(0, 0,  constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT);
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
             glClear(GL_DEPTH_BUFFER_BIT);
-                        
-            projection_ = clutch::Orthopraphic(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 100.0f);
+            
+            projection_ = clutch::Orthopraphic(-10.0f, 10.0f, -10.0f, 10.0f, -10.0f, 20.0f);
             transform_  = clutch::LookAt(direction_ * -1.0f, {0.0f, 0.0f,  0.0f, 0.0f}, {0.0f, 1.0f,  0.0f, 0.0f}); 
 
             shader.SetUniformMat4("light_transform", projection_ * transform_);
@@ -76,14 +77,12 @@ namespace nitro
         {
             shader.SetUniform4f("light_dir",   direction_);
             shader.SetUniform4f("light_color", color_);
-            shader.SetUniformMat4("light_transform",  transform_);
-            shader.SetUniformMat4("light_projection", projection_);
+            shader.SetUniformMat4("light_transform",  projection_ * transform_);
             shader.SetUniformInt("cast_shadow", shadows_);
         
             glActiveTexture(GL_TEXTURE12);
             shader.SetUniformInt("shadow_map", 12);
             glBindTexture(GL_TEXTURE_2D, shadow_map_);
-
         } 
 
         void DirectionalLight::Erase() 

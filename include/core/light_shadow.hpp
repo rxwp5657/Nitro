@@ -21,6 +21,9 @@ namespace nitro
             bool ShadowSetup()  { return shadow_setup_;}
             void ShadowSetup(bool setup_status) { shadow_setup_ = setup_status;}
 
+            GLuint ShadowMap()   {return shadow_map_;} 
+            GLuint FrameBuffer() {return framebuffer_;}
+
             virtual ~LightShadow()  = default;
             virtual void SetupShadows() = 0;
             virtual void DrawShadows(const graphics::Shader& shader) = 0;

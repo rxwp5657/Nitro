@@ -121,7 +121,7 @@ namespace nitro
         }
 
         void Scene::RenderShadows(const  std::map<std::string, graphics::Shader>& shaders)
-        {
+        {   
             if(shaders.find("point_shadows") != shaders.end() && point_lights_.size() > 0)
             {
                 auto shader = shaders.at("point_shadows");
@@ -142,8 +142,7 @@ namespace nitro
         }
 
         void Scene::ForwardRender(const  std::map<std::string, graphics::Shader>& shaders)
-        {
-            
+        {            
             if(shaders.find("point_lighting") != shaders.end() && point_lights_.size() > 0)
             {
                 auto shader = shaders.at("point_lighting");
@@ -153,6 +152,7 @@ namespace nitro
 
             if(shaders.find("directional_lighting") != shaders.end() && dir_lights_.size() > 0)
             {
+                
                 auto shader = shaders.at("directional_lighting");
                 ForwardRenderLights(shader, dir_lights_);
                 EnableMultipass();
@@ -175,18 +175,23 @@ namespace nitro
         void Scene::Setup() const
         {
             
-        }
-
+        }        
+        
         void Scene::Draw(const std::map<std::string, graphics::Shader>& shaders, int screen_width, int screen_height)
         {
             //Setup();
             ClearBuffers();
             RenderShadows(shaders);
+            
             SetDefaultViewPort(screen_width, screen_height);
+            
             ClearBuffers();
             ForwardRender(shaders);
+
             DrawSkyBox(shaders.at("skybox"));
             skybox_.Unbind();
+            auto debugger = utils::Debugger();
+            debugger.DebugFrameBuffer(dir_lights_[0]->ShadowMap(), shaders.at("debug"));
         }
     }
 }

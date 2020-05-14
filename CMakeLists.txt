@@ -4,9 +4,8 @@ cmake_minimum_required (VERSION 2.8)
 project (Nitro)
 
 set(CMAKE_CXX_FLAGS "-g -Wall")
-if(APPLE)
-    set(CMAKE_CXX_STANDARD 14)
-endif()
+set(CMAKE_CXX_STANDARD 14)
+
 
 add_compile_definitions(STORAGE_SSE)
 
@@ -15,6 +14,7 @@ include_directories(include/graphics/)
 include_directories(include/core/)
 include_directories(include/events/)
 include_directories(include/input/)
+include_directories(include/utils/)
 #Project libraries
 
 file(GLOB SOURCES src/*/*.cpp src/*)

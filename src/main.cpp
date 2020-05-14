@@ -53,7 +53,7 @@ int main(int argc, char **argv)
     scene.AddSkyBox(skybox);
 
     //light->Shadow(true);
-    //dir->Shadow(true);
+    dir->Shadow(true);
 
     controller1.AddButton(GLFW_KEY_W, scene.CameraPtr(), &nitro::core::Camera::Forward);
     controller1.AddButton(GLFW_KEY_A, scene.CameraPtr(), &nitro::core::Camera::Left);
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
         delta_time =  current_time - last_frame;
         last_frame = current_time;
 
-        //light->Move(sin(current_time) * 0.1, 0.0f, 0.0f);
+        dir->Move(sin(current_time) * 0.1, 0.0f, 0.0f);
 
         controller1.HandleInput(*manager.get_window(),delta_time);
         manager.UpdateScene(scene);

@@ -12,6 +12,7 @@
 #include <spot_light.hpp>
 #include <point_light.hpp>
 #include <directional_light.hpp>
+#include <debugger.hpp>
 
 namespace nitro
 {
@@ -69,7 +70,7 @@ namespace nitro
             void ClearBuffers();
 
             template <typename T>
-            void ForwardRenderLights(const graphics::Shader& light_shader, const std::vector<T> lights)
+            void ForwardRenderLights(const graphics::Shader& light_shader, const std::vector<T>& lights)
             {
                 light_shader.Use();
                 
@@ -82,13 +83,14 @@ namespace nitro
             }
 
             template <typename T>
-            void ForwardRenderShadows(const graphics::Shader& shadow_shader, const std::vector<T> lights)
-            {   
+            void ForwardRenderShadows(const graphics::Shader& shadow_shader, const std::vector<T>& lights)
+            {                
                 for(const auto& light : lights)
                 {
                     if(light->Shadow())
                     {
-                        light->DrawShadows(shadow_shader);
+                        shadow_shader.Use();
+                        light->DrawShadows(shadow_shader); 
                         DrawActors(shadow_shader);
                         glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     }

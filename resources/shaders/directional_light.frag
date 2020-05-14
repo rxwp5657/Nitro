@@ -26,7 +26,6 @@ uniform vec4 viewPos;
 uniform vec4 light_dir;
 uniform vec4 light_color;
 uniform mat4 light_transform;
-uniform mat4 light_projection;
 uniform bool cast_shadow;
 uniform sampler2D shadow_map;
 
@@ -60,7 +59,7 @@ vec4 blinn(vec3 FragPos, vec3 Normal, vec3 View, vec3 L, vec3 light_color)
     vec3 diffuse  = surface_color * light_color * max(0.0, dot(N,L));
     vec3 specular = surface_spec  * light_color * pow(max(0.0, dot(R, V)), 50) * 0.9;
 
-    float shadow  = cast_shadow ? calculate_shadow(light_projection * light_transform * vec4(fs_in.FragPos,1.0)) : 1.0; 
+    float shadow  = cast_shadow ? calculate_shadow(light_transform * vec4(fs_in.FragPos,1.0)) : 1.0; 
 
     return vec4(ambient + diffuse + specular, 1.0);
 }
