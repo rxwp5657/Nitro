@@ -13,7 +13,7 @@ namespace nitro
             virtual ~Drawable()  = default;
             virtual void Erase() = 0;
             virtual void Setup(const Shader& shader) = 0;
-            virtual void Draw(const  Shader& shader) = 0;
+            virtual void Draw(const  Shader& shader, bool default_framebuffer = true) = 0;
         };
     }
 }

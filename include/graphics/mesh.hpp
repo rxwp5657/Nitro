@@ -37,7 +37,7 @@ namespace nitro
 
             void Erase() override;
             void Setup(const Shader& shader) override;
-            void Draw(const Shader& shader) override;
+            void Draw(const Shader& shader, bool default_framebuffer = true) override;
 
         private:
             std::vector<Vertex>       vertices_;

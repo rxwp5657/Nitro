@@ -90,9 +90,9 @@ namespace nitro
             shader.SetUniformFloat("mat_refractiveness", material_.refractivity);
         }
 
-        void Mesh::Draw(const Shader& shader)
+        void Mesh::Draw(const Shader& shader, bool default_framebuffer)
         {
-            if(!loaded_)
+            if(!loaded_ || default_framebuffer)
                 Setup(shader);
 
             

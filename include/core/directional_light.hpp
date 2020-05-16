@@ -26,7 +26,7 @@ namespace nitro
 
             void Move(float x, float y, float z);
 
-            void Draw(const graphics::Shader& shader) override;
+            void Draw(const graphics::Shader& shader, bool default_framebuffer = true) override;
             void Erase() override;
 
             void DrawShadows(const graphics::Shader& shader) override; 

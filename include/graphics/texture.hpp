@@ -30,7 +30,7 @@ namespace nitro
             void TextureUnit(GLint texture_unit, int uniform_location, int texture_number);
             
             void Erase() override;
-            void Draw(const Shader& shader) override;
+            void Draw(const Shader& shader, bool default_framebuffer = true) override;
 
         private:
             GLuint texture_;

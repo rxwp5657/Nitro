@@ -10,7 +10,7 @@ namespace nitro
 
             std::string path = rsc_path.append(file_name);
             std::ifstream file{path, mode};
-            
+
             if(!file.is_open())
             {
                 std::string error{"Unable to open file: "};

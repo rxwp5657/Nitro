@@ -31,7 +31,7 @@ namespace nitro
 
             void Erase() override;
             void Setup(const graphics::Shader& shader) override;
-            void Draw(const graphics::Shader& shader)  override;
+            void Draw(const graphics::Shader& shader,bool default_framebuffer = true)  override;
 
             void AddShader(const std::string& shader_name);
             std::vector<std::string> Shaders() const;

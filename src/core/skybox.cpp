@@ -14,7 +14,7 @@ namespace nitro
         {
         }
 
-        void Skybox::Draw(const  graphics::Shader& shader)
+        void Skybox::Draw(const  graphics::Shader& shader, bool default_framebuffer)
         {
             glDepthFunc(GL_LEQUAL);
             Setup(shader);

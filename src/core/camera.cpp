@@ -68,7 +68,7 @@ namespace nitro
         void Camera::Erase(){}
         void Camera::Setup(const graphics::Shader& shader){}
 
-        void Camera::Draw(const  graphics::Shader& shader)
+        void Camera::Draw(const  graphics::Shader& shader, bool default_framebuffer)
         {
             shader.SetUniformMat4("uView", ViewTransform());
             shader.SetUniformMat4("uProj", projection_);

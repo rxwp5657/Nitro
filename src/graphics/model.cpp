@@ -166,7 +166,7 @@ namespace nitro
                 mesh.FlipUV();
         }
 
-        void Model::Draw(const Shader& shader)
+        void Model::Draw(const Shader& shader, bool default_framebuffer)
         {
             for(auto& mesh : meshes_)
             {

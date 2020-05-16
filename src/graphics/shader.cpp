@@ -171,7 +171,7 @@ namespace nitro
 
         GLuint Shader::CompileShader(const std::string file, const GLint type)
         {
-            std::string rsc_path{"../resources/shaders/"};
+            std::string rsc_path{"shaders/"};
             std::string path = rsc_path.append(file);
             std::string source = ShaderSource(path);
 

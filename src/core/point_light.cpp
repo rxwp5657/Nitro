@@ -93,7 +93,7 @@ namespace nitro
             
         }
 
-        void PointLight::Draw(const graphics::Shader& shader)
+        void PointLight::Draw(const graphics::Shader& shader, bool default_framebuffer)
         {
             shader.SetUniform4f("light_pos",   position_);
             shader.SetUniform4f("light_color", color_);

@@ -24,7 +24,7 @@ namespace nitro
             void Bind(graphics::Shader& shader) const;
             void Unbind() const;
 
-            void Draw(const graphics::Shader& shader) override;
+            void Draw(const graphics::Shader& shader, bool default_framebuffer = true) override;
 
         private:
             GLuint texture_;

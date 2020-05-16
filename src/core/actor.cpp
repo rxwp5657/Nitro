@@ -65,7 +65,7 @@ namespace nitro
             shader.SetUniformMat4("uNormalMat", NormalMat());
         }
 
-        void Actor::Draw(const graphics::Shader& shader)
+        void Actor::Draw(const graphics::Shader& shader, bool default_framebuffer)
         {
             Setup(shader);
             model_.Draw(shader);

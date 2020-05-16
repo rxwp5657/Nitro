@@ -142,7 +142,7 @@ namespace nitro
 
         }
 
-        void Texture::Draw(const Shader& shader)
+        void Texture::Draw(const Shader& shader, bool default_framebuffer)
         {
             glActiveTexture(texture_unit_);
             shader.SetUniformInt(name_.c_str(), uniform_location_);

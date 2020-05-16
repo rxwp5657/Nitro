@@ -27,7 +27,7 @@ namespace nitro
 
             void FlipUV();
 
-            void Draw(const Shader& shader) override;
+            void Draw(const Shader& shader, bool default_framebuffer = true) override;
             void Erase() override;
 
         private:
@@ -35,6 +35,7 @@ namespace nitro
             std::string directory_;
 
             void Setup(const Shader& shader) override;
+            
             void LoadModel(const std::string& name);
             void ProcessNode(aiNode *node, const aiScene *scene, std::vector<Texture>& loaded_textures);
             Mesh ProcessMesh(aiMesh *mesh, const aiScene *scene, std::vector<Texture>& loaded_textures);

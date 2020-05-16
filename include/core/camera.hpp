@@ -36,7 +36,7 @@ namespace nitro
 
             void Erase() override;
             void Setup(const graphics::Shader& shader) override;
-            void Draw(const  graphics::Shader& shader) override;
+            void Draw(const  graphics::Shader& shader, bool default_framebuffer = true) override;
 
         private:
             clutch::Vec4<float> position_; 

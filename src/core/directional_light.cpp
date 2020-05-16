@@ -73,7 +73,7 @@ namespace nitro
 
         }
 
-        void DirectionalLight::Draw(const graphics::Shader& shader)
+        void DirectionalLight::Draw(const graphics::Shader& shader, bool default_framebuffer)
         {
             shader.SetUniform4f("light_dir",   direction_);
             shader.SetUniform4f("light_color", color_);

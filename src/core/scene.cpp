@@ -114,10 +114,10 @@ namespace nitro
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
-        void Scene::DrawActors(const graphics::Shader& shader)
+        void Scene::DrawActors(const graphics::Shader& shader, bool default_framebuffer)
         {
             for(const auto& actor : actors_)
-                actor->Draw(shader);
+                actor->Draw(shader, default_framebuffer);
         }
 
         void Scene::RenderShadows(const  std::map<std::string, graphics::Shader>& shaders)
@@ -190,8 +190,11 @@ namespace nitro
 
             DrawSkyBox(shaders.at("skybox"));
             skybox_.Unbind();
+            
+            /*
             auto debugger = utils::Debugger();
             debugger.DebugFrameBuffer(dir_lights_[0]->ShadowMap(), shaders.at("debug"));
+            */
         }
     }
 }

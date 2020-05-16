@@ -54,7 +54,7 @@ namespace nitro
             graphics::Framebuffer gbuffer_; 
             graphics::Framebuffer shadow_buffer_;
 
-            void DrawActors(const graphics::Shader& shader);
+            void DrawActors(const graphics::Shader& shader, bool default_framebuffer = true);
             void DrawSkyBox(const graphics::Shader& shader);
             
             void Setup() const;
@@ -91,7 +91,7 @@ namespace nitro
                     {
                         shadow_shader.Use();
                         light->DrawShadows(shadow_shader); 
-                        DrawActors(shadow_shader);
+                        DrawActors(shadow_shader, false);
                         glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     }
                 } 
