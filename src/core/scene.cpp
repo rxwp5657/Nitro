@@ -18,7 +18,8 @@ namespace nitro
           camera_{camera},
           skybox_{skybox},
           gbuffer_{},
-          shadow_buffer_{}
+          shadow_buffer_{},
+          update_VBO_{true}
         {
 
         }
@@ -32,7 +33,8 @@ namespace nitro
           camera_{},
           skybox_{},
           gbuffer_{},
-          shadow_buffer_{}
+          shadow_buffer_{},
+          update_VBO_{true}
         {
 
         }
@@ -126,18 +128,21 @@ namespace nitro
             {
                 auto shader = shaders.at("point_shadows");
                 ForwardRenderShadows(shader, point_lights_);
+                update_VBO_ = true;
             }
 
             if(shaders.find("spot_shadows") != shaders.end() && spot_lights_.size() > 0)
             {
                 auto shader = shaders.at("spot_shadows");
                 ForwardRenderShadows(shader, spot_lights_);
+                update_VBO_ = true;
             }
 
             if(shaders.find("directional_shadows") != shaders.end() && dir_lights_.size() > 0)
             {
                 auto shader = shaders.at("directional_shadows");
                 ForwardRenderShadows(shader, dir_lights_);
+                update_VBO_ = true;
             }
         }
 
@@ -148,6 +153,7 @@ namespace nitro
                 auto shader = shaders.at("point_lighting");
                 ForwardRenderLights(shader, point_lights_);
                 EnableMultipass();
+                update_VBO_ = false;
             }
 
             if(shaders.find("directional_lighting") != shaders.end() && dir_lights_.size() > 0)
@@ -156,12 +162,14 @@ namespace nitro
                 auto shader = shaders.at("directional_lighting");
                 ForwardRenderLights(shader, dir_lights_);
                 EnableMultipass();
+                update_VBO_ = false;
             }
 
             if(shaders.find("spot_lighting") != shaders.end() && spot_lights_.size() > 0)
             {
                 auto shader = shaders.at("spot_lighting");
                 ForwardRenderLights(shader, spot_lights_);
+                update_VBO_ = false;
             }
             
             DisableMultipass();
@@ -193,7 +201,7 @@ namespace nitro
             
             /*
             auto debugger = utils::Debugger();
-            debugger.DebugFrameBuffer(dir_lights_[0]->ShadowMap(), shaders.at("debug"));
+            debugger.DebugFrameBuffer(spot_lights_[0]->ShadowMap(), shaders.at("debug"));
             */
         }
     }
