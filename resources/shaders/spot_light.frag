@@ -27,11 +27,12 @@ uniform vec4 light_pos;
 uniform vec4 light_dir;     
 uniform vec4 light_color;
 uniform mat4 light_transform;
-uniform mat4 light_projection;
 uniform float cutoff;
 uniform float max_distance;
 uniform float umbra;
 uniform float penumbra;
+
+uniform sampler2D shadow_map;
 
 // Distance attenuation/falloff
 float fdist(float r, float range)

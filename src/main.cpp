@@ -32,12 +32,13 @@ int main(int argc, char **argv)
      "posz.jpg",
      "negz.jpg"}};
 
-    sphere->Translate(0.0f, 0.0f, -2.5f);
-    cube->Translate(0.0f, 0.0f, 3.5f);
+    sphere->Translate(  0.0f, 1.0f, 0.0f);
+    cube->Translate(   -3.0f, 1.0f, 0.0f);
+    cylinder->Translate(3.0f, 0.0f, 0.0f);
 
-    spot->MovePos(0.0f, 1.0f, 1.5f);
-    dir->Move(-2.0f, 4.0f, -1.0f);
-    light->Move(0.0f, 1.5f, 1.5f);
+    spot->MovePos(0.0f, 1.0f,  5.0f);
+    dir->Move(    0.0f,-10.0f,-3.0f);
+    light->Move(  0.0f, 1.5f,  5.0f);
 
     cylinder->FlipUV();
 
@@ -47,13 +48,16 @@ int main(int argc, char **argv)
     scene.AddActor(cylinder);
     scene.AddActor(sphere);
     scene.AddActor(cube);
-    //scene.AddSpotLight(spot);
-    //scene.AddPointLight(light);
-    scene.AddDirectionalLight(dir);
+    
+    scene.AddSpotLight(spot);
+    scene.AddPointLight(light);
+    //scene.AddDirectionalLight(dir);
+    
     scene.AddSkyBox(skybox);
 
-    //light->Shadow(true);
-    dir->Shadow(true);
+    light->Shadow(true);
+    //dir->Shadow(true);
+    spot->Shadow(true);
 
     controller1.AddButton(GLFW_KEY_W, scene.CameraPtr(), &nitro::core::Camera::Forward);
     controller1.AddButton(GLFW_KEY_A, scene.CameraPtr(), &nitro::core::Camera::Left);
@@ -70,7 +74,7 @@ int main(int argc, char **argv)
         delta_time =  current_time - last_frame;
         last_frame = current_time;
 
-        dir->Move(sin(current_time) * 0.1, 0.0f, 0.0f);
+        //spot->MovePos(0.0f, 0.0f, sin(current_time) * 0.1);
 
         controller1.HandleInput(*manager.get_window(),delta_time);
         manager.UpdateScene(scene);

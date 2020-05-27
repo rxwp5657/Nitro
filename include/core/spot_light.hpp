@@ -6,8 +6,10 @@
 #include <transforms.hpp>
 #include <texture.hpp>
 #include <shader.hpp>
+#include <lookat.hpp>
 #include <drawable.hpp>
 #include <constants.hpp>
+#include <projections.hpp>
 #include <light_shadow.hpp>
 
 namespace nitro 

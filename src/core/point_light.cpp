@@ -66,9 +66,6 @@ namespace nitro
 
         void PointLight::DrawShadows(const graphics::Shader& shader)
         {            
-            
-            shader.Use();
-
             if(!ShadowSetup())
                 SetupShadows();
             
@@ -76,7 +73,7 @@ namespace nitro
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
             glClear(GL_DEPTH_BUFFER_BIT);
             
-            auto projection = clutch::Perspective((90.0f * clutch::PI) / 180.0f, 1.0f, 1.0f, max_distance_);
+            auto projection = clutch::Perspective((90.0f * clutch::PI) / 180.0f, (float)constants::SHADOW_WIDTH / (float)constants::SHADOW_HEIGHT, 0.5f, max_distance_);
 
             shader.SetUniform4f("light_pos", position_);
             std::vector<clutch::Mat4<float>> transforms{};
@@ -87,8 +84,9 @@ namespace nitro
             transforms.push_back(projection * FaceTransform({0.0f, 1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f, 0.0f}));
             transforms.push_back(projection * FaceTransform({0.0f,-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f, 0.0f}));
 
-            for(int i = 0; i < 6; i++)
-                shader.SetUniformMat4("face_vp[ " + std::to_string(0) + "]", projection * FaceTransform({0.0f, 0.0f,-1.0f, 0.0f}, {0.0f, 1.0f, 0.0f, 0.0f}));    
+             for(int i = 0; i < 6; i++)
+                shader.SetUniformMat4("face_vp[" + std::to_string(i) + "]", transforms[i]);    
+            
             shader.SetUniformFloat("far_plane", max_distance_);
             
         }

@@ -21,7 +21,7 @@ namespace nitro
         : position_{0.0f, 0.0f, 5.0f, 1.0},
           target_{0.0f, 0.0f, -1.0f, 1.0},
           up_{0.0f, 1.0f, 0.0f, 0.0},
-          projection_{clutch::Perspective((45.0f * clutch::PI) / 180, 800.0f / 600.0f, 1.0f, 100.0f)},
+          projection_{clutch::Perspective((45.0f * clutch::PI) / 180.0f, 800.0f / 600.0f, 1.0f, 100.0f)},
           speed_{3.5}
         {
 

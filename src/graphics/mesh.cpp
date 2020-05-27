@@ -35,15 +35,12 @@ namespace nitro
             glBindBuffer(GL_ARRAY_BUFFER, vbo_);
             glBufferData(GL_ARRAY_BUFFER, vertices_.size() * sizeof(Vertex), &vertices_[0], GL_STATIC_DRAW);
 
-            //Link Data to Shader Variables
-
             shader.PosAttrib("aPosition", 3, GL_FLOAT, sizeof(Vertex),  0);
             shader.PosAttrib("aNormal",   3, GL_FLOAT, sizeof(Vertex),  offsetof(Vertex, normal));
             shader.PosAttrib("aTexCoord", 2, GL_FLOAT, sizeof(Vertex),  offsetof(Vertex, tex_coord));
             shader.PosAttrib("aTangent",  3, GL_FLOAT, sizeof(Vertex),  offsetof(Vertex, tangent));
             shader.PosAttrib("aBitangent",3, GL_FLOAT, sizeof(Vertex),  offsetof(Vertex, bitangent));
 
-            // Interger control value for rendering with or without textures
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
             loaded_ = true;
