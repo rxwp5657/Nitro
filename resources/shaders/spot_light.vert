@@ -11,6 +11,7 @@ out VS_OUT
     vec3 FragPos;
     vec3 Normal;
     vec2 TextCoord;
+    vec4 FragPosL;
 } vs_out;
 
 uniform mat4 uModel;
@@ -18,10 +19,13 @@ uniform mat4 uNormalMat;
 uniform mat4 uView;
 uniform mat4 uProj;
 
+uniform mat4 light_transform;
+
 void main()
 {
     gl_Position      = uProj * uView * uModel * vec4(aPosition, 1.0);
     vs_out.FragPos   = vec3(uModel * vec4(aPosition, 1.0));
     vs_out.Normal    = mat3(uNormalMat) * aNormal;
     vs_out.TextCoord = aTexCoord;
+    vs_out.FragPosL  = light_transform * vec4(vs_out.FragPos, 1.0);
 }

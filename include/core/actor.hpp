@@ -26,6 +26,7 @@ namespace nitro
             void Rotate(float x, float y, float z);
             void Scale (float x, float y, float z);
             void Translate(float x, float y, float z);
+            void Color(float r, float g, float b);
             
             void FlipUV();
 

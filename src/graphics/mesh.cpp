@@ -52,6 +52,11 @@ namespace nitro
                 vertices_[i].tex_coord.y = 1.0f - vertices_[i].tex_coord.y;
         }
 
+        void Mesh::Color(float r, float g, float b)
+        {
+            material_.diffuse = clutch::Vec3<float>{r, g, b};
+        }
+
         void Mesh::LoadTextures(const Shader& shader)
         {
             int diffuse = 1, specular = 1, normal = 1, height = 1, skybox = 1;

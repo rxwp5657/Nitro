@@ -17,12 +17,25 @@ int main(int argc, char **argv)
     nitro::graphics::Manager manager{};
     manager.AddShader("skybox", nitro::graphics::Shader{"skybox.vert","skybox.frag"});
     
-    std::shared_ptr<nitro::core::Actor> cylinder{new nitro::core::Actor{"cylinder2/cylinder.obj"}};
-    std::shared_ptr<nitro::core::Actor> sphere{new nitro::core::Sphere{1.0f}};
-    std::shared_ptr<nitro::core::Actor> cube{new nitro::core::Cube{1.0f}};
-    std::shared_ptr<nitro::core::PointLight> light{new nitro::core::PointLight{}};
-    std::shared_ptr<nitro::core::SpotLight>  spot{new nitro::core::SpotLight{}};
-    std::shared_ptr<nitro::core::DirectionalLight>  dir{new nitro::core::DirectionalLight{}};
+    std::shared_ptr<nitro::core::Actor>             cylinder{std::make_shared<nitro::core::Actor>("cylinder2/cylinder.obj")};
+    std::shared_ptr<nitro::core::Actor>             sphere{std::make_shared<nitro::core::Sphere>(1.0f)};
+    std::shared_ptr<nitro::core::Actor>             cube{std::make_shared<nitro::core::Cube>(1.0f)};
+    std::shared_ptr<nitro::core::PointLight>        light{std::make_shared<nitro::core::PointLight>()};
+    std::shared_ptr<nitro::core::SpotLight>         spot{std::make_shared<nitro::core::SpotLight>()};
+    std::shared_ptr<nitro::core::DirectionalLight>  dir{std::make_shared<nitro::core::DirectionalLight>()};
+
+    std::shared_ptr<nitro::core::Actor> wall  {std::make_shared<nitro::core::Plane>(nitro::core::PlaneType::XY)};
+    std::shared_ptr<nitro::core::Actor> floor {std::make_shared<nitro::core::Plane>(nitro::core::PlaneType::XZ)};
+
+
+    wall->Scale( 10, 10, 10);
+    wall->Translate(5.0f, 0.0f, -2.0f);
+    wall->Color(1.0f, 1.0f, 1.0f);
+    wall->Rotate(0.0f, clutch::PI, 0.0f),
+    
+    floor->Scale(10, 10, 10);
+    floor->Translate(-5.0f, 0.0f, -2.f);
+    floor->Color(1.0f, 1.0f, 1.0f);
 
     nitro::core::Skybox skybox{"SwedishRoyalCastle", 
     {"posx.jpg",
@@ -33,12 +46,13 @@ int main(int argc, char **argv)
      "negz.jpg"}};
 
     sphere->Translate(  0.0f, 1.0f, 0.0f);
-    cube->Translate(   -3.0f, 1.0f, 0.0f);
+    cube->Translate(   -3.0f, 0.5f, 0.0f);
     cylinder->Translate(3.0f, 0.0f, 0.0f);
 
-    spot->MovePos(0.0f, 1.0f,  5.0f);
+    spot->MovePos(0.0f, 5.0f, 5.0f);
+    spot->MoveDir(0.0f,-1.0f, 0.0f);
     dir->Move(    0.0f,-10.0f,-3.0f);
-    light->Move(  0.0f, 1.5f,  5.0f);
+    light->Move(  0.0f, 3.5f, 2.0f);
 
     cylinder->FlipUV();
 
@@ -48,14 +62,17 @@ int main(int argc, char **argv)
     scene.AddActor(cylinder);
     scene.AddActor(sphere);
     scene.AddActor(cube);
+
+    scene.AddActor(wall);
+    scene.AddActor(floor);
     
     scene.AddSpotLight(spot);
-    scene.AddPointLight(light);
+    //scene.AddPointLight(light);
     //scene.AddDirectionalLight(dir);
     
     scene.AddSkyBox(skybox);
 
-    light->Shadow(true);
+    //light->Shadow(true);
     //dir->Shadow(true);
     spot->Shadow(true);
 
@@ -72,9 +89,7 @@ int main(int argc, char **argv)
     { 
         current_time = glfwGetTime();
         delta_time =  current_time - last_frame;
-        last_frame = current_time;
-
-        //spot->MovePos(0.0f, 0.0f, sin(current_time) * 0.1);
+        last_frame =  current_time;
 
         controller1.HandleInput(*manager.get_window(),delta_time);
         manager.UpdateScene(scene);

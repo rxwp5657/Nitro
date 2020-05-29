@@ -30,6 +30,8 @@ namespace nitro
             void Draw(const Shader& shader, bool default_framebuffer = true) override;
             void Erase() override;
 
+            void Color(float r, float g, float b);
+
         private:
             std::vector<Mesh> meshes_;
             std::string directory_;

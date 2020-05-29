@@ -34,6 +34,7 @@ namespace nitro
                  const Material& materials);
 
             void FlipUV();
+            void Color(float r, float g, float b);
 
             void Erase() override;
             void Setup(const Shader& shader) override;

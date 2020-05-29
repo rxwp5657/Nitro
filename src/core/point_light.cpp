@@ -77,12 +77,12 @@ namespace nitro
 
             shader.SetUniform4f("light_pos", position_);
             std::vector<clutch::Mat4<float>> transforms{};
-            transforms.push_back(projection * FaceTransform({0.0f, 0.0f,-1.0f, 0.0f}, {0.0f, 1.0f, 0.0f, 0.0f}));
-            transforms.push_back(projection * FaceTransform({0.0f, 0.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 0.0f, 0.0f}));
-            transforms.push_back(projection * FaceTransform({1.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f, 0.0f}));
-            transforms.push_back(projection * FaceTransform({-1.0f,0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f, 0.0f}));
-            transforms.push_back(projection * FaceTransform({0.0f, 1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f, 0.0f}));
-            transforms.push_back(projection * FaceTransform({0.0f,-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f, 0.0f}));
+            transforms.push_back(projection * FaceTransform({ 1.0f, 0.0f, 0.0f, 0.0f}, {0.0f,-1.0f, 0.0f, 0.0f}));
+            transforms.push_back(projection * FaceTransform({-1.0f, 0.0f, 0.0f, 0.0f}, {0.0f,-1.0f, 0.0f, 0.0f}));
+            transforms.push_back(projection * FaceTransform({ 0.0f, 1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f, 0.0f}));
+            transforms.push_back(projection * FaceTransform({ 0.0f,-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f,-1.0f, 0.0f}));
+            transforms.push_back(projection * FaceTransform({ 0.0f, 0.0f, 1.0f, 0.0f}, {0.0f,-1.0f, 0.0f, 0.0f}));
+            transforms.push_back(projection * FaceTransform({ 0.0f, 0.0f,-1.0f, 0.0f}, {0.0f,-1.0f, 0.0f, 0.0f}));
 
              for(int i = 0; i < 6; i++)
                 shader.SetUniformMat4("face_vp[" + std::to_string(i) + "]", transforms[i]);    

@@ -166,6 +166,12 @@ namespace nitro
                 mesh.FlipUV();
         }
 
+        void Model::Color(float r, float g, float b)
+        {
+            for(auto& mesh : meshes_)
+                mesh.Color(r, g, b);
+        } 
+
         void Model::Draw(const Shader& shader, bool default_framebuffer)
         {
             for(auto& mesh : meshes_)

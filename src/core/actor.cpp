@@ -39,6 +39,11 @@ namespace nitro
             translation_ = clutch::Translation(x,y,z);
         }
 
+        void Actor::Color(float r, float g, float b)
+        {
+            model_.Color(r, g, b);
+        }
+
         void Actor::FlipUV()
         {
             model_.FlipUV();

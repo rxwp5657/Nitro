@@ -5,6 +5,7 @@ in VS_OUT
     vec3 FragPos;
     vec3 Normal;
     vec2 TextCoord;
+    vec4 FragPosL;
 } fs_in;
 
 out vec4 FragColor;
@@ -26,13 +27,24 @@ uniform vec4 viewPos;
 uniform vec4 light_pos;   
 uniform vec4 light_dir;     
 uniform vec4 light_color;
-uniform mat4 light_transform;
 uniform float cutoff;
 uniform float max_distance;
 uniform float umbra;
 uniform float penumbra;
+uniform bool cast_shadow;
 
 uniform sampler2D shadow_map;
+
+float shadow(vec4 frag_pos, float bias)
+{
+    vec3 coord = frag_pos.xyz / frag_pos.w;
+    coord = coord * 0.5 + 0.5;
+
+    float light_depth   = texture(shadow_map, coord.xy).r;
+    float current_depht = coord.z;
+
+    return current_depht - bias > light_depth ? 1.0 : 0.0;
+}   
 
 // Distance attenuation/falloff
 float fdist(float r, float range)
@@ -63,8 +75,10 @@ vec4 blinn(vec3 FragPos, vec3 Normal, vec3 View, vec3 L, vec3 light_color)
     vec3 ambient  = 0.1 * surface_color;
     vec3 diffuse  = surface_color * light_color * max(0.0, dot(N,L));
     vec3 specular = surface_spec  * light_color * pow(max(0.0, dot(R, V)), 50) * 0.9;
+    
+    float shadow_val = (cast_shadow) ? shadow(fs_in.FragPosL, 0.005) : 0.0;
 
-    return vec4(ambient + diffuse + specular, 1.0);
+    return vec4(ambient + (1.0 - shadow_val) * (diffuse + specular), 1.0);
 }
 
 void main()

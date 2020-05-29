@@ -7,15 +7,15 @@ namespace nitro
         SpotLight::SpotLight()
         : LightShadow{false, false},
           position_{0.0f, 0.0f, 0.0f, 1.0f},
-          direction_{0.0f,0.0f,-1.0f, 0.0f},
+          direction_{0.0f,0.0f,-1.0f, 1.0f},
           color_{1.0f,1.0f,1.0f,1.0f},
           transform_{},
           projection_{},
-          cutoff_{cos((clutch::PI * 90.0f) / 180.0f)},
-          max_distance_{100.0f},
-          umbra_{cos((clutch::PI * 40.5f) / 180.0f)},
-          penumbra_{cos((clutch::PI * 10.5f) / 180.0f)}
-        {
+          cutoff_{cos((clutch::PI   * 65.0f) / 180.0f)},
+          max_distance_{20.0f},
+          umbra_{cos((clutch::PI    * 40.5f) / 180.0f)},
+          penumbra_{cos((clutch::PI * 20.5f) / 180.0f)}
+        { 
 
         }
 
@@ -67,7 +67,7 @@ namespace nitro
 
         void SpotLight::MoveDir(float x, float y, float z)
         {
-          direction_ = clutch::Translation(x,y,z) * direction_;
+            direction_ = clutch::Translation(x,y,z) * direction_;
         }
 
         void SpotLight::SetupShadows()
@@ -104,7 +104,7 @@ namespace nitro
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
             glClear(GL_DEPTH_BUFFER_BIT);
             
-            projection_ = clutch::Perspective((45.0f * clutch::PI) / 180.0f, 800.0f / 600.0f, 0.5f, max_distance_);
+            projection_ = clutch::Perspective((90.0f * clutch::PI) / 180.0f, 1.5f, 1.0f, max_distance_);
             transform_  = clutch::LookAt(position_, position_ + direction_, clutch::Vec4<float>{0.0f, 1.0f, 0.0f, 0.0f}); 
 
             shader.SetUniformMat4("light_transform", projection_ * transform_);
@@ -120,6 +120,7 @@ namespace nitro
             shader.SetUniformFloat("max_distance",    max_distance_);
             shader.SetUniformFloat("umbra",           umbra_);
             shader.SetUniformFloat("penumbra",        penumbra_);
+            shader.SetUniformInt("cast_shadow",       shadows_);
 
             glActiveTexture(GL_TEXTURE12);
             shader.SetUniformInt("shadow_map", 12);
