@@ -72,9 +72,9 @@ int main(int argc, char **argv)
     
     scene.AddSkyBox(skybox);
 
-    //light->Shadow(true);
-    //dir->Shadow(true);
-    spot->Shadow(true);
+    //light->CastShadow(true);
+    //dir->CastShadow(true);
+    spot->CastShadow(true);
 
     controller1.AddButton(GLFW_KEY_W, scene.CameraPtr(), &nitro::core::Camera::Forward);
     controller1.AddButton(GLFW_KEY_A, scene.CameraPtr(), &nitro::core::Camera::Left);

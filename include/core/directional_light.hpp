@@ -1,6 +1,7 @@
 #ifndef DIRECTIONAL_LIGHT_H
 #define DIRECTIONAL_LIGHT_H
 
+#include <memory>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <vec4.hpp>
@@ -10,15 +11,16 @@
 #include <constants.hpp>
 #include <drawable.hpp>
 #include <shader.hpp>
-#include <light_shadow.hpp>
 #include <lookat.hpp>
 #include <projections.hpp>
+#include <actor.hpp>
+#include <shadows.hpp>
 
 namespace nitro 
 {
     namespace core
     {
-        class DirectionalLight : public graphics::Drawable, public LightShadow
+        class DirectionalLight : public graphics::Drawable, public Shadow
         {
         public:
             DirectionalLight();
@@ -29,7 +31,9 @@ namespace nitro
             void Draw(const graphics::Shader& shader, bool default_framebuffer = true) override;
             void Erase() override;
 
-            void DrawShadows(const graphics::Shader& shader) override; 
+            void DrawShadows(const std::map<std::string, graphics::Shader>& shaders,
+                             const std::vector<std::shared_ptr<Actor>>& actors) override;
+             
             void SetupShadows() override;
 
         private:

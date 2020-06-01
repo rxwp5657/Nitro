@@ -8,7 +8,7 @@ namespace nitro
           // Directions (vectors) actually have w = 0. However, if we want to translate
           // the light using a matrix tranform we need to set the w component
           // to w = 1 otherwise, the translation won't have any effect; 
-        : LightShadow{false, false},
+        : Shadow{2, 5},
           direction_{0.0f,0.0f,0.0f,1.0f},
           color_{1.0f,1.0f,1.0f,1.0f},
           transform_{},
@@ -18,7 +18,7 @@ namespace nitro
         }
 
         DirectionalLight::DirectionalLight(clutch::Vec4<float> direction, clutch::Vec4<float> color)
-        : LightShadow{false, false},
+        : Shadow{2, 5},
           direction_{direction},
           color_{color},
           transform_{},
@@ -35,54 +35,70 @@ namespace nitro
         void DirectionalLight::SetupShadows()
         {
             glGenFramebuffers(1, &framebuffer_);
-            glGenTextures(1,     &shadow_map_);
 
-            glBindTexture(GL_TEXTURE_2D, shadow_map_);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            shadow_maps_[0] = graphics::Texture{
+                "shadow_map", 
+                constants::SHADOW_WIDTH, 
+                constants::SHADOW_HEIGHT, 
+                GL_TEXTURE_2D, 
+                GL_RG32F, 
+                GL_RGBA, 
+                GL_FLOAT};
+            
+            shadow_maps_[1] = graphics::Texture{
+                "shadow_map", 
+                constants::SHADOW_WIDTH, 
+                constants::SHADOW_HEIGHT, 
+                GL_TEXTURE_2D, 
+                GL_DEPTH24_STENCIL8, 
+                GL_DEPTH_STENCIL, 
+                GL_UNSIGNED_INT_24_8};
             
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadow_map_, 0);
-            glDrawBuffer(GL_NONE);
-            glReadBuffer(GL_NONE);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, shadow_maps_[0].TextureReference(), 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, shadow_maps_[1].TextureReference(), 0);
             
             if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
                 throw std::runtime_error("Directional light framebuffer is not complete \n");
             
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-            ShadowSetup(true);
+            shadow_maps_[0].TextureUnit(GL_TEXTURE12, 12, 0);
+
+            set_up_ = true;
         }
 
-        void DirectionalLight::DrawShadows(const graphics::Shader& shader)
+        void DirectionalLight::DrawShadows(const std::map<std::string, graphics::Shader>& shaders,
+                                           const std::vector<std::shared_ptr<Actor>>& actors)
         {   
-            if(!ShadowSetup())
+            auto shader = shaders.at("directional_shadows");
+            shader.Use();
+
+            if(!set_up_)
                 SetupShadows();
             
             glViewport(0, 0,  constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT);
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
-            glClear(GL_DEPTH_BUFFER_BIT);
+            glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
             
             projection_ = clutch::Orthopraphic(-10.0f, 10.0f, -10.0f, 10.0f, -10.0f, 20.0f);
             transform_  = clutch::LookAt(direction_ * -1.0f, {0.0f, 0.0f,  0.0f, 0.0f}, {0.0f, 1.0f,  0.0f, 0.0f}); 
 
-            shader.SetUniformMat4("light_transform", projection_ * transform_);
+            shader.SetUniformMat4("uLightTransform", projection_ * transform_);
 
+            for(const auto& actor : actors)
+                actor->Draw(shader, false);
         }
 
         void DirectionalLight::Draw(const graphics::Shader& shader, bool default_framebuffer)
         {
-            shader.SetUniform4f("light_dir",   direction_);
-            shader.SetUniform4f("light_color", color_);
-            shader.SetUniformMat4("light_transform",  projection_ * transform_);
-            shader.SetUniformInt("cast_shadow", shadows_);
+            shader.SetUniform4f("uLightDir",     direction_);
+            shader.SetUniform4f("uLightColor",   color_);
+            shader.SetUniformInt("uCastsShadow", cast_shadows_);
+            shader.SetUniformInt("uPCF",         pcf_);
+            shader.SetUniformMat4("uLightTransform",  projection_ * transform_);
         
-            glActiveTexture(GL_TEXTURE12);
-            shader.SetUniformInt("shadow_map", 12);
-            glBindTexture(GL_TEXTURE_2D, shadow_map_);
+            shadow_maps_[0].Draw(shader);
         } 
 
         void DirectionalLight::Erase() 

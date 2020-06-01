@@ -5,7 +5,7 @@ namespace nitro
     namespace core
     {
         SpotLight::SpotLight()
-        : LightShadow{false, false},
+        : Shadow{2,5},
           position_{0.0f, 0.0f, 0.0f, 1.0f},
           direction_{0.0f,0.0f,-1.0f, 1.0f},
           color_{1.0f,1.0f,1.0f,1.0f},
@@ -23,10 +23,10 @@ namespace nitro
                              clutch::Vec4<float> direction,
                              clutch::Vec4<float> color,
                              float cutoff,
-                             float max_distance,
                              float umbra,
-                             float penumbra)
-        : LightShadow{false,false}, 
+                             float penumbra,
+                             float max_distance)
+        : Shadow{2,5}, 
           position_{position},
           direction_{direction},
           color_{color},
@@ -73,58 +73,76 @@ namespace nitro
         void SpotLight::SetupShadows()
         {
             glGenFramebuffers(1, &framebuffer_);
-            glGenTextures(1, &shadow_map_);
-
-            glBindTexture(GL_TEXTURE_2D, shadow_map_);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        
+            shadow_maps_[0] = graphics::Texture{
+                "shadow_map", 
+                constants::SHADOW_WIDTH, 
+                constants::SHADOW_HEIGHT, 
+                GL_TEXTURE_2D, 
+                GL_RG32F, 
+                GL_RGBA, 
+                GL_FLOAT};
             
+            shadow_maps_[1] = graphics::Texture{
+                "shadow_map", 
+                constants::SHADOW_WIDTH, 
+                constants::SHADOW_HEIGHT, 
+                GL_TEXTURE_2D, 
+                GL_DEPTH24_STENCIL8, 
+                GL_DEPTH_STENCIL, 
+                GL_UNSIGNED_INT_24_8};
+
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadow_map_, 0);
-            glDrawBuffer(GL_NONE);
-            glReadBuffer(GL_NONE);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, shadow_maps_[0].TextureReference(), 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, shadow_maps_[1].TextureReference(), 0);
             
             if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
                 throw std::runtime_error("Spot light framebuffer is not complete \n");
             
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-            ShadowSetup(true);
+            shadow_maps_[0].TextureUnit(GL_TEXTURE12, 12, 0);
+
+            set_up_ = true;
         }
 
-        void SpotLight::DrawShadows(const graphics::Shader& shader)
+        void SpotLight::DrawShadows(const std::map<std::string, graphics::Shader>& shaders,
+                                    const std::vector<std::shared_ptr<Actor>>& actors)
         {
-            if(!ShadowSetup())
+            auto shader = shaders.at("spot_shadows");
+
+            shader.Use();
+
+            if(!set_up_)
                 SetupShadows();
-          
+
             glViewport(0, 0,  constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT);
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
-            glClear(GL_DEPTH_BUFFER_BIT);
+            glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
             
             projection_ = clutch::Perspective((90.0f * clutch::PI) / 180.0f, 1.5f, 1.0f, max_distance_);
             transform_  = clutch::LookAt(position_, position_ + direction_, clutch::Vec4<float>{0.0f, 1.0f, 0.0f, 0.0f}); 
 
-            shader.SetUniformMat4("light_transform", projection_ * transform_);
+            shader.SetUniformMat4("uLightTransform", projection_ * transform_);
+
+            for(const auto& actor : actors)
+                actor->Draw(shader, false);
         }
 
         void SpotLight::Draw(const graphics::Shader& shader, bool default_framebuffer)
         {
-            shader.SetUniform4f("light_pos",          position_);
-            shader.SetUniform4f("light_dir",          direction_);
-            shader.SetUniform4f("light_color",        color_);
-            shader.SetUniformMat4("light_transform",  projection_ * transform_);
-            shader.SetUniformFloat("cutoff",          cutoff_);
-            shader.SetUniformFloat("max_distance",    max_distance_);
-            shader.SetUniformFloat("umbra",           umbra_);
-            shader.SetUniformFloat("penumbra",        penumbra_);
-            shader.SetUniformInt("cast_shadow",       shadows_);
+            shader.SetUniform4f("uLightPos",          position_);
+            shader.SetUniform4f("uLightDir",          direction_);
+            shader.SetUniform4f("uLightColor",        color_);
+            shader.SetUniformMat4("uLightTransform",  projection_ * transform_);
+            shader.SetUniformFloat("uCutoff",         cutoff_);
+            shader.SetUniformFloat("uMaxDistance",    max_distance_);
+            shader.SetUniformFloat("uUmbra",          umbra_);
+            shader.SetUniformFloat("uPenumbra",       penumbra_);
+            shader.SetUniformInt("uCastsShadow",      cast_shadows_);
+            shader.SetUniformInt("uPCF",              pcf_);
 
-            glActiveTexture(GL_TEXTURE12);
-            shader.SetUniformInt("shadow_map", 12);
-            glBindTexture(GL_TEXTURE_2D, shadow_map_);
+            shadow_maps_[0].Draw(shader);
         }
 
         void SpotLight::Erase()

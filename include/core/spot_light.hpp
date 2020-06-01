@@ -1,6 +1,7 @@
 #ifndef SPOT_LIGHT
 #define SPOT_LIGHT
 
+#include <memory>
 #include <vec4.hpp>
 #include <mat4.hpp>
 #include <transforms.hpp>
@@ -10,13 +11,14 @@
 #include <drawable.hpp>
 #include <constants.hpp>
 #include <projections.hpp>
-#include <light_shadow.hpp>
+#include <shadows.hpp>
+#include <actor.hpp>
 
 namespace nitro 
 {
     namespace core
     {
-        class SpotLight : public graphics::Drawable, public LightShadow
+        class SpotLight : public graphics::Drawable, public Shadow
         {
         public:
 
@@ -25,10 +27,10 @@ namespace nitro
             SpotLight(clutch::Vec4<float> position,
                       clutch::Vec4<float> direction,
                       clutch::Vec4<float> color = {1.0f,1.0f,1.0f,1.0f},
-                      float cutoff  = cos((clutch::PI * 45.0f) / 180.0f),
-                      float max_distance = 5.0f,
-                      float umbra    = cos((clutch::PI * 17.5f) / 180.0f),
-                      float penumbra = cos((clutch::PI * 12.5f) / 180.0f));
+                      float cutoff   = cos((clutch::PI * 65.0f) / 180.0f),
+                      float umbra    = cos((clutch::PI * 40.5f) / 180.0f),
+                      float penumbra = cos((clutch::PI * 20.5f) / 180.0f),
+                      float max_distance = 5.0f);
 
             void Umbra(float umbra);
             void Penumbra(float penumbra);
@@ -41,7 +43,8 @@ namespace nitro
             void Draw(const graphics::Shader& shader, bool default_framebuffer = true) override;
             void Erase() override;
 
-            void DrawShadows(const graphics::Shader& shader) override; 
+            void DrawShadows(const std::map<std::string, graphics::Shader>& shaders,
+                             const std::vector<std::shared_ptr<Actor>>& actors) override; 
             void SetupShadows() override;
 
         private:

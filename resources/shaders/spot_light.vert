@@ -19,7 +19,7 @@ uniform mat4 uNormalMat;
 uniform mat4 uView;
 uniform mat4 uProj;
 
-uniform mat4 light_transform;
+uniform mat4 uLightTransform;
 
 void main()
 {
@@ -27,5 +27,5 @@ void main()
     vs_out.FragPos   = vec3(uModel * vec4(aPosition, 1.0));
     vs_out.Normal    = mat3(uNormalMat) * aNormal;
     vs_out.TextCoord = aTexCoord;
-    vs_out.FragPosL  = light_transform * vec4(vs_out.FragPos, 1.0);
+    vs_out.FragPosL  = uLightTransform * vec4(vs_out.FragPos, 1.0);
 }

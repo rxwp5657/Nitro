@@ -8,7 +8,7 @@
 #include <vec3.hpp>
 #include <actor.hpp>
 #include <shader.hpp>
-#include <stb_image.h>
+#include <stb_image.hpp>
 
 namespace nitro
 {

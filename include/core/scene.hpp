@@ -79,21 +79,23 @@ namespace nitro
                 {
                     camera_.Draw(light_shader);
                     light->Draw(light_shader);
-                    DrawActors(light_shader);
+                    DrawActors(light_shader, update_VBO_);
+                    update_VBO_ = false;
+                    EnableMultipass();
                 }
             }
 
             template <typename T>
-            void ForwardRenderShadows(const graphics::Shader& shadow_shader, const std::vector<T>& lights)
+            void ForwardRenderShadows(const std::map<std::string, graphics::Shader>& shaders, 
+                                      const std::vector<T>& lights)
             {                
                 for(const auto& light : lights)
                 {
-                    if(light->Shadow())
+                    if(light->CastShadow())
                     {
-                        shadow_shader.Use();
-                        light->DrawShadows(shadow_shader); 
-                        DrawActors(shadow_shader, update_VBO_);
+                        light->DrawShadows(shaders, actors_); 
                         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                        update_VBO_ = true;
                     }
                 } 
             }

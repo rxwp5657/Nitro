@@ -23,10 +23,11 @@ uniform sampler2D   texture_specular1;
 uniform int  has_textures;
 uniform vec4 viewPos;
 
-uniform vec4 light_dir;
-uniform vec4 light_color;
-uniform mat4 light_transform;
-uniform bool cast_shadow;
+uniform vec4 uLightDir;
+uniform vec4 uLightColor;
+uniform mat4 uLightTransform;
+uniform bool uCastsShadow;
+uniform int  uPCF;
 uniform sampler2D shadow_map;
 
 float calculate_shadow(vec4 fragPosLight)
@@ -59,7 +60,7 @@ vec4 blinn(vec3 FragPos, vec3 Normal, vec3 View, vec3 L, vec3 light_color)
     vec3 diffuse  = surface_color * light_color * max(0.0, dot(N,L));
     vec3 specular = surface_spec  * light_color * pow(max(0.0, dot(R, V)), 50) * 0.9;
 
-    float shadow  = cast_shadow ? calculate_shadow(light_transform * vec4(fs_in.FragPos,1.0)) : 1.0; 
+    float shadow  = uCastsShadow ? calculate_shadow(uLightTransform * vec4(fs_in.FragPos,1.0)) : 1.0; 
 
     return vec4(ambient + diffuse + specular, 1.0);
 }
@@ -68,7 +69,7 @@ void main()
 {
     vec4 result_color = vec4(0.0);
     
-    result_color += blinn(fs_in.FragPos, fs_in.Normal, viewPos.xyz, normalize(-light_dir.xyz), vec3(light_color));
+    result_color += blinn(fs_in.FragPos, fs_in.Normal, viewPos.xyz, normalize(-uLightDir.xyz), vec3(uLightColor));
 
     FragColor = result_color;
 }

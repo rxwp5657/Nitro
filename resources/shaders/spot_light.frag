@@ -24,26 +24,44 @@ uniform sampler2D   texture_specular1;
 uniform int  has_textures;
 uniform vec4 viewPos;
 
-uniform vec4 light_pos;   
-uniform vec4 light_dir;     
-uniform vec4 light_color;
-uniform float cutoff;
-uniform float max_distance;
-uniform float umbra;
-uniform float penumbra;
-uniform bool cast_shadow;
+uniform vec4  uLightPos;   
+uniform vec4  uLightDir;     
+uniform vec4  uLightColor;
+uniform float uCutoff;
+uniform float uMaxDistance;
+uniform float uUmbra;
+uniform float uPenumbra;
+uniform bool  uCastsShadow;
 
+uniform int uPCF;
 uniform sampler2D shadow_map;
 
 float shadow(vec4 frag_pos, float bias)
 {
+    // Perspective Divide
     vec3 coord = frag_pos.xyz / frag_pos.w;
+    // Mapt to range [0, 1]
     coord = coord * 0.5 + 0.5;
+
+    // Get texel size by getting the reciprocal of the texture size.
+    vec2 shadow_offset  = 1.0 / textureSize(shadow_map,0); 
 
     float light_depth   = texture(shadow_map, coord.xy).r;
     float current_depht = coord.z;
 
-    return current_depht - bias > light_depth ? 1.0 : 0.0;
+    int offset   = uPCF / 2;
+    float shadow = 0.0;
+
+    for(int x = -offset; x <= offset; x++)
+    {
+        for(int y = -offset; y <= offset; y++)
+        {
+            float neighbor = texture(shadow_map, coord.xy + shadow_offset * vec2(x,y)).r;
+            shadow += current_depht - bias > neighbor ?  1.0 : 0.0;
+        }
+    }
+
+    return shadow / (uPCF * uPCF);
 }   
 
 // Distance attenuation/falloff
@@ -55,9 +73,9 @@ float fdist(float r, float range)
 // Direactional attenuation/falloff
 float fdir(vec3 L)
 {
-    float s = dot(normalize(light_dir.xyz), -L);
-    float u = umbra;
-    float p = penumbra;
+    float s = dot(normalize(uLightDir.xyz), -L);
+    float u = uUmbra;
+    float p = uPenumbra;
     float t = clamp((s - u) / (p - u) , 0.0, 1.0);
     return pow(t,2);
 }
@@ -76,7 +94,7 @@ vec4 blinn(vec3 FragPos, vec3 Normal, vec3 View, vec3 L, vec3 light_color)
     vec3 diffuse  = surface_color * light_color * max(0.0, dot(N,L));
     vec3 specular = surface_spec  * light_color * pow(max(0.0, dot(R, V)), 50) * 0.9;
     
-    float shadow_val = (cast_shadow) ? shadow(fs_in.FragPosL, 0.005) : 0.0;
+    float shadow_val = (uCastsShadow) ? shadow(fs_in.FragPosL, 0.005) : 0.0;
 
     return vec4(ambient + (1.0 - shadow_val) * (diffuse + specular), 1.0);
 }
@@ -85,10 +103,10 @@ void main()
 {
     vec4 result_color = vec4(0.0);
 
-    vec3  d = vec3(light_pos) - fs_in.FragPos;
+    vec3  d = vec3(uLightPos) - fs_in.FragPos;
     float r = sqrt(dot(d,d)); 
 
-    vec3 l_color   = vec3(light_color) * fdist(r, max_distance) * fdir(d / r);
+    vec3 l_color   = vec3(uLightColor) * fdist(r, uMaxDistance) * fdir(d / r);
     result_color += blinn(fs_in.FragPos, fs_in.Normal, viewPos.xyz, d / r, l_color);
 
     FragColor = result_color;

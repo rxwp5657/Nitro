@@ -125,25 +125,14 @@ namespace nitro
         void Scene::RenderShadows(const  std::map<std::string, graphics::Shader>& shaders)
         {   
             if(shaders.find("point_shadows") != shaders.end() && point_lights_.size() > 0)
-            {
-                auto shader = shaders.at("point_shadows");
-                ForwardRenderShadows(shader, point_lights_);
-                update_VBO_ = true;
-            }
+                ForwardRenderShadows(shaders, point_lights_);
 
             if(shaders.find("spot_shadows") != shaders.end() && spot_lights_.size() > 0)
-            {
-                auto shader = shaders.at("spot_shadows");
-                ForwardRenderShadows(shader, spot_lights_);
-                update_VBO_ = true;
-            }
+                ForwardRenderShadows(shaders, spot_lights_);
+    
 
             if(shaders.find("directional_shadows") != shaders.end() && dir_lights_.size() > 0)
-            {
-                auto shader = shaders.at("directional_shadows");
-                ForwardRenderShadows(shader, dir_lights_);
-                update_VBO_ = true;
-            }
+                ForwardRenderShadows(shaders, dir_lights_);
         }
 
         void Scene::ForwardRender(const  std::map<std::string, graphics::Shader>& shaders)
@@ -152,24 +141,18 @@ namespace nitro
             {
                 auto shader = shaders.at("point_lighting");
                 ForwardRenderLights(shader, point_lights_);
-                EnableMultipass();
-                update_VBO_ = false;
             }
 
             if(shaders.find("directional_lighting") != shaders.end() && dir_lights_.size() > 0)
             {
-                
                 auto shader = shaders.at("directional_lighting");
                 ForwardRenderLights(shader, dir_lights_);
-                EnableMultipass();
-                update_VBO_ = false;
             }
 
             if(shaders.find("spot_lighting") != shaders.end() && spot_lights_.size() > 0)
             {
                 auto shader = shaders.at("spot_lighting");
                 ForwardRenderLights(shader, spot_lights_);
-                update_VBO_ = false;
             }
             
             DisableMultipass();
@@ -201,7 +184,7 @@ namespace nitro
             
             /*
             auto debugger = utils::Debugger();
-            debugger.DebugFrameBuffer(spot_lights_[0]->ShadowMap(), shaders.at("debug"));
+            debugger.DebugFrameBuffer(spot_lights_[0]->ShadowMap(0), shaders.at("debug"));
             */
         }
     }

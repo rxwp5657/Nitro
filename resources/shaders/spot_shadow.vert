@@ -2,10 +2,10 @@
 
 in vec3 aPosition;
 
-uniform mat4 light_transform;
+uniform mat4 uLightTransform;
 uniform mat4 uModel;
 
 void main()
 {
-    gl_Position = light_transform * uModel * vec4(aPosition, 1.0);
+    gl_Position = uLightTransform * uModel * vec4(aPosition, 1.0);
 }  

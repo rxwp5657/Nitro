@@ -23,23 +23,23 @@ uniform sampler2D   texture_specular1;
 uniform int  has_textures;
 uniform vec4 viewPos;
 
-uniform vec4  light_pos;
-uniform vec4  light_color;
-uniform float max_distance;
-uniform bool  cast_shadow;
+uniform vec4  uLightPos;
+uniform vec4  uLightColor;
+uniform float uMaxDistance;
+uniform bool  uCastsShadow;
 uniform samplerCube shadow_map;
 
 float shadows(vec3 frag_pos)
 {
-    vec3  frag_light = frag_pos - light_pos.xyz;
+    vec3  frag_light = frag_pos - uLightPos.xyz;
     float depth = texture(shadow_map, frag_light).r;  
-    depth *= max_distance;
+    depth *= uMaxDistance;
 
     float current_depht = length(frag_light);
 
     float bias = 0.05; 
     float shadow = current_depht -  bias > depth ? 1.0 : 0.0;
-
+    
     return shadow;
 }
 
@@ -63,7 +63,7 @@ vec4 blinn(vec3 FragPos, vec3 Normal, vec3 View, vec3 L, vec3 light_color)
     vec3 diffuse  = surface_color * light_color * max(0.0, dot(N,L));
     vec3 specular = surface_spec  * light_color * pow(max(0.0, dot(R, V)), 50) * 0.9;
 
-    float shadow = cast_shadow ? shadows(fs_in.FragPos) : 0.0; 
+    float shadow = uCastsShadow ? shadows(fs_in.FragPos) : 0.0; 
 
     return vec4(ambient + (1.0 - shadow) * (diffuse + specular),1.0);
 }
@@ -72,10 +72,10 @@ void main()
 {
     vec4 result_color = vec4(0.0);
 
-    vec3  d = vec3(light_pos) - fs_in.FragPos;
+    vec3  d = vec3(uLightPos) - fs_in.FragPos;
     float r = sqrt(dot(d,d)); 
 
-    vec3 light_color   = vec3(light_color) * fdist(r, max_distance);
+    vec3 light_color   = vec3(uLightColor) * fdist(r, uMaxDistance);
 
     result_color += blinn(fs_in.FragPos, fs_in.Normal, viewPos.xyz, d / r, light_color);
 
