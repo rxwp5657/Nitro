@@ -1,4 +1,4 @@
-#include <model.hpp>
+#include "../../include/graphics/model.hpp"
 
 namespace nitro
 {

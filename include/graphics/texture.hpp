@@ -3,9 +3,10 @@
 
 #include <vector>
 #include <string>
-#include <stb_image.hpp>
-#include <drawable.hpp>
-#include <shader.hpp>
+
+#include "./stb_image.hpp"
+#include "./drawable.hpp"
+#include "./shader.hpp"
 
 namespace nitro
 {

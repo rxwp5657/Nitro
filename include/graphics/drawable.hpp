@@ -1,7 +1,7 @@
 #ifndef DRAWABLE_H
 #define DRAWABLE_H
 
-#include <shader.hpp>
+#include "./shader.hpp"
 
 namespace nitro
 {

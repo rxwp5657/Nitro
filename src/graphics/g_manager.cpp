@@ -1,4 +1,4 @@
-#include <g_manager.hpp>
+#include "../../include/graphics/g_manager.hpp"
 
 namespace nitro
 {

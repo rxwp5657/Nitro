@@ -5,11 +5,12 @@
 #include <vector>
 #include <map>
 #include <memory>
-#include <context.hpp>
-#include <window.hpp>
-#include <shader.hpp>
-#include <drawable.hpp>
-#include <scene.hpp>
+
+#include "../core/scene.hpp"
+#include "./drawable.hpp"
+#include "./context.hpp"
+#include "./window.hpp"
+#include "./shader.hpp"
 
 namespace nitro
 {

@@ -1,4 +1,4 @@
-#include <mesh.hpp>
+#include "../../include/graphics/mesh.hpp"
 
 namespace nitro
 {

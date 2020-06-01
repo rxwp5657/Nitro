@@ -1,4 +1,4 @@
-#include <texture.hpp>
+#include "../../include/graphics/texture.hpp"
 
 namespace nitro
 {

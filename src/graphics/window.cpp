@@ -1,4 +1,4 @@
-#include <window.hpp>
+#include "../../include/graphics/window.hpp"
 
 namespace nitro
 {

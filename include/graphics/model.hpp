@@ -4,15 +4,18 @@
 #include <vector>
 #include <string>
 #include <map>
+
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include <mesh.hpp>
-#include <texture.hpp>
-#include <drawable.hpp>
-#include <shader.hpp>
+
 #include <vec3.hpp>
 #include <vec2.hpp>
+
+#include "./mesh.hpp"
+#include "./texture.hpp"
+#include "./drawable.hpp"
+#include "./shader.hpp"
 
 namespace nitro
 {

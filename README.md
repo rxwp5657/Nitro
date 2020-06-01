@@ -60,7 +60,8 @@ Without Parallax vs Parallax
 To be uploaded ...
 
 ## To-Do list:
-+ Dynamic Shadow Mapping:
++ Dynamic Variance Shadow Mapping:
+  + Gaussian Blur.
   + Implement Percentage-Closer Filtering.
   + Cascade Shadow Mapping.
   + Shadow Bias.

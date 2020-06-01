@@ -4,10 +4,11 @@
 #include <map>
 #include <memory>
 #include <initializer_list>
-#include <window.hpp>
-#include <camera.hpp>
-#include <command.hpp>
-#include <keyboard_evnt.hpp>
+
+#include "../graphics/window.hpp"
+#include "../core/camera.hpp"
+#include "../events/command.hpp"
+#include "./keyboard_evnt.hpp"
 
 namespace nitro
 {

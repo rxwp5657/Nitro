@@ -4,17 +4,19 @@
 #include <memory>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
 #include <vec4.hpp>
 #include <mat4.hpp>
 #include <transforms.hpp>
-#include <texture.hpp>
-#include <constants.hpp>
-#include <drawable.hpp>
-#include <shader.hpp>
 #include <lookat.hpp>
 #include <projections.hpp>
-#include <actor.hpp>
-#include <shadows.hpp>
+
+#include "./actor.hpp"
+#include "./shadows.hpp"
+#include "./constants.hpp"
+#include "../graphics/shader.hpp"
+#include "../graphics/drawable.hpp"
+#include "../graphics/texture.hpp"
 
 namespace nitro 
 {

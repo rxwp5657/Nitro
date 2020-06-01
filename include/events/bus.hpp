@@ -7,8 +7,9 @@
 #include <iostream>
 #include <typeindex>
 #include <typeinfo>
-#include <event.hpp>
-#include <command.hpp>
+
+#include "./event.hpp"
+#include "./command.hpp"
 
 namespace nitro
 {

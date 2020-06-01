@@ -1,4 +1,4 @@
-#include <point_light.hpp>
+#include "../../include/core/point_light.hpp"
 
 namespace nitro
 {

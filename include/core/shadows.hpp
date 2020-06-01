@@ -2,9 +2,10 @@
 #define SHADOWS_H
 
 #include <vector>
-#include <shader.hpp>
-#include <texture.hpp>
-#include <actor.hpp>
+
+#include "../graphics/shader.hpp"
+#include "../graphics/texture.hpp"
+#include "./actor.hpp"
 
 namespace nitro
 {

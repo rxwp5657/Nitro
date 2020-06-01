@@ -1,12 +1,16 @@
 #define  GLEW_STATIC
+
 #include <iostream>
+#include <string>
+#include <math.h>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <string>
-#include <g_manager.hpp>
+
 #include <transforms.hpp>
+
+#include <g_manager.hpp>
 #include <controller.hpp>
-#include <math.h>
 #include <sphere.hpp>
 #include <cube.hpp>
 #include <plane.hpp>

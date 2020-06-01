@@ -14,11 +14,8 @@ namespace nitro
           point_lights_{point_lights},
           spot_lights_{spot_lights},
           dir_lights_{dir_lights},
-          gbuffer_textures_{},
           camera_{camera},
           skybox_{skybox},
-          gbuffer_{},
-          shadow_buffer_{},
           update_VBO_{true}
         {
 
@@ -29,11 +26,8 @@ namespace nitro
           point_lights_{},
           spot_lights_{},
           dir_lights_{},
-          gbuffer_textures_{},
           camera_{},
           skybox_{},
-          gbuffer_{},
-          shadow_buffer_{},
           update_VBO_{true}
         {
 

@@ -3,10 +3,10 @@
 
 #include <math.h>
 #include <vector>
-#include <model.hpp>
-#include <mesh.hpp>
-#include <texture.hpp>
-#include <actor.hpp>
+#include "../graphics/model.hpp"
+#include "../graphics/mesh.hpp"
+#include "../graphics/texture.hpp"
+#include "./actor.hpp"
 
 namespace nitro
 {

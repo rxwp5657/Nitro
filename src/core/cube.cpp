@@ -1,19 +1,19 @@
-#include <cube.hpp>
+#include "../../include/core/cube.hpp"
 
 namespace nitro
 {
     namespace core
     {
         Cube::Cube(float side)
-        : Actor{GenerateModel(side)}, 
-          side_{side}
+        :   Actor{GenerateModel(side)}, 
+            side_{side}
         {
 
         }
 
         Cube::Cube()
-        : Actor{GenerateModel(1.0f)},
-          side_{1.0f}
+        :   Actor{GenerateModel(1.0f)},
+            side_{1.0f}
         {
 
         }

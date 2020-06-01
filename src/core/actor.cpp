@@ -1,4 +1,4 @@
-#include <actor.hpp>
+#include "../../include/core/actor.hpp"
 
 namespace nitro
 {

@@ -1,4 +1,4 @@
-#include <framebuffer.hpp>
+#include "../../include/graphics/framebuffer.hpp"
 
 namespace nitro
 {

@@ -1,4 +1,4 @@
-#include <directional_light.hpp>
+#include "../../include/core/directional_light.hpp"
 
 namespace nitro
 {

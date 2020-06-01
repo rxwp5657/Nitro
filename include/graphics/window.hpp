@@ -2,9 +2,11 @@
 #define WINDOW_H
 
 #include <string>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <context.hpp>
+
+#include "./context.hpp"
 
 namespace nitro 
 {

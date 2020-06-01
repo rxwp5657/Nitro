@@ -2,18 +2,21 @@
 #define POINT_LIGHT
 
 #include <memory>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
 #include <vec4.hpp>
-#include <transforms.hpp>
-#include <texture.hpp>
-#include <shader.hpp>
-#include <drawable.hpp>
-#include <constants.hpp>
-#include <shadows.hpp>
-#include <projections.hpp>
 #include <lookat.hpp>
-#include <actor.hpp>
+#include <transforms.hpp>
+#include <projections.hpp>
+
+#include "../graphics/texture.hpp"
+#include "../graphics/shader.hpp"
+#include "../graphics/drawable.hpp"
+#include "./actor.hpp"
+#include "./constants.hpp"
+#include "./shadows.hpp"
 
 
 namespace nitro 

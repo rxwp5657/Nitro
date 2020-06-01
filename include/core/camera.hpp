@@ -5,10 +5,10 @@
 #include <vec4.hpp>
 #include <mat4.hpp>
 #include <lookat.hpp>
-#include <drawable.hpp>
-#include <shader.hpp>
 #include <projections.hpp>
-#include <keyboard_evnt.hpp>
+#include "../input/keyboard_evnt.hpp"
+#include "../graphics/drawable.hpp"
+#include "../graphics/shader.hpp"
 
 namespace nitro
 {

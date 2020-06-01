@@ -2,15 +2,18 @@
 #define SHADER_H
 
 #include <map>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <utils.hpp>
-#include <shader.hpp>
+
 #include <vec3.hpp>
 #include <vec2.hpp>
 #include <mat2.hpp>
 #include <mat3.hpp>
 #include <mat4.hpp>
+
+#include "../utils/utils.hpp"
+#include "./shader.hpp"
 
 namespace nitro
 {

@@ -3,14 +3,17 @@
 
 #include <vector>
 #include <string>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
 #include <vec3.hpp>
 #include <vec2.hpp>
-#include <shader.hpp>
-#include <drawable.hpp>
-#include <texture.hpp>
-#include <material.hpp>
+
+#include "./shader.hpp"
+#include "./drawable.hpp"
+#include "./texture.hpp"
+#include "./material.hpp"
 
 namespace nitro
 {

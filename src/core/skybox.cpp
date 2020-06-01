@@ -1,4 +1,4 @@
-#include <skybox.hpp>
+#include "../../include/core/skybox.hpp"
 
 namespace nitro
 {

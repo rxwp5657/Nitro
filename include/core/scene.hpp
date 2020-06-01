@@ -4,15 +4,15 @@
 #include <vector>
 #include <memory>
 #include <map>
-#include <actor.hpp>
-#include <camera.hpp>
-#include <skybox.hpp>
-#include <shader.hpp>
-#include <framebuffer.hpp>
-#include <spot_light.hpp>
-#include <point_light.hpp>
-#include <directional_light.hpp>
-#include <debugger.hpp>
+
+#include "./actor.hpp"
+#include "./camera.hpp"
+#include "./skybox.hpp"
+#include "./spot_light.hpp"
+#include "./point_light.hpp"
+#include "./directional_light.hpp"
+#include "../utils/debugger.hpp"
+#include "../graphics/shader.hpp"
 
 namespace nitro
 {
@@ -48,11 +48,8 @@ namespace nitro
             std::vector<std::shared_ptr<PointLight>> point_lights_;
             std::vector<std::shared_ptr<SpotLight>>  spot_lights_;
             std::vector<std::shared_ptr<DirectionalLight>> dir_lights_;
-            std::vector<graphics::Texture> gbuffer_textures_;
             Camera camera_;
             Skybox skybox_;
-            graphics::Framebuffer gbuffer_; 
-            graphics::Framebuffer shadow_buffer_;
             bool update_VBO_;
 
             void DrawActors(const graphics::Shader& shader, bool default_framebuffer = true);

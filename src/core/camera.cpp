@@ -1,4 +1,4 @@
-#include <camera.hpp>
+#include "../../include/core/camera.hpp"
 
 namespace nitro
 {

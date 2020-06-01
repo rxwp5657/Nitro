@@ -2,17 +2,19 @@
 #define SPOT_LIGHT
 
 #include <memory>
+
 #include <vec4.hpp>
 #include <mat4.hpp>
 #include <transforms.hpp>
-#include <texture.hpp>
-#include <shader.hpp>
 #include <lookat.hpp>
-#include <drawable.hpp>
-#include <constants.hpp>
 #include <projections.hpp>
-#include <shadows.hpp>
-#include <actor.hpp>
+
+#include "../graphics/drawable.hpp"
+#include "../graphics/texture.hpp"
+#include "../graphics/shader.hpp"
+#include "./constants.hpp"
+#include "./shadows.hpp"
+#include "./actor.hpp"
 
 namespace nitro 
 {

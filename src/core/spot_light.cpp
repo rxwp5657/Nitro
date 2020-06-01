@@ -1,4 +1,4 @@
-#include <spot_light.hpp>
+#include "../../include/core/spot_light.hpp"
 
 namespace nitro
 {

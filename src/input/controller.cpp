@@ -1,4 +1,4 @@
-#include <controller.hpp>
+#include "../../include/input/controller.hpp"
 
 namespace nitro
 {

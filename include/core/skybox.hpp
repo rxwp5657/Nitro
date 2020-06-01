@@ -3,12 +3,15 @@
 
 #include <vector>
 #include <initializer_list>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
 #include <vec3.hpp>
-#include <actor.hpp>
-#include <shader.hpp>
-#include <stb_image.hpp>
+
+#include "./actor.hpp"
+#include "../graphics/shader.hpp"
+#include "../graphics/stb_image.hpp"
 
 namespace nitro
 {
