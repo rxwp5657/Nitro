@@ -5,7 +5,7 @@ namespace nitro
     namespace core
     {
         SpotLight::SpotLight()
-        : Shadow{2,5},
+        : Shadow{3,5},
           position_{0.0f, 0.0f, 0.0f, 1.0f},
           direction_{0.0f,0.0f,-1.0f, 1.0f},
           color_{1.0f,1.0f,1.0f,1.0f},
@@ -72,37 +72,19 @@ namespace nitro
 
         void SpotLight::SetupShadows()
         {
-            glGenFramebuffers(1, &framebuffer_);
-        
-            shadow_maps_[0] = graphics::Texture{
-                "shadow_map", 
-                constants::SHADOW_WIDTH, 
-                constants::SHADOW_HEIGHT, 
-                GL_TEXTURE_2D, 
-                GL_RG32F, 
-                GL_RGBA, 
-                GL_FLOAT};
-            
-            shadow_maps_[1] = graphics::Texture{
-                "shadow_map", 
-                constants::SHADOW_WIDTH, 
-                constants::SHADOW_HEIGHT, 
-                GL_TEXTURE_2D, 
-                GL_DEPTH24_STENCIL8, 
-                GL_DEPTH_STENCIL, 
-                GL_UNSIGNED_INT_24_8};
+            shadow_maps_[0]  = graphics::Texture{"shadow_map", constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT, GL_TEXTURE_2D, GL_RG32F, GL_RGBA, GL_FLOAT, GL_LINEAR};
+            shadow_maps_[1]  = graphics::Texture{"image",      constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT, GL_TEXTURE_2D, GL_RG32F, GL_RGBA, GL_FLOAT, GL_LINEAR};
+            shadow_maps_[2]  = graphics::Texture{"depth",      constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT, GL_TEXTURE_2D, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, GL_NEAREST};
 
-            glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, shadow_maps_[0].TextureReference(), 0);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, shadow_maps_[1].TextureReference(), 0);
-            
-            if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            framebuffers_[0].Size(constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT);
+
+            framebuffers_[0].AttachTexture(shadow_maps_[0], GL_COLOR_ATTACHMENT0);
+            framebuffers_[0].AttachTexture(shadow_maps_[2], GL_DEPTH_STENCIL_ATTACHMENT);
+
+            if(!framebuffers_[0].Complete())
                 throw std::runtime_error("Spot light framebuffer is not complete \n");
-            
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
             shadow_maps_[0].TextureUnit(GL_TEXTURE12, 12, 0);
-
             set_up_ = true;
         }
 
@@ -110,15 +92,12 @@ namespace nitro
                                     const std::vector<std::shared_ptr<Actor>>& actors)
         {
             auto shader = shaders.at("spot_shadows");
-
             shader.Use();
 
-            if(!set_up_)
-                SetupShadows();
+            if(!set_up_) SetupShadows();
 
-            glViewport(0, 0,  constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT);
-            glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
-            glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+            framebuffers_[0].Bind();
+            //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
             
             projection_ = clutch::Perspective((90.0f * clutch::PI) / 180.0f, 1.5f, 1.0f, max_distance_);
             transform_  = clutch::LookAt(position_, position_ + direction_, clutch::Vec4<float>{0.0f, 1.0f, 0.0f, 0.0f}); 
@@ -127,6 +106,50 @@ namespace nitro
 
             for(const auto& actor : actors)
                 actor->Draw(shader, false);
+
+            PostProcess(shaders);
+        }
+
+        void SpotLight::PostProcess(const std::map<std::string, graphics::Shader>& shaders)
+        {
+            auto shader = shaders.at("gaussian");
+            
+            GaussianBlur blur{constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT};
+            blur.Process(shader, shadow_maps_[0], shadow_maps_[1]);
+
+            shadow_maps_[0].TextureUnit(GL_TEXTURE12, 12, "shadow_map");
+
+            framebuffers_[0].AttachTexture(shadow_maps_[0], GL_COLOR_ATTACHMENT0);
+            
+            /*
+            framebuffers_[1].AttachTexture(shadow_maps_[1], GL_COLOR_ATTACHMENT0);
+            
+            framebuffers_[1].Bind();
+
+            shader.Use();
+            shader.SetUniformInt("vertical", false);
+            shadow_maps_[0].TextureUnit(GL_TEXTURE0, 0, "image");
+            shadow_maps_[0].Draw(shader);
+            shadow_maps_[0].DrawQuad();
+
+            shadow_maps_[0].TextureUnit(GL_TEXTURE12, 12, "shadow_map");
+            
+            shader.Disable();
+            framebuffers_[1].Unbind();
+
+            framebuffers_[1].AttachTexture(shadow_maps_[0], GL_COLOR_ATTACHMENT0);
+
+            framebuffers_[1].Bind();
+
+            shader.Use();
+            shader.SetUniformInt("vertical", true);
+            shadow_maps_[1].TextureUnit(GL_TEXTURE0, 0, "image");
+            shadow_maps_[1].Draw(shader);
+            shadow_maps_[1].DrawQuad();
+
+            shader.Disable();
+            framebuffers_[1].Unbind();
+            */
         }
 
         void SpotLight::Draw(const graphics::Shader& shader, bool default_framebuffer)
@@ -147,7 +170,7 @@ namespace nitro
 
         void SpotLight::Erase()
         {
-
+        
         }
 
         void SpotLight::Setup(const graphics::Shader& shader)

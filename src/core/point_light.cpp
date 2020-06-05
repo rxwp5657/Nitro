@@ -40,23 +40,14 @@ namespace nitro
         }
 
         void PointLight::SetupShadows()
-        {
-            glGenFramebuffers(1, &framebuffer_);
+        {   
+            shadow_maps_[0] = graphics::Texture{ "shadow_map", constants::SHADOW_WIDTH,  constants::SHADOW_HEIGHT,  GL_TEXTURE_CUBE_MAP,  GL_DEPTH_COMPONENT,  GL_DEPTH_COMPONENT,  GL_FLOAT, GL_NEAREST};
+            framebuffers_[0].Size(constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT);
             
-            shadow_maps_[0] = graphics::Texture{
-                    "shadow_map",
-                    constants::SHADOW_WIDTH, 
-                    constants::SHADOW_HEIGHT, 
-                    GL_TEXTURE_CUBE_MAP, 
-                    GL_DEPTH_COMPONENT, 
-                    GL_DEPTH_COMPONENT, 
-                    GL_FLOAT};
+            framebuffers_[0].AttachTexture(shadow_maps_[0], GL_DEPTH_ATTACHMENT);
 
-            glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
-            glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadow_maps_[0].TextureReference(), 0);
-            glDrawBuffer(GL_NONE);
-            glReadBuffer(GL_NONE);
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            if(!framebuffers_[0].Complete())
+                throw std::runtime_error("Point light framebuffer is not complete \n");
 
             shadow_maps_[0].TextureUnit(GL_TEXTURE12, 12, 0);
 
@@ -69,11 +60,9 @@ namespace nitro
             auto shader = shaders.at("point_shadows");
             shader.Use();
         
-            if(!set_up_)
-                SetupShadows();
+            if(!set_up_) SetupShadows();
             
-            glViewport(0, 0,  constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT);
-            glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
+            framebuffers_[0].Bind();
             glClear(GL_DEPTH_BUFFER_BIT);
             
             auto projection = clutch::Perspective((90.0f * clutch::PI) / 180.0f, (float)constants::SHADOW_WIDTH / (float)constants::SHADOW_HEIGHT, 0.5f, max_distance_);
@@ -95,6 +84,11 @@ namespace nitro
             for(const auto& actor : actors)
                 actor->Draw(shader, false);
             
+        }
+
+        void PointLight::PostProcess(const std::map<std::string, graphics::Shader>& shaders)
+        {
+
         }
 
         void PointLight::Draw(const graphics::Shader& shader, bool default_framebuffer)

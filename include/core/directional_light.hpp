@@ -33,6 +33,7 @@ namespace nitro
             void Draw(const graphics::Shader& shader, bool default_framebuffer = true) override;
             void Erase() override;
 
+            void PostProcess(const std::map<std::string, graphics::Shader>& shaders) override;
             void DrawShadows(const std::map<std::string, graphics::Shader>& shaders,
                              const std::vector<std::shared_ptr<Actor>>& actors) override;
              

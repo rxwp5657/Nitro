@@ -5,6 +5,7 @@
 
 #include "../graphics/shader.hpp"
 #include "../graphics/texture.hpp"
+#include "../graphics/framebuffer.hpp"
 #include "./actor.hpp"
 
 namespace nitro
@@ -25,6 +26,7 @@ namespace nitro
             graphics::Texture ShadowTexture(int index) const;
 
             virtual void SetupShadows() = 0;
+            virtual void PostProcess(const std::map<std::string, graphics::Shader>& shaders) = 0;
             virtual void DrawShadows(const std::map<std::string, graphics::Shader>& shaders,
                                      const std::vector<std::shared_ptr<Actor>>& actors) = 0;
 
@@ -32,7 +34,7 @@ namespace nitro
             bool cast_shadows_;
             bool set_up_;
             int  pcf_;
-            unsigned int framebuffer_;
+            std::vector<graphics::Framebuffer> framebuffers_;
             std::vector<graphics::Texture> shadow_maps_;
         };
     }

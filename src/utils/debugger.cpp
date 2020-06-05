@@ -28,8 +28,8 @@ namespace nitro
                     // positions        // texture Coords
                     -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
                     -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-                    1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-                    1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+                     1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+                     1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
                 };
                 // setup plane VAO
                 glGenVertexArrays(1, &quad_vao_);

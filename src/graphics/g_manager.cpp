@@ -18,6 +18,8 @@ namespace nitro
             shaders_["directional_shadows"]  = Shader{"directional_shadow.vert","directional_shadow.frag"};
             shaders_["spot_shadows"]         = Shader{"spot_shadow.vert","spot_shadow.frag"};
 
+            shaders_["gaussian"]             = Shader{"gaussian.vert", "gaussian.frag"};
+
             shaders_["debug"] = Shader{"debug.vert", "debug.frag"};
             
             for(const auto& shader: shaders_)

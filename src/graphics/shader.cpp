@@ -144,6 +144,11 @@ namespace nitro
         {
             glUseProgram(program_);
         }
+        
+        void Shader::Disable() const
+        {
+            glUseProgram(0);
+        }
 
         std::string Shader::ShaderSource(const std::string path)
         {

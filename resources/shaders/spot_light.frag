@@ -38,30 +38,19 @@ uniform sampler2D shadow_map;
 
 float shadow(vec4 frag_pos, float bias)
 {
-    // Perspective Divide
     vec3 coord = frag_pos.xyz / frag_pos.w;
-    // Mapt to range [0, 1]
+    // Map to range [0, 1]
     coord = coord * 0.5 + 0.5;
 
-    // Get texel size by getting the reciprocal of the texture size.
-    vec2 shadow_offset  = 1.0 / textureSize(shadow_map,0); 
+    
+    vec2 moments   = texture(shadow_map, coord.xy).xy;
+    float m1       = moments.x;
+    float m2       = moments.y;
+    float variance = m2 - m1 * m1; 
+    float diff     = coord.z - m1;
+    float p_max    = variance / (variance + diff * diff);
 
-    float light_depth   = texture(shadow_map, coord.xy).r;
-    float current_depht = coord.z;
-
-    int offset   = uPCF / 2;
-    float shadow = 0.0;
-
-    for(int x = -offset; x <= offset; x++)
-    {
-        for(int y = -offset; y <= offset; y++)
-        {
-            float neighbor = texture(shadow_map, coord.xy + shadow_offset * vec2(x,y)).r;
-            shadow += current_depht - bias > neighbor ?  1.0 : 0.0;
-        }
-    }
-
-    return shadow / (uPCF * uPCF);
+    return coord.z < moments.x ? 1.0 : p_max ;
 }   
 
 // Distance attenuation/falloff
@@ -94,9 +83,9 @@ vec4 blinn(vec3 FragPos, vec3 Normal, vec3 View, vec3 L, vec3 light_color)
     vec3 diffuse  = surface_color * light_color * max(0.0, dot(N,L));
     vec3 specular = surface_spec  * light_color * pow(max(0.0, dot(R, V)), 50) * 0.9;
     
-    float shadow_val = (uCastsShadow) ? shadow(fs_in.FragPosL, 0.005) : 0.0;
+    float shadow_val = (uCastsShadow) ? shadow(fs_in.FragPosL, 0.005) : 1.0;
 
-    return vec4(ambient + (1.0 - shadow_val) * (diffuse + specular), 1.0);
+    return vec4(ambient + (shadow_val) * (diffuse + specular), 1.0);
 }
 
 void main()

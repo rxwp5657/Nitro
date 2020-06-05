@@ -34,37 +34,19 @@ namespace nitro
 
         void DirectionalLight::SetupShadows()
         {
-            glGenFramebuffers(1, &framebuffer_);
+            shadow_maps_[0] = graphics::Texture{"shadow_map", constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT, GL_TEXTURE_2D, GL_RG32F, GL_RGBA, GL_FLOAT, GL_NEAREST};
+            shadow_maps_[1] = graphics::Texture{"shadow_map", constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT, GL_TEXTURE_2D, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, GL_NEAREST};
+            
+            framebuffers_[0].Size(constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT);
+            framebuffers_[1].Size(constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT);
 
-            shadow_maps_[0] = graphics::Texture{
-                "shadow_map", 
-                constants::SHADOW_WIDTH, 
-                constants::SHADOW_HEIGHT, 
-                GL_TEXTURE_2D, 
-                GL_RG32F, 
-                GL_RGBA, 
-                GL_FLOAT};
+            framebuffers_[0].AttachTexture(shadow_maps_[0], GL_COLOR_ATTACHMENT0);
+            framebuffers_[0].AttachTexture(shadow_maps_[1], GL_DEPTH_STENCIL_ATTACHMENT);
             
-            shadow_maps_[1] = graphics::Texture{
-                "shadow_map", 
-                constants::SHADOW_WIDTH, 
-                constants::SHADOW_HEIGHT, 
-                GL_TEXTURE_2D, 
-                GL_DEPTH24_STENCIL8, 
-                GL_DEPTH_STENCIL, 
-                GL_UNSIGNED_INT_24_8};
-            
-            glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, shadow_maps_[0].TextureReference(), 0);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, shadow_maps_[1].TextureReference(), 0);
-            
-            if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            if(!framebuffers_[0].Complete())
                 throw std::runtime_error("Directional light framebuffer is not complete \n");
-            
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
             shadow_maps_[0].TextureUnit(GL_TEXTURE12, 12, 0);
-
             set_up_ = true;
         }
 
@@ -74,11 +56,9 @@ namespace nitro
             auto shader = shaders.at("directional_shadows");
             shader.Use();
 
-            if(!set_up_)
-                SetupShadows();
+            if(!set_up_) SetupShadows();
             
-            glViewport(0, 0,  constants::SHADOW_WIDTH, constants::SHADOW_HEIGHT);
-            glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
+            framebuffers_[0].Bind();
             glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
             
             projection_ = clutch::Orthopraphic(-10.0f, 10.0f, -10.0f, 10.0f, -10.0f, 20.0f);
@@ -88,6 +68,11 @@ namespace nitro
 
             for(const auto& actor : actors)
                 actor->Draw(shader, false);
+        }
+
+        void DirectionalLight::PostProcess(const std::map<std::string, graphics::Shader>& shaders)
+        {
+
         }
 
         void DirectionalLight::Draw(const graphics::Shader& shader, bool default_framebuffer)

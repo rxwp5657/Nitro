@@ -120,7 +120,7 @@ namespace nitro
                 bool skip = false;
                 for(unsigned int j = 0; j < loaded_textures.size(); j++)
                 {
-                    if(std::strcmp(loaded_textures[j].get_path().data(), str.C_Str()) == 0)
+                    if(std::strcmp(loaded_textures[j].Path().data(), str.C_Str()) == 0)
                     {
                         textures.push_back(loaded_textures[j]);
                         skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)

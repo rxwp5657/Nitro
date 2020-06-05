@@ -8,7 +8,7 @@ namespace nitro
         :   cast_shadows_{false}, 
             set_up_{false}, 
             pcf_{pcf}, 
-            framebuffer_{0}, 
+            framebuffers_(2), 
             shadow_maps_(num_shadow_maps) 
         {
 

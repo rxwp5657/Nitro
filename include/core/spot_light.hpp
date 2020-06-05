@@ -15,6 +15,7 @@
 #include "./constants.hpp"
 #include "./shadows.hpp"
 #include "./actor.hpp"
+#include "./gaussian_blur.hpp"
 
 namespace nitro 
 {
@@ -45,8 +46,9 @@ namespace nitro
             void Draw(const graphics::Shader& shader, bool default_framebuffer = true) override;
             void Erase() override;
 
+            void PostProcess(const std::map<std::string, graphics::Shader>& shaders) override;
             void DrawShadows(const std::map<std::string, graphics::Shader>& shaders,
-                             const std::vector<std::shared_ptr<Actor>>& actors) override; 
+                             const std::vector<std::shared_ptr<Actor>>&     actors)  override; 
             void SetupShadows() override;
 
         private:
