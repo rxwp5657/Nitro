@@ -20,7 +20,7 @@ namespace nitro
             glGenFramebuffers(1, &framebuffer_);
         }
 
-        void Framebuffer::AttachTexture(const Texture& texture, GLenum attachment_t)
+        void Framebuffer::AttachTexture(const Texture& texture, GLenum attachment_t) const
         {
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
 
@@ -33,12 +33,12 @@ namespace nitro
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
 
-        bool Framebuffer::Complete()
+        bool Framebuffer::Complete() const
         {
             return glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
         }
 
-        void Framebuffer::Bind()
+        void Framebuffer::Bind() const
         {
             if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
                 throw std::runtime_error("Framebuffer is not complete \n");
@@ -48,7 +48,7 @@ namespace nitro
             glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
         }
 
-        void Framebuffer::Unbind()
+        void Framebuffer::Unbind() const
         {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
@@ -59,7 +59,7 @@ namespace nitro
             height_ = height;
         }
 
-        void Framebuffer::DeleteColorBuffers()
+        void Framebuffer::DeleteColorBuffers() const
         {
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
             glDrawBuffer(GL_NONE);

@@ -36,6 +36,17 @@ uniform bool  uCastsShadow;
 uniform int uPCF;
 uniform sampler2D shadow_map;
 
+float line_step(float min, float max, float value)
+{
+    return clamp((value - min) / (max - min), 0.0, 1.0);
+}
+
+float reduce_bleeding(float p_max, float amount) 
+{   
+    // Remove the [0, Amount] tail and linearly rescale (Amount, 1].    
+    return line_step(amount, 1, p_max); 
+} 
+
 float shadow(vec4 frag_pos, float bias)
 {
     vec3 coord = frag_pos.xyz / frag_pos.w;
@@ -50,7 +61,7 @@ float shadow(vec4 frag_pos, float bias)
     float diff     = coord.z - m1;
     float p_max    = variance / (variance + diff * diff);
 
-    return coord.z < moments.x ? 1.0 : p_max ;
+    return coord.z < moments.x ? 1.0 : reduce_bleeding(p_max, 0.4);
 }   
 
 // Distance attenuation/falloff

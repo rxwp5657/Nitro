@@ -7,6 +7,7 @@
 #include <GLFW/glfw3.h>
 
 #include <vec4.hpp>
+#include <mat4.hpp>
 #include <lookat.hpp>
 #include <transforms.hpp>
 #include <projections.hpp>
@@ -17,7 +18,7 @@
 #include "./actor.hpp"
 #include "./constants.hpp"
 #include "./shadows.hpp"
-
+#include "./gaussian_blur.hpp"
 
 namespace nitro 
 {
@@ -48,10 +49,20 @@ namespace nitro
         private:
             clutch::Vec4<float> position_;
             clutch::Vec4<float> color_;
+            clutch::Mat4<float> transform_;
             float max_distance_;
         
             void Setup(const graphics::Shader& shader) override;
-            clutch::Mat4<float> FaceTransform(const clutch::Vec4<float>& direction, const clutch::Vec4<float>& up);
+            
+            clutch::Mat4<float> FaceTransform(const clutch::Vec4<float>& direction, 
+                                              const clutch::Vec4<float>& up);
+           
+            void ShadowPass(const graphics::Shader&      shader, 
+                            const graphics::Framebuffer& framebuffer, 
+                            const graphics::Texture&     shadow_map, 
+                            const clutch::Mat4<float>    view,
+                            const float                  dir,
+                            const std::vector<std::shared_ptr<Actor>>& actors);
         };
     }
 }

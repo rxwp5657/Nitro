@@ -1,23 +1,16 @@
 #version 410 core
 
-in vec4 FragPos;
+out vec4 FragColor;
 
-uniform vec4  uLightPos;
-uniform float uFarPlane;
+in VS_OUT
+{
+    float Depht;
+    float Alpha;
+} fs_in;
 
 void main()
 {
-    float light_dist = length(FragPos - uLightPos);
-    light_dist       = light_dist / uFarPlane;
-    gl_FragDepth     = light_dist;
+    if(fs_in.Alpha < 0.5) discard;
+
+    FragColor = vec4(fs_in.Depht, fs_in.Depht * fs_in.Depht, 0.0, 0.0);
 }
-
-/*
-uniform vec4 uLightPos;
-
-void main()
-{
-    vec4 L = FragPos - uLightPos;
-    gl_FragDepth = dot(L, L);
-}  
-*/

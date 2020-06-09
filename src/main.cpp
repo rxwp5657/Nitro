@@ -23,6 +23,7 @@ int main(int argc, char **argv)
     
     std::shared_ptr<nitro::core::Actor>             cylinder{std::make_shared<nitro::core::Actor>("cylinder2/cylinder.obj")};
     std::shared_ptr<nitro::core::Actor>             sphere{std::make_shared<nitro::core::Sphere>(1.0f)};
+    std::shared_ptr<nitro::core::Actor>             sphere2{std::make_shared<nitro::core::Sphere>(1.0f)};
     std::shared_ptr<nitro::core::Actor>             cube{std::make_shared<nitro::core::Cube>(1.0f)};
     std::shared_ptr<nitro::core::PointLight>        light{std::make_shared<nitro::core::PointLight>()};
     std::shared_ptr<nitro::core::SpotLight>         spot{std::make_shared<nitro::core::SpotLight>()};
@@ -50,6 +51,7 @@ int main(int argc, char **argv)
      "negz.jpg"}};
 
     sphere->Translate(  0.0f, 1.0f, 0.0f);
+    sphere2->Translate( 0.0f, 1.0f, 7.0f);
     cube->Translate(   -3.0f, 0.5f, 0.0f);
     cylinder->Translate(3.0f, 0.0f, 0.0f);
 
@@ -65,20 +67,21 @@ int main(int argc, char **argv)
     
     scene.AddActor(cylinder);
     scene.AddActor(sphere);
+    scene.AddActor(sphere2);
     scene.AddActor(cube);
 
     scene.AddActor(wall);
     scene.AddActor(floor);
     
-    scene.AddSpotLight(spot);
-    //scene.AddPointLight(light);
+    //scene.AddSpotLight(spot);
+    scene.AddPointLight(light);
     //scene.AddDirectionalLight(dir);
     
     scene.AddSkyBox(skybox);
 
-    //light->CastShadow(true);
+    light->CastShadow(true);
     //dir->CastShadow(true);
-    spot->CastShadow(true);
+    //spot->CastShadow(true);
 
     controller1.AddButton(GLFW_KEY_W, scene.CameraPtr(), &nitro::core::Camera::Forward);
     controller1.AddButton(GLFW_KEY_A, scene.CameraPtr(), &nitro::core::Camera::Left);

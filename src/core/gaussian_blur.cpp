@@ -12,8 +12,8 @@ namespace nitro
 
         void GaussianBlur::Process(const graphics::Shader& shader, graphics::Texture& in, graphics::Texture& out)
         {
-            Subprocess(shader, in, out, true);
-            Subprocess(shader, out, in, false);
+            Subprocess(shader, in, out, false);
+            Subprocess(shader, out, in, true);
         }
 
         void GaussianBlur::Subprocess(const graphics::Shader& shader, graphics::Texture& in, graphics::Texture& out, bool vertical)

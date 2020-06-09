@@ -97,8 +97,7 @@ namespace nitro
             if(!set_up_) SetupShadows();
 
             framebuffers_[0].Bind();
-            //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-            
+                        
             projection_ = clutch::Perspective((90.0f * clutch::PI) / 180.0f, 1.5f, 1.0f, max_distance_);
             transform_  = clutch::LookAt(position_, position_ + direction_, clutch::Vec4<float>{0.0f, 1.0f, 0.0f, 0.0f}); 
 

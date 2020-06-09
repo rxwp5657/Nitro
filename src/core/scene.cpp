@@ -178,7 +178,7 @@ namespace nitro
             
             /*
             auto debugger = utils::Debugger();
-            debugger.DebugFrameBuffer(spot_lights_[0]->ShadowMap(0), shaders.at("debug"));
+            debugger.DebugFrameBuffer(point_lights_[0]->ShadowMap(1), shaders.at("debug"));
             */
         }
     }

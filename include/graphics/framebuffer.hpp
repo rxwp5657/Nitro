@@ -16,16 +16,17 @@ namespace nitro
             Framebuffer();
             Framebuffer(int width, int height);
 
-            void AttachTexture(const Texture& texture, GLenum attachment_t);
+            void AttachTexture(const Texture& texture, GLenum attachment_t) const;
             //void AttachRenderBuffer(const RenderBuffer& renderBuffer);
 
-            bool Complete();
+            bool Complete() const;
 
-            void Bind();
-            void Unbind();
+            void Bind()     const;
+            void Unbind()   const;
+            
+            void DeleteColorBuffers() const;
             
             void Size(int width, int height);
-            void DeleteColorBuffers();
             
         private:
             unsigned int framebuffer_;

@@ -27,20 +27,73 @@ uniform vec4  uLightPos;
 uniform vec4  uLightColor;
 uniform float uMaxDistance;
 uniform bool  uCastsShadow;
-uniform samplerCube shadow_map;
+uniform float uFarPlane;
+uniform float uNearPlane;
 
-float shadows(vec3 frag_pos)
+uniform mat4 uDPView;
+
+uniform sampler2D shadow_map_front;
+uniform sampler2D shadow_map_rear;
+
+float line_step(float min, float max, float value)
 {
-    vec3  frag_light = frag_pos - uLightPos.xyz;
-    float depth = texture(shadow_map, frag_light).r;  
-    depth *= uMaxDistance;
+    return clamp((value - min) / (max - min), 0.0, 1.0);
+}
 
-    float current_depht = length(frag_light);
+float reduce_bleeding(float p_max, float amount) 
+{   
+    // Remove the [0, Amount] tail and linearly rescale (Amount, 1].    
+    return line_step(amount, 1, p_max); 
+} 
 
-    float bias = 0.05; 
-    float shadow = current_depht -  bias > depth ? 1.0 : 0.0;
+vec4 paraboloid(vec4 frag_pos, float dir)
+{
+    vec4 result = frag_pos;
+
+    result /= result.w;
+
+    float len = length(result.xyz);
+    result   /= len;
     
-    return shadow;
+    result.z = (result.z >= 0.0) ? (1.0 + result.z) : (1.0 - result.z);
+
+    result.x /= result.z;
+    result.y /= result.z;
+
+    result.z = (len - uNearPlane) / (uMaxDistance - uNearPlane);
+
+    result.w = 1.0;
+
+    return result;
+}
+
+float VSM(vec2 moments, float depht)
+{
+    float m1       = moments.x;
+    float m2       = moments.y;
+    float variance = m2 - m1 * m1; 
+    float diff     = depht - m1;
+    float p_max    = variance / (variance + diff * diff);
+
+    return depht < moments.x ? 1.0 : reduce_bleeding(p_max, 0.4);
+}   
+
+float shadows(vec4 frag_pos)
+{
+    frag_pos     = uDPView * frag_pos;
+
+    float alpha  = 0.5 + frag_pos.z / uMaxDistance;
+
+    vec4 front_pos   = paraboloid(frag_pos, 1.0);
+    vec4 rear_pos    = paraboloid(frag_pos,-1.0);
+
+    vec2 front_coods = 0.5 + 0.5 * front_pos.xy;
+    vec2 rear_coods  = 0.5 + 0.5 * rear_pos.xy;
+
+    vec2  moments = (alpha >= 0.5) ? texture(shadow_map_front, front_coods).rg : texture(shadow_map_rear, rear_coods).rg;
+    float depht   = (alpha >= 0.5) ? front_pos.z : rear_pos.z;
+    
+    return VSM(moments, depht);
 }
 
 // Distance attenuation/falloff
@@ -63,9 +116,9 @@ vec4 blinn(vec3 FragPos, vec3 Normal, vec3 View, vec3 L, vec3 light_color)
     vec3 diffuse  = surface_color * light_color * max(0.0, dot(N,L));
     vec3 specular = surface_spec  * light_color * pow(max(0.0, dot(R, V)), 50) * 0.9;
 
-    float shadow = uCastsShadow ? shadows(fs_in.FragPos) : 0.0; 
+    float shadow = uCastsShadow ? shadows(vec4(fs_in.FragPos, 1.0)) : 0.0; 
 
-    return vec4(ambient + (1.0 - shadow) * (diffuse + specular),1.0);
+    return vec4(ambient + (shadow) * (diffuse + specular),1.0);
 }
 
 void main()
