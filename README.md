@@ -46,10 +46,10 @@ Move through the scene by using WASD and your mouse as you like and exit by pres
 ## Progress:
 
 ### Point Light Shadow Mapping:
-![alt text](./resources/images/point.png)
+![alt text](./resources/images/point_pcf.png)
 
 ### Spot Light Shadow Mapping:
-![alt text](./resources/images/spot.png)
+![alt text](./resources/images/spot_pcf.png)
 
 ### Parallax Occlussion Mapping:
 Without Parallax vs Parallax 
@@ -59,12 +59,15 @@ Without Parallax vs Parallax
 
 To be uploaded ...
 
+## PBR pipeline implementation (Still in development)
+![alt text](./resources/images/specular_pbr.png)
+
+
 ## To-Do list:
 + Dynamic Variance Shadow Mapping:
-  + Gaussian Blur.
-  + Implement Percentage-Closer Filtering.
+  + Gaussian Blur (Spotlights).
+  + Implement Percentage-Closer Soft Shadows.
   + Cascade Shadow Mapping.
-  + Shadow Bias.
 + PBR:
   + Add PBR materials to Material struct.
   + Add PBR materials to Model loader.
@@ -76,4 +79,5 @@ To be uploaded ...
 + Study and Implement Atmospheric Scattering.
 + Study and Implement Ambient Occlusion.
 + Study and Implement Bloom.
-+ Study and Implement Volumetric lighting.
++ Study and Implement Volumetric Lighting.
++ Study and Implement Image-Based Lighting.
